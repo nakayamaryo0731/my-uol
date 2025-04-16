@@ -1,92 +1,158 @@
 {
-  // LaTeX 
-  "latex-workshop.intellisense.package.enabled": true,
-  //補助配流を自動的に削除
+
+  "latex-workshop.latex.outDir": "./out",	
   "latex-workshop.latex.autoClean.run": "onBuilt",
-  //削除する補助ファイルを追加
-  "latex-workshop.latex.clean.fileTypes": [
-      // "*.aux",
-      "*.blg",
-      "*.idx",
-      "*.ind",
-      "*.lof",
-      "*.lot",
-      "*.out",
-      "*.toc",
-      "*.acn",
-      "*.acr",
-      "*.alg",
-      "*.glg",
-      "*.glo",
-      "*.gls",
-      "*.ist",
-      "*.fls",
-      "*.log",
-      "*.fdb_latexmk",
-      "*.snm",
-      "*.nav",
-      "*.dvi",
-      "*.synctex.gz"
-  ],
+  "latex-workshop.latex.autoBuild.run": "onSave",
   
-  //latexmkのビルドレシピ
-  "latex-workshop.latex.recipes": [
-      //bibTexを使用しない場合のレシピ
-      {
-          "name": "ptex2pdf (uplatex)*2",
-          "tools": [
-              "ptex2pdf (uplatex)",
-              "ptex2pdf (uplatex)"
-          ]
-      },
-      //bibTexを使用する場合のレシピ
-      {
-          "name": "ptex2pdf (uplatex) -> bibtex -> ptex2pdf (uplatex) *2",
-          "tools": [
-              "ptex2pdf (uplatex)",
-              "pbibtex",
-              "ptex2pdf (uplatex)",
-              "ptex2pdf (uplatex)"
-          ]
-      }
-  ],
-  
-  //latexmkのビルドツール
-  "latex-workshop.latex.tools": [
-      {
-          "name": "ptex2pdf (uplatex)",
-          "command": "ptex2pdf",
-          "args": [
-              "-interaction=nonstopmode",
-              "-l",
-              "-u",
-              "-ot",
-              "-kanji=utf8 -synctex=1",
-              "%DOC%"
-          ],
-          "env": {
-            "PATH": "/Library/TeX/texbin/latexmk"
-          },
-      },
-      {
-          "name": "pbibtex",
-          "command": "pbibtex",
-          "args": [
-              "%DOCFILE%"
-          ]
-      }
-  ],
-  
-  //これより下の設定は人それぞれかも
+
   "latex-workshop.view.pdf.viewer": "tab",
-  "latex-workshop.chktex.enabled": false,
-  "latex-workshop.latex.autoBuild.run": "never",
-  "editor.minimap.enabled": false,
-  "window.zoomLevel": 1,
-  "grammarly.files.include": [
-      "**/readme.md",
-      "**/README.md",
-      "**/*.txt",
-      "**/*.tex"
+
+  "latex-workshop.latex.recipes": [
+
+    {
+      "name": "latexmk (lualatex)🧋",
+      "tools": [
+        "lualatexmk"
+      ]
+    },
+    
+    {
+      "name": "latexmk 🔃",
+      "tools": [
+        "latexmk"
+      ]
+    },
+    {
+      "name": "latexmk (latexmkrc)",
+      "tools": [
+        "latexmk_rconly"
+      ]
+    },
+    {
+      "name": "pdflatex ➞ bibtex ➞ pdflatex × 2",
+      "tools": [
+        "pdflatex",
+        "bibtex",
+        "pdflatex",
+        "pdflatex"
+      ]
+    },
+    {
+      "name": "Compile Rnw files",
+      "tools": [
+        "rnw2tex",
+        "latexmk"
+      ]
+    },
+    {
+      "name": "Compile Jnw files",
+      "tools": [
+        "jnw2tex",
+        "latexmk"
+      ]
+    },
+    {
+      "name": "tectonic",
+      "tools": [
+        "tectonic"
+      ]
+    }
+    
+  ],
+
+  "latex-workshop.latex.tools": [
+    {
+      "name": "lualatexmk",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-file-line-error",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "-lualatex",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "latexmk_rconly",
+      "command": "latexmk",
+      "args": [
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "pdflatex",
+      "command": "pdflatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "bibtex",
+      "command": "bibtex",
+      "args": [
+        "%DOCFILE%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "rnw2tex",
+      "command": "Rscript",
+      "args": [
+        "-e",
+        "knitr::opts_knit$set(concordance = TRUE); knitr::knit('%DOCFILE_EXT%')"
+      ],
+      "env": {}
+    },
+    {
+      "name": "jnw2tex",
+      "command": "julia",
+      "args": [
+        "-e",
+        "using Weave; weave(\"%DOC_EXT%\", doctype=\"tex\")"
+      ],
+      "env": {}
+    },
+    {
+      "name": "jnw2texmintex",
+      "command": "julia",
+      "args": [
+        "-e",
+        "using Weave; weave(\"%DOC_EXT%\", doctype=\"texminted\")"
+      ],
+      "env": {}
+    },
+    {
+      "name": "tectonic",
+      "command": "tectonic",
+      "args": [
+        "--synctex",
+        "--keep-logs",
+        "%DOC%.tex"
+      ],
+      "env": {}
+    }
+    
   ],
 }

@@ -1,0 +1,79 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\section*{Proof: Inclusion-Exclusion Principle for Three Sets}
+
+Given three sets \( A, B, C \), we want to prove:
+
+\[
+|A \cup B \cup C| = |A| + |B| + |C| 
+- |A \cap B| - |A \cap C| - |B \cap C| 
++ |A \cap B \cap C|
+\]
+
+\subsection*{Hint: Inclusion-Exclusion Principle for Two Sets}
+
+For any two sets \( S_1 \) and \( S_2 \):
+\[
+|S_1 \cup S_2| = |S_1| + |S_2| - |S_1 \cap S_2|
+\]
+
+\subsection*{Step-by-step Derivation}
+
+We first apply the inclusion-exclusion principle to \( A \cup B \):
+
+\[
+|A \cup B| = |A| + |B| - |A \cap B|
+\]
+
+Now take the union of \( A \cup B \) with \( C \):
+
+\[
+|A \cup B \cup C| = |A \cup B| + |C| - |(A \cup B) \cap C|
+\]
+
+Substitute \( |A \cup B| \):
+
+\[
+|A \cup B \cup C| = |A| + |B| - |A \cap B| + |C| - |(A \cup B) \cap C|
+\]
+
+Next, expand \( (A \cup B) \cap C \) using distribution of intersection:
+
+\[
+(A \cup B) \cap C = (A \cap C) \cup (B \cap C)
+\]
+
+Then apply inclusion-exclusion again:
+
+\[
+|(A \cup B) \cap C| = |A \cap C| + |B \cap C| - |A \cap B \cap C|
+\]
+
+Substitute back into the earlier expression:
+
+\begin{align*}
+|A \cup B \cup C| &= |A| + |B| + |C| - |A \cap B| \\
+&\quad - \left(|A \cap C| + |B \cap C| - |A \cap B \cap C|\right) \\
+&= |A| + |B| + |C| 
+- |A \cap B| - |A \cap C| - |B \cap C| 
++ |A \cap B \cap C|
+\end{align*}
+
+\subsection*{Conclusion}
+
+\[
+\boxed{
+|A \cup B \cup C| = |A| + |B| + |C| 
+- |A \cap B| - |A \cap C| - |B \cap C| 
++ |A \cap B \cap C|
+}
+\]
+
+This completes the proof using the Inclusion-Exclusion Principle.
+
+\end{document}
