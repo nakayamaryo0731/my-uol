@@ -1,0 +1,65 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+
+\section*{Question: Injectivity and Surjectivity}
+
+Determine whether each function is injective (one-to-one), surjective (onto), or both (bijective). Provide clear but concise justifications.
+
+\subsection*{(1) $f_1 : \mathbb{R} \to \mathbb{R}, \quad f_1(x) = x^2 + 1$}
+\paragraph{Injectivity:}
+If $f_1(a) = f_1(b)$, then $a^2 + 1 = b^2 + 1$, so $a^2 = b^2$. This implies $a = \pm b$. Hence, $a = b$ or $a = -b$. Therefore, not every pair with the same function value comes from $a=b$. Thus, $f_1$ is \textbf{not injective}.
+
+\paragraph{Surjectivity:}
+To be surjective onto $\mathbb{R}$, for every $y \in \mathbb{R}$ we need an $x$ with $x^2 + 1 = y$. Rearranging gives $x^2 = y - 1$. For $y < 1$, $y - 1$ is negative, so there is no real $x$ that satisfies this. Thus, $f_1$ does not cover all real numbers. It is \textbf{not surjective} onto $\mathbb{R}$ (its image is $[1, \infty)$).
+
+\bigskip
+
+\subsection*{(2) $f_2 : \mathbb{R} \to [1,\infty), \quad f_2(x) = x^2 + 1$}
+\paragraph{Injectivity:}
+Same argument as above. $a^2 = b^2$ does not imply $a=b$ exclusively, so $f_2$ is \textbf{not injective}.
+
+\paragraph{Surjectivity:}
+Here, the codomain is $[1,\infty)$. Given any $y \in [1,\infty)$, we can solve $x^2 + 1 = y$, which gives $x^2 = y-1 \ge 0$. Thus, $x = \pm\sqrt{y-1}$ exists in $\mathbb{R}$. Every $y \in [1,\infty)$ has a preimage, so $f_2$ is \textbf{surjective} onto $[1,\infty)$.
+
+\bigskip
+
+\subsection*{(3) $f_3 : \mathbb{R} \to \mathbb{R}, \quad f_3(x) = x^3$}
+\paragraph{Injectivity:}
+If $f_3(a) = f_3(b)$, then $a^3 = b^3$. This implies $a = b$. Hence, $f_3$ is \textbf{injective}.
+
+\paragraph{Surjectivity:}
+For any real $y$, let $x = \sqrt[3]{y}$. Then $x^3 = y$, so every real $y$ is attained. Thus, $f_3$ is \textbf{surjective} onto $\mathbb{R}$.  
+Overall, $f_3$ is \textbf{bijective} (both injective and surjective).
+
+\bigskip
+
+\subsection*{(4) $f_4 : \mathbb{R} \to \mathbb{R}, \quad f_4(x) = 2x + 3$}
+\paragraph{Injectivity:}
+If $2a + 3 = 2b + 3$, then $2a = 2b$, which implies $a=b$. Thus, $f_4$ is \textbf{injective}.
+
+\paragraph{Surjectivity:}
+For any $y \in \mathbb{R}$, the equation $2x + 3 = y$ has the solution $x = (y-3)/2$, which is a real number. So all real $y$ are covered. Thus, $f_4$ is \textbf{surjective}.  
+Hence, $f_4$ is \textbf{bijective}.
+
+\bigskip
+
+\subsection*{(5) $f_5 : \mathbb{Z} \to \mathbb{Z}, \quad f_5(x) = 2x + 3$}
+\paragraph{Injectivity:}
+If $f_5(a) = f_5(b)$, then $2a + 3 = 2b + 3 \implies 2a = 2b \implies a = b$. Hence, $f_5$ is \textbf{injective}.
+
+\paragraph{Surjectivity:}
+To be surjective onto $\mathbb{Z}$, for each $y \in \mathbb{Z}$, we need an integer $x$ with $2x + 3 = y$. Solving gives $x = (y-3)/2$. This $x$ is an integer only if $y - 3$ is even. Therefore, not every integer $y$ has a preimage in $\mathbb{Z}$. So $f_5$ is \textbf{not surjective} onto all integers.
+
+\bigskip
+
+\section*{Summary}
+\begin{itemize}
+\item $f_1(x) = x^2 + 1 \;(\mathbb{R}\to\mathbb{R})$: Not injective, not surjective.
+\item $f_2(x) = x^2 + 1 \;(\mathbb{R}\to[1,\infty))$: Not injective, surjective onto $[1,\infty)$.
+\item $f_3(x) = x^3 \;(\mathbb{R}\to\mathbb{R})$: Bijective (injective and surjective).
+\item $f_4(x) = 2x + 3 \;(\mathbb{R}\to\mathbb{R})$: Bijective (injective and surjective).
+\item $f_5(x) = 2x + 3 \;(\mathbb{Z}\to\mathbb{Z})$: Injective, not surjective.
+\end{itemize}
+
+\end{document}
