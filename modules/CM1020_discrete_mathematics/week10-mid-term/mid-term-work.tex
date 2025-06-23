@@ -1,0 +1,1170 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+
+\begin{document}
+
+\section*{Question 1}
+
+\subsection*{(a)}
+
+Let 
+\[
+X = \{2, 4, 6, 8, 10\}, \quad Y = \{4, 6, 8, 10, 12\}, \quad Z = \{2, 10, 12, 14, 16\}
+\]
+
+\begin{enumerate}[label=\roman*.]
+
+\item Find $X \cap Y \cap Z$ and $X \cup (Y \setminus Z)$.
+\[
+\begin{aligned}
+X \cap Y &= \{4, 6, 8, 10\} \\
+X \cap Y \cap Z &= \{10\} \quad \text{(only element common to all three sets)} \\
+Y \setminus Z &= \{4, 6, 8\} \\
+X \cup (Y \setminus Z) &= \{2, 4, 6, 8, 10\} \cup \{4, 6, 8\} = \{2, 4, 6, 8, 10\}
+\end{aligned}
+\]
+
+\item Is $X \subseteq X \cap Y \cap Z$? Justify your answer.
+
+\[
+\begin{aligned}
+X &= \{2, 4, 6, 8, 10\}, \quad X \cap Y \cap Z = \{10\} \\
+\text{Not all elements of } X \text{ are in } X \cap Y \cap Z, \text{ so } X \subseteq X \cap Y \cap Z \text{ is false.}
+\end{aligned}
+\]
+
+\item Find the number of elements in the power set $\mathcal{P}(X \cup (Y \setminus Z))$.
+
+\[
+\begin{aligned}
+X \cup (Y \setminus Z) &= \{2, 4, 6, 8, 10\} \\
+\text{Number of elements} &= 5 \\
+\text{Size of the power set} &= 2^5 = \boxed{32}
+\end{aligned}
+\]
+
+\end{enumerate}
+
+\subsection*{(b)}
+
+Determine all sets $A$ which satisfy:
+\[
+\mathcal{P}(A) \subseteq \{\emptyset, \{\emptyset\}, \{\{\emptyset\}\}\}
+\]
+
+We are given that the power set of $A$ must be a subset of the set:
+\[
+\{\emptyset, \{\emptyset\}, \{\{\emptyset\}\}\}
+\]
+This set contains three distinct elements:
+- $\emptyset$
+- $\{\emptyset\}$
+- $\{\{\emptyset\}\}$
+
+We must now find all sets $A$ such that every element of $\mathcal{P}(A)$ is contained within this set.  
+We refer to this set as the \textbf{RHS} (right-hand side).
+
+Try all possible subsets of the RHS as candidates for $A$:
+
+\begin{itemize}
+  \item $A = \emptyset$\\
+  $\mathcal{P}(A) = \{\emptyset\}$, which is a subset of the RHS.
+
+  \item $A = \{\emptyset\}$\\
+  $\mathcal{P}(A) = \{\emptyset, \{\emptyset\}\}$, which is a subset of the RHS.
+
+  \item $A = \{\{\emptyset\}\}$\\
+  $\mathcal{P}(A) = \{\emptyset, \{\{\emptyset\}\}\}$, which is a subset of the RHS.
+
+  \item $A = \{\emptyset, \{\emptyset\}\}$\\
+  $\mathcal{P}(A)$ contains $\{\emptyset, \{\emptyset\}\}$, which is not in the RHS.
+
+  \item $A = \{\emptyset, \{\{\emptyset\}\}\}$\\
+  $\mathcal{P}(A)$ contains $\{\emptyset, \{\{\emptyset\}\}\}$, which is not in the RHS.
+
+  \item $A = \{\{\emptyset\}, \{\emptyset\}\}$\\
+  $\mathcal{P}(A)$ contains $\{\{\emptyset\}, \{\emptyset\}\}$, which is not in the RHS.
+
+  \item $A = \{\emptyset, \{\emptyset\}, \{\{\emptyset\}\}\}$\\
+  $\mathcal{P}(A)$ has $2^3 = 8$ elements, most of which are not in the RHS.
+\end{itemize}
+
+\textbf{Final Answer:}
+\[
+\boxed{
+A = \emptyset,\quad
+A = \{\emptyset\},\quad
+A = \{\{\emptyset\}\}
+}
+\]
+
+\subsection*{(c)}
+
+Let \( A, B, C \) be sets. We are asked to determine whether the following logical equivalence is true:
+\[
+A \subseteq B \quad \text{if and only if} \quad A \cap C \subseteq B \cap C \quad \text{for all sets } C.
+\]
+
+We examine both directions of the equivalence.
+
+\paragraph{(\( \Rightarrow \)) Direction:} Assume that \( A \subseteq B \). We want to show that for any set \( C \), it follows that
+\[
+A \cap C \subseteq B \cap C.
+\]
+
+Let \( x \in A \cap C \). Then \( x \in A \) and \( x \in C \). Since \( A \subseteq B \), we also have \( x \in B \). Therefore, \( x \in B \cap C \).  
+So \( A \cap C \subseteq B \cap C \), which proves this direction.
+
+\paragraph{(\( \Leftarrow \)) Direction:} Now suppose that
+\[
+A \cap C \subseteq B \cap C \quad \text{for all sets } C.
+\]
+We want to show that this implies \( A \subseteq B \).  
+We will show that this is \textbf{not always true} by providing a counterexample.
+
+Let
+\[
+A = \{1\}, \quad B = \{2\}, \quad C = \{1\}.
+\]
+Then,
+\[
+A \cap C = \{1\}, \quad B \cap C = \emptyset.
+\]
+So \( A \cap C \nsubseteq B \cap C \), and the condition fails.  
+But to make the implication fail even when the condition holds, try this:
+
+Let
+\[
+A = \{1\}, \quad B = \emptyset, \quad C = \{2\}.
+\]
+Then
+\[
+A \cap C = \emptyset, \quad B \cap C = \emptyset,
+\]
+so \( A \cap C \subseteq B \cap C \) is true. But \( A \not\subseteq B \).  
+Therefore, the condition
+\[
+A \cap C \subseteq B \cap C \text{ for all } C
+\]
+does not imply \( A \subseteq B \).
+
+\paragraph{Conclusion:}  
+The implication
+\[
+A \subseteq B \Rightarrow A \cap C \subseteq B \cap C \text{ for all } C
+\]
+is always true, but the converse is not.  
+So the logical equivalence
+\[
+A \subseteq B \iff A \cap C \subseteq B \cap C \text{ for all } C
+\]
+is \textbf{not valid in general}.
+
+\subsection*{(d)}
+
+Let \( A, B, C \) be subsets of a universal set \( U \). We are given the condition:
+\[
+A \subseteq B \quad \text{and} \quad C \subseteq \overline{B}
+\]
+and we are asked whether this implies:
+\[
+A \cap C = \emptyset.
+\]
+
+\paragraph{Proof:}
+
+Let \( x \in A \cap C \). Then by definition of intersection,
+\[
+x \in A \quad \text{and} \quad x \in C.
+\]
+Since \( A \subseteq B \), it follows that \( x \in B \).  
+Since \( C \subseteq \overline{B} \), it follows that \( x \notin B \).  
+
+This leads to a contradiction: \( x \in B \) and \( x \notin B \).  
+Therefore, our initial assumption that such an \( x \) exists must be false.  
+Hence,
+\[
+A \cap C = \emptyset.
+\]
+
+\paragraph{Conclusion:}  
+The statement is logically valid. If \( A \subseteq B \) and \( C \subseteq \overline{B} \), then \( A \cap C = \emptyset \).
+
+\section*{Question 2}
+
+\subsection*{(a)}
+
+Determine whether each of the following expressions defines a function. If not, explain why.
+
+\begin{enumerate}[label=\roman*.]
+
+\item \( f : \mathbb{R} \to \mathbb{R}, \quad f(x) = \dfrac{1}{\ln(x - 1)} \)
+
+This expression is undefined when \( \ln(x - 1) = 0 \) or when the logarithm is undefined.
+
+\[
+\ln(x - 1) \text{ is undefined for } x \leq 1,\quad \text{and } \ln(x - 1) = 0 \text{ when } x = e
+\]
+
+So \( f(x) \) is undefined for \( x \leq 1 \), and also \( f(x) = \dfrac{1}{0} \) is undefined at \( x = e \approx 2.718 \)
+
+Hence, the function is \textbf{not defined on all of } \( \mathbb{R} \), so it is \textbf{not a valid function from } \( \mathbb{R} \to \mathbb{R} \).
+
+\textbf{Conclusion:} Not a function as defined, because \( f(x) \) is undefined for some \( x \in \mathbb{R} \).
+
+\item \( f : \mathbb{Z} \to \mathbb{Z}, \quad f(x) = x^3 - 2x + 5 \)
+
+This is a polynomial function of degree 3 with integer coefficients.  
+For any \( x \in \mathbb{Z} \), \( f(x) \in \mathbb{Z} \).
+
+\textbf{Conclusion:} This is a function from \( \mathbb{Z} \to \mathbb{Z} \).
+
+\item \( f : \mathbb{R} \to \mathbb{R}, \quad f(x) = \sqrt{x - 3} \)
+
+The square root function \( \sqrt{x - 3} \) is defined only when \( x - 3 \geq 0 \), i.e., \( x \geq 3 \)
+
+Therefore, \( f(x) \) is undefined for \( x < 3 \), so the function is not defined on all of \( \mathbb{R} \)
+
+\textbf{Conclusion:} Not a function from \( \mathbb{R} \to \mathbb{R} \), because the domain must exclude values \( x < 3 \)
+
+\end{enumerate}
+
+\subsection*{(b)}
+
+Given
+\[
+f(x) = x^2 + b \quad \text{and} \quad g(x) = \sqrt{x + 3}
+\]
+we are asked to find all values of \( b \) such that
+\[
+(f \circ g)(x) = (g \circ f)(x)
+\]
+for all \( x \) in the domain.
+
+\paragraph{Step 1: Compute \( (f \circ g)(x) \)}
+\[
+(f \circ g)(x) = f(g(x)) = f(\sqrt{x + 3}) = (\sqrt{x + 3})^2 + b = x + 3 + b
+\]
+
+\paragraph{Step 2: Compute \( (g \circ f)(x) \)}
+\[
+(g \circ f)(x) = g(f(x)) = g(x^2 + b) = \sqrt{x^2 + b + 3}
+\]
+
+\paragraph{Step 3: Equate both expressions}
+\[
+x + 3 + b = \sqrt{x^2 + b + 3}
+\]
+
+Now square both sides:
+\[
+(x + 3 + b)^2 = x^2 + b + 3
+\]
+
+Expand the left-hand side:
+\[
+(x + 3 + b)^2 = x^2 + 6x + 9 + 2bx + 6b + b^2
+\]
+\[
+= x^2 + 2bx + 6x + b^2 + 6b + 9
+\]
+
+Now set it equal to the right-hand side:
+\[
+x^2 + 2bx + 6x + b^2 + 6b + 9 = x^2 + b + 3
+\]
+
+Subtract \( x^2 \) from both sides:
+\[
+2bx + 6x + b^2 + 6b + 9 = b + 3
+\]
+
+This must hold for all \( x \), so the coefficient of \( x \) must be zero:
+\[
+2b + 6 = 0 \quad \Rightarrow \quad b = -3
+\]
+
+Now substitute \( b = -3 \) into the constant terms:
+\[
+b^2 + 6b + 9 = (-3)^2 + 6(-3) + 9 = 9 - 18 + 9 = 0
+\]
+and RHS:
+\[
+b + 3 = -3 + 3 = 0
+\]
+
+\textbf{Conclusion:} The only possible value is
+\[
+\boxed{b = -3}
+\]
+
+\subsection*{(c)}
+
+Solve the equation:
+\[
+2\log_4(x) - \log_4(3x - 2) = 0
+\]
+
+\paragraph{Step 1: Use logarithmic identities}
+
+Recall that \( a \log_b(x) = \log_b(x^a) \), so
+\[
+2\log_4(x) = \log_4(x^2)
+\]
+
+Now substitute:
+\[
+\log_4(x^2) - \log_4(3x - 2) = 0
+\]
+
+Use the identity \( \log_b(a) - \log_b(b) = \log_b\left(\frac{a}{b}\right) \):
+\[
+\log_4\left( \frac{x^2}{3x - 2} \right) = 0
+\]
+
+\paragraph{Step 2: Exponentiate both sides}
+
+\[
+\frac{x^2}{3x - 2} = 4^0 = 1
+\]
+
+\paragraph{Step 3: Solve the equation}
+
+\[
+x^2 = 3x - 2 \\
+x^2 - 3x + 2 = 0 \\
+(x - 1)(x - 2) = 0
+\]
+
+So the solutions are:
+\[
+x = 1 \quad \text{or} \quad x = 2
+\]
+
+\paragraph{Step 4: Check for validity in the domain}
+
+We must check that all logarithmic expressions are defined and positive:
+
+- For \( x = 1 \):
+  - \( \log_4(1) \) is defined
+  - \( 3(1) - 2 = 1 > 0 \Rightarrow \log_4(1) \) is defined
+
+- For \( x = 2 \):
+  - \( \log_4(2) \) is defined
+  - \( 3(2) - 2 = 4 > 0 \Rightarrow \log_4(4) \) is defined
+
+\textbf{Conclusion:} Both values are valid.
+
+\[
+\boxed{x = 1 \quad \text{or} \quad x = 2}
+\]
+
+\subsection*{(d)}
+
+Let \( f : \mathbb{R}^* \to \mathbb{R} \) be defined by
+\[
+f(x) = e^x + x,
+\]
+where \( \mathbb{R}^* = \mathbb{R} \setminus \{0\} \).
+
+\begin{enumerate}[label=\roman*.]
+
+\item Determine whether or not \( f \) is a one-to-one function.
+
+\textbf{Method: Use the definition of injectivity.}
+
+Suppose \( f(x_1) = f(x_2) \), then:
+\[
+e^{x_1} + x_1 = e^{x_2} + x_2.
+\]
+
+We want to show this implies \( x_1 = x_2 \).  
+Assume instead that \( x_1 \neq x_2 \). Then, without loss of generality, suppose \( x_1 < x_2 \).  
+Since the exponential function \( e^x \) is strictly increasing and \( x \) is linear, the sum \( e^x + x \) is also strictly increasing.
+
+Therefore:
+\[
+x_1 < x_2 \Rightarrow f(x_1) < f(x_2),
+\]
+which contradicts the assumption that \( f(x_1) = f(x_2) \).  
+So our assumption was false, and we conclude that:
+\[
+\boxed{f \text{ is one-to-one}}
+\]
+
+\item Determine whether or not \( f \) is an onto function.
+
+We must determine whether, for every \( y \in \mathbb{R} \), there exists \( x \in \mathbb{R}^* \) such that
+\[
+f(x) = y.
+\]
+
+Let \( y = f(x) = e^x + x \).  
+We attempt to solve for \( x \) given any \( y \), but there is no algebraic expression to isolate \( x \) directly.  
+Instead, examine the behavior of \( f(x) \):
+
+\begin{itemize}
+  \item As \( x \to -\infty \), \( e^x \to 0 \) and \( x \to -\infty \), so \( f(x) \to -\infty \)
+  \item As \( x \to \infty \), \( f(x) \to \infty \)
+  \item But \( x = 0 \notin \mathbb{R}^* \), and \( f(0) = 1 \) is not in the domain
+\end{itemize}
+
+Now consider the range of \( f(x) \) over \( \mathbb{R}^* \). Since \( f(x) \) is continuous and strictly increasing, its range is:
+\[
+(-\infty, 1) \cup (1, \infty)
+\]
+but does not include \( y = 1 \) (no \( x \in \mathbb{R}^* \) satisfies \( f(x) = 1 \)).
+
+Hence,
+\[
+\boxed{f \text{ is not onto, since } 1 \notin \text{range of } f}
+\]
+
+\end{enumerate}
+
+\subsection*{(e)}
+
+Let \( f : A \to B \) and \( g : B \to C \) be functions.  
+Assume that both \( f \) and \( g \) are one-to-one (injective).  
+We aim to prove that the composition \( g \circ f : A \to C \) is also one-to-one.
+
+\paragraph{Proof:}
+
+To show that \( g \circ f \) is one-to-one, we must prove:
+\[
+(g \circ f)(x_1) = (g \circ f)(x_2) \Rightarrow x_1 = x_2.
+\]
+
+Let \( x_1, x_2 \in A \), and suppose:
+\[
+(g \circ f)(x_1) = (g \circ f)(x_2).
+\]
+
+By the definition of composition:
+\[
+g(f(x_1)) = g(f(x_2)).
+\]
+
+Since \( g \) is one-to-one, this implies:
+\[
+f(x_1) = f(x_2).
+\]
+
+Now apply the fact that \( f \) is also one-to-one:
+\[
+f(x_1) = f(x_2) \Rightarrow x_1 = x_2.
+\]
+
+Therefore, we have shown:
+\[
+(g \circ f)(x_1) = (g \circ f)(x_2) \Rightarrow x_1 = x_2,
+\]
+which means \( g \circ f \) is one-to-one.
+
+\paragraph{Conclusion:}  
+If both \( f \) and \( g \) are one-to-one, then their composition \( g \circ f \) is also one-to-one.
+\[
+\boxed{g \circ f \text{ is one-to-one.}}
+\]
+
+\section*{Question 3}
+
+\subsection*{(a)}
+
+Let \( p, q, r \) be propositions.
+
+\begin{enumerate}[label=\roman*.]
+
+\item Construct a truth table for the following compound propositions:
+
+\[
+(p \oplus q) \to r \qquad \text{and} \qquad (p \lor q) \to (p \land r)
+\]
+
+\begin{center}
+\begin{tabular}{|c|c|c||c|c|c||c|c|}
+\hline
+$p$ & $q$ & $r$ & $p \oplus q$ & $(p \oplus q) \to r$ & $p \lor q$ & $p \land r$ & $(p \lor q) \to (p \land r)$ \\
+\hline
+T & T & T & F & T & T & T & T \\
+T & T & F & F & T & T & F & F \\
+T & F & T & T & T & T & T & T \\
+T & F & F & T & F & T & F & F \\
+F & T & T & T & T & T & F & F \\
+F & T & F & T & F & T & F & F \\
+F & F & T & F & T & F & F & T \\
+F & F & F & F & T & F & F & T \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Determine whether either of the above compound propositions is a tautology. Explain your answer.
+
+\begin{itemize}
+  \item The proposition \( (p \oplus q) \to r \) is false when \( p \oplus q = \text{T} \) and \( r = \text{F} \). This occurs in rows 4 and 6.
+  \item Therefore, it is \textbf{not a tautology}.
+  \item The proposition \( (p \lor q) \to (p \land r) \) is false when \( p \lor q = \text{T} \) and \( p \land r = \text{F} \). This occurs in rows 2, 4, 5, and 6.
+  \item Therefore, it is also \textbf{not a tautology}.
+\end{itemize}
+
+\textbf{Conclusion:} Neither of the compound propositions is a tautology.
+\end{enumerate}
+
+\subsection*{(b)}
+
+Let \( p, q, r, s \) be propositions. We are given:
+\[
+p = \text{F}, \quad q = \text{T}, \quad r = \text{F}, \quad s = \text{T}
+\]
+
+We are asked to find the truth value of the following proposition:
+
+\[
+((p \lor \neg r) \land (q \to s)) \leftrightarrow ((\neg p \land q) \lor (r \to s))
+\]
+
+\paragraph{Step 1: Evaluate each component}
+
+\begin{itemize}
+  \item \( \neg r = \neg \text{F} = \text{T} \)
+  \item \( p \lor \neg r = \text{F} \lor \text{T} = \text{T} \)
+  \item \( q \to s = \text{T} \to \text{T} = \text{T} \)
+  \item Left side: \( \text{T} \land \text{T} = \text{T} \)
+  \item \( \neg p = \text{T}, \quad \neg p \land q = \text{T} \land \text{T} = \text{T} \)
+  \item \( r \to s = \text{F} \to \text{T} = \text{T} \)
+  \item Right side: \( \text{T} \lor \text{T} = \text{T} \)
+\end{itemize}
+
+\paragraph{Step 2: Final result}
+
+\[
+\text{Left side} = \text{T}, \quad \text{Right side} = \text{T}
+\Rightarrow \text{Entire expression} = \text{T}
+\]
+
+\paragraph{Conclusion:}
+\[
+\boxed{\text{The truth value of the compound proposition is true.}}
+\]
+
+\subsection*{(c)}
+
+Let the propositions be defined as follows:
+
+\begin{itemize}
+  \item \( p \): "The employee completes the safety training."
+  \item \( q \): "The employee passes the skills assessment."
+  \item \( r \): "The employee qualifies for the fieldwork assignment."
+\end{itemize}
+
+Express the following compound propositions symbolically:
+
+\begin{enumerate}[label=\roman*.]
+
+\item \textit{“To qualify for the fieldwork assignment, it is necessary for the employee to both complete the safety training and pass the skills assessment.”}
+
+This translates to:
+
+\[
+r \to (p \land q)
+\]
+
+\item \textit{“The employee qualifies for the fieldwork assignment only if they either complete the safety training or pass the skills assessment, but not both.”}
+
+- "only if" means \( r \to \text{(rest)} \)
+- "either ... or, but not both" means exclusive or, written as \( p \oplus q \)
+
+So the full symbolic form is:
+
+\[
+r \to (p \oplus q)
+\]
+
+\item \textit{“The employee will qualify for the fieldwork assignment if, and only if, they complete the safety training and pass the skills assessment.”}
+
+This is a biconditional statement:
+
+\[
+r \leftrightarrow (p \land q)
+\]
+
+\end{enumerate}
+
+\subsection*{(d)}
+
+Given the implication:
+
+\[
+\forall x \in \mathbb{R}, \quad \text{if } x^2 - 3x + 2 > 0 \text{ then } x > 2 \text{ or } x < 1
+\]
+
+We define:
+
+\[
+P(x): x^2 - 3x + 2 > 0, \quad Q(x): x > 2 \text{ or } x < 1
+\]
+
+The original implication is:
+
+\[
+P(x) \to Q(x)
+\]
+
+Now we write the following:
+
+\begin{itemize}
+
+\item \textbf{Contrapositive:}
+\[
+\forall x \in \mathbb{R}, \quad \text{if } \neg Q(x) \text{ then } \neg P(x)
+\]
+That is,
+\[
+\text{if } 1 \leq x \leq 2 \text{ then } x^2 - 3x + 2 \leq 0
+\]
+
+\item \textbf{Converse:}
+\[
+\forall x \in \mathbb{R}, \quad \text{if } Q(x) \text{ then } P(x)
+\]
+That is,
+\[
+\text{if } x > 2 \text{ or } x < 1 \text{ then } x^2 - 3x + 2 > 0
+\]
+
+\item \textbf{Inverse:}
+\[
+\forall x \in \mathbb{R}, \quad \text{if } \neg P(x) \text{ then } \neg Q(x)
+\]
+That is,
+\[
+\text{if } x^2 - 3x + 2 \leq 0 \text{ then } 1 \leq x \leq 2
+\]
+
+\end{itemize}
+
+\subsection*{(e)}
+
+We are asked to determine whether the following compound proposition is a tautology:
+\[
+((p \land q) \lor (r \to s)) \leftrightarrow ((p \lor r) \to s) \land ((q \lor r) \to s)
+\]
+
+\paragraph{Step 1: Rewriting using logical equivalences}
+
+Recall the implication equivalence:
+\[
+a \to b \equiv \neg a \lor b
+\]
+
+Apply this to each implication:
+\[
+r \to s \equiv \neg r \lor s,\quad (p \lor r) \to s \equiv \neg(p \lor r) \lor s,\quad (q \lor r) \to s \equiv \neg(q \lor r) \lor s
+\]
+
+So the original expression becomes:
+\[
+((p \land q) \lor (\neg r \lor s)) \leftrightarrow ((\neg(p \lor r) \lor s) \land (\neg(q \lor r) \lor s))
+\]
+
+We now analyze whether this biconditional is always true.
+
+\paragraph{Strategy:}
+
+We consider two main cases based on the truth value of \( s \).
+
+\medskip
+\textbf{Case 1: \( s = \text{T} \)}
+
+\begin{itemize}
+  \item Left-hand side: \( (p \land q) \lor (\neg r \lor \text{T}) = \text{T} \)
+  \item Right-hand side: both disjunctions end with \( \lor \text{T} = \text{T} \), so entire RHS is also \( \text{T} \)
+\end{itemize}
+
+Thus, when \( s = \text{T} \), the full expression is true.
+
+\medskip
+\textbf{Case 2: \( s = \text{F} \)}
+
+We must analyze both sides more carefully.
+
+\begin{itemize}
+  \item Left-hand side: 
+  \[
+  (p \land q) \lor (\neg r \lor \text{F}) = (p \land q) \lor \neg r
+  \]
+
+  \item Right-hand side:
+  \[
+  (\neg(p \lor r) \lor \text{F}) \land (\neg(q \lor r) \lor \text{F}) = \neg(p \lor r) \land \neg(q \lor r)
+  \]
+  \[
+  = \neg p \land \neg r \land \neg q \land \neg r = \neg p \land \neg q \land \neg r
+  \]
+\end{itemize}
+
+Now try a specific assignment:
+
+\[
+p = \text{T},\quad q = \text{T},\quad r = \text{F},\quad s = \text{F}
+\]
+
+Then:
+
+\begin{itemize}
+  \item LHS: \( (T \land T) \lor \neg F = T \lor T = T \)
+  \item RHS: \( \neg T \land \neg T \land \neg F = F \land F \land T = F \)
+\end{itemize}
+
+So:
+\[
+\text{LHS} = \text{T},\quad \text{RHS} = \text{F} \Rightarrow \text{Biconditional is false}
+\]
+
+\paragraph{Conclusion:}
+
+We found an assignment of truth values for which the biconditional is false.  
+Therefore, the proposition is not always true, so it is not a tautology.
+
+\[
+\boxed{\text{The proposition is not a tautology.}}
+\]
+
+\section*{Question 4}
+
+\subsection*{(a)}
+
+Translate the following statements into predicate logic using appropriate quantifiers and predicates.
+
+\begin{enumerate}[label=\roman*.]
+
+\item "Every doctor in the hospital wears a mask."
+
+Let the domain be all people.  
+Let \( D(x) \): "x is a doctor in the hospital"  
+Let \( M(x) \): "x wears a mask"
+
+\[
+\forall x \, (D(x) \to M(x))
+\]
+
+\item "If a plant is watered regularly, then it grows healthy."
+
+Let the domain be all plants.  
+Let \( W(x) \): "x is watered regularly"  
+Let \( H(x) \): "x grows healthy"
+
+\[
+\forall x \, (W(x) \to H(x))
+\]
+
+\item "There exists a number that is larger than any other number."
+
+Let the domain be all real numbers.  
+Let \( L(x, y) \): "x is larger than y"
+
+\[
+\exists x \, \forall y \, (x \neq y \to L(x, y))
+\]
+
+\item "All animals that have wings can fly."
+
+Let the domain be all animals.  
+Let \( W(x) \): "x has wings"  
+Let \( F(x) \): "x can fly"
+
+\[
+\forall x \, ((W(x)) \to F(x))
+\]
+
+\end{enumerate}
+
+\subsection*{(b)}
+
+Determine whether each of the following statements is true or false. Justify your answer.
+
+\begin{enumerate}[label=\roman*.]
+
+\item \( \forall x \in \mathbb{Z}, \, \exists y \in \mathbb{R}^* \text{ such that } xy < 1 \)
+
+\textbf{True.}  
+Let \( x \in \mathbb{Z} \). We can always choose \( y = \frac{1}{2x} \) if \( x \neq 0 \), which satisfies \( xy = \frac{1}{2} < 1 \).  
+If \( x = 0 \), choose any negative real \( y \) (e.g., \( y = -1 \)), then \( xy = 0 < 1 \).  
+In all cases, a suitable nonzero real \( y \) exists such that \( xy < 1 \).
+
+\[
+\boxed{\text{True}}
+\]
+
+\item \( \forall x \in \mathbb{R}^*, \, \forall y \in \mathbb{Z} \text{ such that } xy > 1 \)
+
+\textbf{False.}  
+Choose \( x = 0.5 \in \mathbb{R}^* \) and \( y = 1 \in \mathbb{Z} \). Then \( xy = 0.5 < 1 \), which contradicts the condition.  
+Since \( xy > 1 \) is not true for all \( x \in \mathbb{R}^*, y \in \mathbb{Z} \), the statement is false.
+
+\[
+\boxed{\text{False}}
+\]
+
+\item \( \forall x \in \mathbb{R}^*, \, \exists y \in \mathbb{R} \text{ such that } xy = 2 \)
+
+\textbf{True.}  
+Given any nonzero real number \( x \), we can choose \( y = \frac{2}{x} \), which is always defined in \( \mathbb{R} \) since \( x \neq 0 \).  
+Then \( xy = x \cdot \frac{2}{x} = 2 \)
+
+\[
+\boxed{\text{True}}
+\]
+
+\end{enumerate}
+
+\subsection*{(c)}
+
+Negate the following quantified statement:
+
+\[
+\forall x \, \exists y \, (M(x) \land N(y)) \lor \forall z \, (K(z) \to L(z))
+\]
+
+\paragraph{Step 1: Apply negation to the full expression}
+
+We negate the entire statement:
+
+\[
+\neg \left[ \forall x \, \exists y \, (M(x) \land N(y)) \lor \forall z \, (K(z) \to L(z)) \right]
+\]
+
+Use DeMorgan's Law:
+
+\[
+= \neg \left[ \forall x \, \exists y \, (M(x) \land N(y)) \right] \land \neg \left[ \forall z \, (K(z) \to L(z)) \right]
+\]
+
+---
+
+\paragraph{Step 2: Push negation inside quantifiers}
+
+Use standard logical equivalences:
+
+\begin{itemize}
+  \item \( \neg \forall x \, P(x) \equiv \exists x \, \neg P(x) \)
+  \item \( \neg \exists y \, Q(y) \equiv \forall y \, \neg Q(y) \)
+\end{itemize}
+
+Apply to the first part:
+
+\[
+\neg \left[ \forall x \, \exists y \, (M(x) \land N(y)) \right] = \exists x \, \forall y \, \neg (M(x) \land N(y))
+\]
+
+Now apply DeMorgan inside the conjunction:
+
+\[
+\neg (M(x) \land N(y)) = \neg M(x) \lor \neg N(y)
+\]
+
+So the first part becomes:
+
+\[
+\exists x \, \forall y \, (\neg M(x) \lor \neg N(y))
+\]
+
+---
+
+Now for the second part:
+
+\[
+\neg \left[ \forall z \, (K(z) \to L(z)) \right] = \exists z \, \neg (K(z) \to L(z))
+\]
+
+Recall:
+
+\[
+\neg (K(z) \to L(z)) = K(z) \land \neg L(z)
+\]
+
+So the second part becomes:
+
+\[
+\exists z \, (K(z) \land \neg L(z))
+\]
+
+---
+
+\paragraph{Final Answer:}
+
+\[
+\boxed{
+\exists x \, \forall y \, (\neg M(x) \lor \neg N(y)) \land \exists z \, (K(z) \land \neg L(z))
+}
+\]
+
+\subsection*{(d)}
+
+We are given the following premises:
+
+\begin{align*}
+1.\quad & s \to (p \lor q) \\
+2.\quad & \neg p \to r \\
+3.\quad & \neg q \to r \\
+4.\quad & \neg s \\
+\end{align*}
+
+We are to determine whether the conclusion
+\[
+\therefore \ r
+\]
+logically follows from the premises.
+
+\paragraph{Step 1: Use Modus Tollens on premise 1 and 4}
+
+From premise 1: \( s \to (p \lor q) \)  
+From premise 4: \( \neg s \)  
+
+By \textbf{Modus Tollens}, this does not directly apply (since we would need \( \neg(p \lor q) \)), but we can use \textbf{Contrapositive}:
+
+\[
+s \to (p \lor q) \equiv \neg(p \lor q) \to \neg s
+\]
+
+Now we are given \( \neg s \), so from the contrapositive we can apply \textbf{Modus Ponens}:
+
+\[
+\neg(p \lor q) \text{ must be true}
+\Rightarrow \neg p \land \neg q
+\]
+
+\paragraph{Step 2: Use Modus Ponens on premises 2 and 3}
+
+From premise 2: \( \neg p \to r \), and we now know \( \neg p \) is true  
+\[
+\Rightarrow r
+\]
+
+Similarly, from premise 3: \( \neg q \to r \), and we know \( \neg q \) is true  
+\[
+\Rightarrow r
+\]
+
+So in both ways, we conclude \( r \) is true.
+
+\paragraph{Conclusion:}
+
+The conclusion \( r \) logically follows from the premises.  
+Therefore, the argument is:
+\[
+\boxed{\text{Valid}}
+\]
+
+\subsection*{(a)}
+
+Use DeMorgan's laws to simplify the following expressions:
+
+\begin{enumerate}[label=\roman*.]
+
+\item
+\[
+\overline{\, \overline{p \cdot \overline{q} \cdot r} + \overline{ \overline{r} \cdot s } \,}
+\]
+
+\textbf{Step 1: Apply DeMorgan's law to the outermost negation (OR to AND):}
+\[
+= \overline{ \overline{p \cdot \overline{q} \cdot r} } \cdot \overline{ \overline{ \overline{r} \cdot s } }
+\]
+
+\textbf{Step 2: Cancel double negations:}
+\[
+= (p \cdot \overline{q} \cdot r) \cdot (\overline{r} \cdot s)
+\]
+
+\textbf{Final simplified form:}
+\[
+\boxed{(p \cdot \overline{q} \cdot r) \cdot (\overline{r} \cdot s)}
+\]
+
+---
+
+\item
+\[
+\overline{\, \overline{x} + y \,} \cdot \overline{\, x + \overline{y} \,} \cdot \overline{\, \overline{y} + \overline{z} \,}
+\]
+
+\textbf{Step 1: Apply DeMorgan's law to each term:}
+\begin{align*}
+\overline{\, \overline{x} + y \,} &= x \cdot \overline{y} \\
+\overline{\, x + \overline{y} \,} &= \overline{x} \cdot y \\
+\overline{\, \overline{y} + \overline{z} \,} &= y \cdot z
+\end{align*}
+
+\textbf{Step 2: Multiply all terms:}
+\[
+(x \cdot \overline{y}) \cdot (\overline{x} \cdot y) \cdot (y \cdot z)
+\]
+
+\textbf{Step 3: Group logically:}
+\[
+x \cdot \overline{y} \cdot \overline{x} \cdot y \cdot y \cdot z
+= x \cdot \overline{x} \cdot y \cdot \overline{y} \cdot y \cdot z
+\]
+
+\textbf{Step 4: Use identity laws:}
+\[
+x \cdot \overline{x} = 0, \quad y \cdot \overline{y} = 0
+\Rightarrow \text{entire expression equals } 0
+\]
+
+\textbf{Final simplified form:}
+\[
+\boxed{0}
+\]
+
+\end{enumerate}
+
+\subsection*{(b)}
+
+\begin{enumerate}[label=\roman*.]
+
+\item \textbf{Find a Boolean expression for the output \( Q \) of the logic circuit.}
+
+From the circuit:
+
+- The top NAND gate takes \( A \) and \( \overline{B} \), so its output is:
+  \[
+  X = \overline{A \cdot \overline{B}}
+  \]
+
+- The bottom AND gate takes \( \overline{C} \) and \( D \), so its output is:
+  \[
+  Y = \overline{C} \cdot D
+  \]
+
+- The final NAND gate receives \( X \) and \( Y \), so the output is:
+  \[
+  Q = \overline{X \cdot Y} = \overline{ \left( \overline{A \cdot \overline{B}} \cdot ( \overline{C} \cdot D ) \right) }
+  \]
+
+\item \textbf{Simplify using Boolean algebra.}
+
+Apply DeMorgan’s Law to the outermost NOT:
+\[
+Q = \overline{ \overline{A \cdot \overline{B}} } + \overline{ \overline{C} \cdot D }
+\]
+
+Now simplify each part:
+\begin{align*}
+\overline{ \overline{A \cdot \overline{B}} } &= A \cdot \overline{B} \\
+\overline{ \overline{C} \cdot D } &= C + \overline{D}
+\end{align*}
+
+\textbf{Final simplified expression:}
+\[
+\boxed{Q = (A \cdot \overline{B}) + (C + \overline{D})}
+\]
+
+\end{enumerate}
+
+\subsection*{(c)}
+
+Use the duality principle to find the dual of the following Boolean equation:
+
+\[
+a \cdot b + c \cdot \overline{d} = (a + c) \cdot (a + \overline{d}) \cdot (b + c) \cdot (b + \overline{d})
+\]
+
+\textbf{Step: Apply the duality principle}
+
+- Replace every \( \cdot \) (AND) with \( + \) (OR)
+- Replace every \( + \) (OR) with \( \cdot \) (AND)
+- Leave complements (negations) unchanged
+
+\[
+\text{LHS dual: } (a + b) \cdot (c + \overline{d})
+\]
+\[
+\text{RHS dual: } (a \cdot c) + (a \cdot \overline{d}) + (b \cdot c) + (b \cdot \overline{d})
+\]
+
+\textbf{Final dual equation:}
+\[
+\boxed{
+(a + b) \cdot (c + \overline{d}) = (a \cdot c) + (a \cdot \overline{d}) + (b \cdot c) + (b \cdot \overline{d})
+}
+\]
+
+\subsection*{(d)}
+
+Given the Boolean expression:
+\[
+F(A, B, C, D) = A \cdot \overline{B} \cdot C + A \cdot \overline{B} \cdot \overline{C} + \overline{A} \cdot B \cdot C \cdot \overline{D}
+\]
+
+\begin{enumerate}[label=\roman*.]
+
+\item \textbf{Truth Table}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c||c|}
+\hline
+$A$ & $B$ & $C$ & $D$ & $F(A,B,C,D)$ \\
+\hline
+F & F & F & F & F \\
+F & F & F & T & F \\
+F & F & T & F & F \\
+F & F & T & T & F \\
+F & T & F & F & F \\
+F & T & F & T & F \\
+F & T & T & F & \textbf{T} \\
+F & T & T & T & F \\
+T & F & F & F & \textbf{T} \\
+T & F & F & T & \textbf{T} \\
+T & F & T & F & \textbf{T} \\
+T & F & T & T & \textbf{T} \\
+T & T & F & F & F \\
+T & T & F & T & F \\
+T & T & T & F & F \\
+T & T & T & T & F \\
+\hline
+\end{tabular}
+\end{center}
+
+Minterms where \( F = \text{T} \):  
+\( m_6, m_8, m_9, m_{10}, m_{11} \)
+
+---
+
+\item \textbf{Karnaugh Map}
+
+Use \( A, B \) for rows and \( C, D \) for columns. Row and column order in Gray code:
+
+\[
+\begin{array}{c|cccc}
+AB \backslash CD & 00 & 01 & 11 & 10 \\
+\hline
+00 & F & F & F & F \\
+01 & F & F & F & \textbf{T} \\
+11 & F & F & F & F \\
+10 & \textbf{T} & \textbf{T} & \textbf{T} & \textbf{T} \\
+\end{array}
+\]
+
+---
+
+\item \textbf{Minimal Sum of Products (SOP)}
+
+From the K-map:
+
+- Group of four T's on row \( A = \text{T}, B = \text{F} \):  
+  \( A \cdot \overline{B} \)
+
+- Single T at \( A = \text{F}, B = \text{T}, C = \text{T}, D = \text{F} \):  
+  \( \overline{A} \cdot B \cdot C \cdot \overline{D} \)
+
+\textbf{Final minimized SOP:}
+\[
+\boxed{F = A \cdot \overline{B} + \overline{A} \cdot B \cdot C \cdot \overline{D}}
+\]
+
+\end{enumerate}
+
+\end{document}
