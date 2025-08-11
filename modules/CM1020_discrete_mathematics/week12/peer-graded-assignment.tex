@@ -1,0 +1,72 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+
+\begin{document}
+
+\section*{Proof by Mathematical Induction}
+
+We will prove that for all $n \in \mathbb{N}$,
+
+\[
+P(n): \sum_{k=1}^{n} k(k+1)(k+2) = \frac{n(n+1)(n+2)(n+3)}{4}
+\]
+
+\subsection*{Base Case: $n = 1$}
+
+Left-hand side:
+\[
+\sum_{k=1}^{1} k(k+1)(k+2) = 1 \cdot 2 \cdot 3 = 6
+\]
+
+Right-hand side:
+\[
+\frac{1 \cdot 2 \cdot 3 \cdot 4}{4} = \frac{24}{4} = 6
+\]
+
+Therefore, $P(1)$ holds.
+
+\subsection*{Inductive Hypothesis}
+
+Assume that the formula holds for some $n \in \mathbb{N}$:
+
+\[
+\sum_{k=1}^{n} k(k+1)(k+2) = \frac{n(n+1)(n+2)(n+3)}{4}
+\]
+
+\subsection*{Inductive Step: Prove $P(n+1)$}
+
+We want to show that:
+
+\[
+\sum_{k=1}^{n+1} k(k+1)(k+2) = \frac{(n+1)(n+2)(n+3)(n+4)}{4}
+\]
+
+Left-hand side:
+
+\[
+\sum_{k=1}^{n+1} k(k+1)(k+2) = \left( \sum_{k=1}^{n} k(k+1)(k+2) \right) + (n+1)(n+2)(n+3)
+\]
+
+Apply the inductive hypothesis:
+
+\[
+= \frac{n(n+1)(n+2)(n+3)}{4} + (n+1)(n+2)(n+3)
+\]
+
+Factor out $(n+1)(n+2)(n+3)$:
+
+\[
+= \left( \frac{n}{4} + 1 \right)(n+1)(n+2)(n+3) = \frac{n+4}{4}(n+1)(n+2)(n+3)
+\]
+
+\[
+= \frac{(n+1)(n+2)(n+3)(n+4)}{4}
+\]
+
+This matches the right-hand side of $P(n+1)$. Therefore, $P(n+1)$ holds.
+
+\subsection*{Conclusion}
+
+By the principle of mathematical induction, the formula holds for all $n \in \mathbb{N}$.
+
+\end{document}

@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+
+\begin{document}
+
+\section*{Problem}
+Let $\mathcal{R}$ be a relation on $\mathbb{Z}$ given by
+\[
+x \,\mathcal{R}\, y \iff 3 \mid (x^2 - y^2).
+\]
+Show that this relation is an equivalence relation and find its corresponding equivalence classes.
+
+\section*{Solution}
+
+We note that
+\[
+x^2 - y^2 = (x-y)(x+y).
+\]
+The condition $3 \mid (x^2 - y^2)$ means that $x^2 \equiv y^2 \pmod{3}$.
+
+\subsection*{Reflexive}
+For any $x \in \mathbb{Z}$,
+\[
+x^2 - x^2 = 0
+\]
+is divisible by $3$. Hence $x\,\mathcal{R}\,x$.
+
+\subsection*{Symmetric}
+If $x\,\mathcal{R}\,y$, then $3 \mid (x^2 - y^2)$.  
+Since
+\[
+y^2 - x^2 = -(x^2 - y^2),
+\]
+it follows that $3 \mid (y^2 - x^2)$, so $y\,\mathcal{R}\,x$.
+
+\subsection*{Transitive}
+If $x\,\mathcal{R}\,y$ and $y\,\mathcal{R}\,z$, then
+\[
+3 \mid (x^2 - y^2) \quad \text{and} \quad 3 \mid (y^2 - z^2).
+\]
+Adding these gives
+\[
+3 \mid \big[ (x^2 - y^2) + (y^2 - z^2) \big] = x^2 - z^2,
+\]
+so $x\,\mathcal{R}\,z$.
+
+\medskip
+Thus, $\mathcal{R}$ is reflexive, symmetric, and transitive, and therefore is an \textbf{equivalence relation}.
+
+\subsection*{Equivalence Classes}
+Working modulo $3$, the possible quadratic residues are:
+\[
+0^2 \equiv 0, \quad 1^2 \equiv 1, \quad 2^2 \equiv 4 \equiv 1 \pmod{3}.
+\]
+Therefore, $x^2 \equiv y^2 \pmod{3}$ means that either:
+\begin{itemize}
+    \item both $x$ and $y$ are multiples of $3$, or
+    \item both $x$ and $y$ are nonmultiples of $3$ (congruent to $1$ or $2$ modulo $3$).
+\end{itemize}
+
+The equivalence classes are:
+\[
+[0] = \{ x \in \mathbb{Z} \mid x \equiv 0 \pmod{3} \}
+\]
+\[
+[1] = \{ x \in \mathbb{Z} \mid x \equiv 1 \ \text{or} \ 2 \pmod{3} \}
+\]
+Note that $[2] = [1]$.
+
+\medskip
+Hence, $\mathbb{Z}$ is partitioned into:
+\[
+\boxed{\{ \text{multiples of } 3 \} \quad \text{and} \quad \{ \text{nonmultiples of } 3 \}}
+\]
+
+\end{document}

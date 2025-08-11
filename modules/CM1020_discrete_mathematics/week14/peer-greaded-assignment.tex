@@ -1,0 +1,52 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[margin=2cm]{geometry}
+
+\begin{document}
+\small
+
+\section*{Dijkstra's Algorithm Result}
+
+We apply Dijkstra's algorithm on the given graph starting from vertex A.
+
+\textbf{Initialization:}
+\[
+d(A)=0,\quad d(B)=\infty,\quad d(C)=\infty,\quad d(D)=\infty,\quad d(E)=\infty
+\]
+
+\textbf{Step-by-step:}
+\begin{itemize}
+  \item Visit A: 
+  $d(B) = 4$ (via A), $d(C) = 3$ (via A)
+  \item Visit C: 
+  $d(D) = 5$ (via C), $d(E) = 9$ (via C)
+  \item Visit B: 
+  $d(D) = \min(5, 4 + 3) = 5$ (no change)
+  \item Visit D: 
+  $d(E) = \min(9, 5 + 3) = 8$ (via D)
+  \item Visit E: done
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Final shortest distances from A:}
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+\textbf{Vertex} & \textbf{Shortest Distance from A} & \textbf{Previous Vertex} \\
+\midrule
+A & 0 & - \\
+B & 4 & A \\
+C & 3 & A \\
+D & 5 & C \\
+E & 8 & D \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Answer:} The shortest distance from A to E is \fbox{8}.
+
+\end{document}
