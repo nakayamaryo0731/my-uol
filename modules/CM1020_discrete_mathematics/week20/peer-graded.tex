@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+
+\begin{document}
+
+\section*{Solution}
+
+We are asked to find the number of positive integers not exceeding $2310$ that are either perfect squares or perfect cubes.
+
+\subsection*{Step 1. Define sets}
+Let 
+\[
+A = \{1,2,3,\dots,2310\}
+\]
+\[
+A_1 = \{ x \in A \mid x \text{ is a perfect square} \}
+\]
+\[
+A_2 = \{ x \in A \mid x \text{ is a perfect cube} \}
+\]
+
+We need to compute $|A_1 \cup A_2|$.
+
+\subsection*{Step 2. Count $|A_1|$}
+The largest perfect square not exceeding $2310$ is
+\[
+48^2 = 2304 \leq 2310 < 49^2 = 2401
+\]
+Thus,
+\[
+|A_1| = 48
+\]
+
+\subsection*{Step 3. Count $|A_2|$}
+The largest perfect cube not exceeding $2310$ is
+\[
+13^3 = 2197 \leq 2310 < 14^3 = 2744
+\]
+Thus,
+\[
+|A_2| = 13
+\]
+
+\subsection*{Step 4. Count $|A_1 \cap A_2|$}
+An integer that is both a square and a cube must be a sixth power. The largest sixth power not exceeding $2310$ is
+\[
+3^6 = 729 \leq 2310 < 4^6 = 4096
+\]
+Thus,
+\[
+|A_1 \cap A_2| = 3
+\]
+
+\subsection*{Step 5. Apply inclusion-exclusion}
+\[
+|A_1 \cup A_2| = |A_1| + |A_2| - |A_1 \cap A_2|
+= 48 + 13 - 3 = 58
+\]
+
+\subsection*{Final Answer}
+The number of positive integers not exceeding $2310$ that are either perfect squares or perfect cubes is:
+\[
+\boxed{58}
+\]
+
+\end{document}
