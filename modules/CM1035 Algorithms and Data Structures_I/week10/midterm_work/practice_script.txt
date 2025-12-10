@@ -1,0 +1,55 @@
+Hello. I'm presenting my Poetry Assistant, a tool that helps poets find rhyming words.
+
+The problem is simple. Given a word like 'cat', find all words that rhyme with it, such as 'bat', 'hat', 'rat', and 'acrobat'.
+
+My solution uses arrays and linear search. These are fundamental data structures covered in this course.
+
+Let me explain how the algorithm works.
+
+First, an array of suffix-word pairs is built. For each word, all possible endings are extracted. For example, from 'cat', three endings are extracted: 't', 'at', and 'cat' itself. Each ending is stored with the original word.
+
+When a user searches for rhymes, linear search finds all matching pairs. It is also used to remove duplicates.
+
+The key idea is simple. The data is organized once at startup, then searched for each query.
+
+Now let me explain the data structures used in this algorithm.
+
+The first is Arrays. Arrays store the suffix-word pairs and the results, allowing sequential access.
+
+The second is Linear Search. It finds matching suffixes and checks for duplicates by scanning the array element by element.
+
+Now let me walk through the code.
+
+The first function is buildSuffixIndex. It takes an array of words as input. For each word, it extracts all possible suffixes and stores them as pairs. 
+It returns an array of suffix-word pairs.
+
+The second function is findRhymes. It takes the suffix pairs and a search word as input. It uses linear search to find all pairs with matching suffixes. 
+It also uses linear search to check for duplicates before adding to results. It returns an array of rhyming words.
+
+As you can see, the comments in the code correspond to each line of the pseudocode.
+
+Now let me demonstrate the program. I'll type 'node rhyme-finder.js'.
+
+(実行中) The program loads over 200,000 words and builds about 2 million suffix-word pairs.
+
+Let's try 'cat'.
+
+(結果表示後) We get over 500 rhymes, including 'bat', 'hat', 'flat', and 'acrobat'. The search took about 20 milliseconds.
+
+Now let's try 'night'.
+
+(結果表示後) We get 'light', 'bright', 'sight', and 'midnight'.
+
+Let's try 'love'.
+
+(結果表示後) We see many matches. However, because the algorithm matches by spelling, not pronunciation, words like 'move' and 'prove' appear here even though they don't actually rhyme with 'love'.
+
+This brings me to the limitations of this program.
+
+As I just showed, the main limitation is spelling-based matching. A phonetic algorithm could fix this.
+
+Another limitation is that linear search can be slow. To improve this, we could consider using hash-based data structures for faster lookups.
+
+Finally, other improvements include ranking results by quality, or filtering by word frequency.
+
+Thank you for watching.

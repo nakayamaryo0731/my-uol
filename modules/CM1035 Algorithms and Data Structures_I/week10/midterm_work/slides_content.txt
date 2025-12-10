@@ -1,0 +1,80 @@
+================================================================================
+Slide 1: Title
+================================================================================
+
+Poetry Assistant
+Rhyme Finder Using Arrays and Linear Search
+
+CM1035 Algorithms and Data Structures I
+Midterm Coursework
+
+================================================================================
+Slide 2: The Problem
+================================================================================
+
+- Given a word like "cat"
+- Find all rhyming words: "bat", "hat", "rat", "acrobat"
+- Solution: Suffix-based matching algorithm
+
+================================================================================
+Slide 3: How It Works
+================================================================================
+
+- Preprocessing: Build array of suffix-word pairs
+  - "cat" -> ("t", "cat"), ("at", "cat"), ("cat", "cat")
+- Query: Linear search for matching suffixes
+- Deduplication: Linear search to remove duplicates
+
+================================================================================
+Slide 4: Data Structures
+================================================================================
+
+- Arrays
+  - Store suffix-word pairs
+  - Store results
+
+- Linear Search
+  - Find matching suffixes
+  - Check for duplicates
+
+================================================================================
+Slide 5: Code Walkthrough
+================================================================================
+
+buildSuffixIndex(words)
+- Input: Array of words
+- Creates all suffix-word pairs
+- Returns: Array of [suffix, word] pairs
+
+findRhymes(suffixPairs, inputWord)
+- Input: Suffix pairs array, search word
+- Linear search for matching suffixes
+- Linear search to remove duplicates
+- Returns: Array of rhyming words
+
+================================================================================
+Slide 6: Demo
+================================================================================
+
+- 200,000+ words loaded
+- 2 million suffix-word pairs
+- Example searches: "cat", "night", "love"
+
+================================================================================
+Slide 7: Limitations & Improvements
+================================================================================
+
+Limitations:
+- Spelling-based matching (not pronunciation)
+- "love" and "move" both appear, but don't rhyme
+
+Improvements:
+- Phonetic algorithms for true rhyme matching
+- Result ranking by quality
+- Hash-based structures for faster lookups
+
+================================================================================
+Slide 8: Thank You
+================================================================================
+
+Thank you for watching.
