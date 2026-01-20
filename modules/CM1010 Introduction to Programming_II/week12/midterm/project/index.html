@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Running Data Visualisation</title>
+
+    <!-- Libraries -->
+    <script src="lib/p5.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Main sketch file -->
+    <script src="sketch.js"></script>
+
+    <!-- Helper functions and core components (from template) -->
+    <script src="helper-functions.js"></script>
+    <script src="gallery.js"></script>
+    <script src="pie-chart.js"></script>
+
+    <!-- Start of my own code -->
+    <!-- New reusable chart constructors -->
+    <script src="bar-chart.js"></script>
+    <script src="scatter-plot.js"></script>
+
+    <!-- New running data visualisations -->
+    <script src="monthly-distance.js"></script>
+    <script src="pace-progress.js"></script>
+    <script src="activity-types.js"></script>
+    <script src="heartrate-vs-pace.js"></script>
+    <!-- End of my own code -->
+  </head>
+  <body>
+    <div id="app" class="container">
+      <ul id="visuals-menu"></ul>
+    </div>
+  </body>
+</html>

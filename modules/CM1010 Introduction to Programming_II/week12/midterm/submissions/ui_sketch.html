@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UI Sketch - Running Data Visualisation</title>
+    <style>
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            background: #fff;
+            padding: 40px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .slide {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #d0d0d0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px 40px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a3a5c;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4472c4;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .chart-box {
+            border: 1px solid #bfbfbf;
+            border-radius: 4px;
+            padding: 15px 20px;
+            background: #fafafa;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1a3a5c;
+        }
+
+        .chart-subtitle {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .chart-area {
+            height: 140px;
+            position: relative;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        /* Bar Chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 100%;
+            padding-bottom: 20px;
+            border-left: 2px solid #595959;
+            border-bottom: 2px solid #595959;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bar {
+            width: 35px;
+            background: #4472c4;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .bar-label {
+            font-size: 10px;
+            color: #595959;
+            margin-top: 4px;
+        }
+
+        .y-axis-label {
+            position: absolute;
+            left: -5px;
+            top: 50%;
+            transform: rotate(-90deg) translateX(-50%);
+            font-size: 10px;
+            color: #595959;
+        }
+
+        /* Line Chart */
+        .line-chart {
+            height: 100%;
+            border-left: 2px solid #595959;
+            border-bottom: 2px solid #595959;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .line-chart svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .data-line {
+            fill: none;
+            stroke: #4472c4;
+            stroke-width: 2;
+        }
+
+        .trend-line {
+            fill: none;
+            stroke: #ed7d31;
+            stroke-width: 2;
+            stroke-dasharray: 6, 3;
+        }
+
+        .line-legend {
+            position: absolute;
+            bottom: -5px;
+            right: 10px;
+            font-size: 10px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .legend-line {
+            width: 20px;
+            height: 2px;
+        }
+
+        .legend-line.solid {
+            background: #4472c4;
+        }
+
+        .legend-line.dashed {
+            background: repeating-linear-gradient(90deg, #ed7d31 0, #ed7d31 6px, transparent 6px, transparent 9px);
+        }
+
+        /* Pie Chart */
+        .pie-chart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            gap: 20px;
+        }
+
+        .pie {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #4472c4 0deg 216deg,
+                #ed7d31 216deg 270deg,
+                #70ad47 270deg 360deg
+            );
+        }
+
+        .pie-legend {
+            font-size: 12px;
+        }
+
+        .pie-legend div {
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Scatter Plot */
+        .scatter-plot {
+            height: 100%;
+            border-left: 2px solid #595959;
+            border-bottom: 2px solid #595959;
+            position: relative;
+        }
+
+        .dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #4472c4;
+            border-radius: 50%;
+        }
+
+        .regression-line {
+            position: absolute;
+            height: 2px;
+            background: #ed7d31;
+            transform-origin: left center;
+        }
+
+        .axis-title {
+            font-size: 10px;
+            color: #595959;
+        }
+
+        .x-axis-title {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .y-axis-title {
+            position: absolute;
+            left: -18px;
+            top: 50%;
+            transform: rotate(-90deg) translateX(-50%);
+        }
+
+        /* Notes */
+        .note {
+            font-size: 11px;
+            color: #4472c4;
+            margin-top: 8px;
+            padding: 4px 8px;
+            background: #e8f0fe;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="title">Running Data Visualisation - UI Design</div>
+
+        <div class="grid">
+            <!-- Monthly Distance -->
+            <div class="chart-box">
+                <div class="chart-title">1. Monthly Distance</div>
+                <div class="chart-subtitle">Bar chart showing distance per month</div>
+                <div class="chart-area">
+                    <div class="bar-chart">
+                        <div class="bar-group">
+                            <div class="bar" style="height: 50px;"></div>
+                            <div class="bar-label">Oct</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" style="height: 70px;"></div>
+                            <div class="bar-label">Nov</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" style="height: 60px;"></div>
+                            <div class="bar-label">Dec</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" style="height: 85px;"></div>
+                            <div class="bar-label">Jan</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" style="height: 75px;"></div>
+                            <div class="bar-label">Feb</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" style="height: 95px;"></div>
+                            <div class="bar-label">Mar</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="note">Target: 100km/month</div>
+            </div>
+
+            <!-- Pace Progress -->
+            <div class="chart-box">
+                <div class="chart-title">2. Pace Progress</div>
+                <div class="chart-subtitle">Line chart with moving average trend</div>
+                <div class="chart-area">
+                    <div class="line-chart">
+                        <svg viewBox="0 0 200 90" preserveAspectRatio="none">
+                            <path class="data-line" d="M 10,60 L 30,55 L 45,65 L 60,50 L 80,55 L 100,45 L 120,50 L 140,40 L 160,45 L 185,35" />
+                            <path class="trend-line" d="M 10,58 L 185,38" />
+                        </svg>
+                        <div class="line-legend">
+                            <div class="legend-item">
+                                <div class="legend-line solid"></div>
+                                <span>Pace</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-line dashed"></div>
+                                <span>Moving Avg</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="note">Target: 6:00/km pace</div>
+            </div>
+
+            <!-- Activity Types -->
+            <div class="chart-box">
+                <div class="chart-title">3. Activity Types</div>
+                <div class="chart-subtitle">Pie chart with dropdown selector</div>
+                <div class="chart-area">
+                    <div class="pie-chart">
+                        <div class="pie"></div>
+                        <div class="pie-legend">
+                            <div><span class="legend-color" style="background: #4472c4;"></span>Run (60%)</div>
+                            <div><span class="legend-color" style="background: #ed7d31;"></span>Trail Run (15%)</div>
+                            <div><span class="legend-color" style="background: #70ad47;"></span>Hiking (25%)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="note">Toggle: Count / Distance</div>
+            </div>
+
+            <!-- Heart Rate vs Pace -->
+            <div class="chart-box">
+                <div class="chart-title">4. Heart Rate vs Pace</div>
+                <div class="chart-subtitle">Scatter plot with linear regression</div>
+                <div class="chart-area">
+                    <div class="scatter-plot">
+                        <div class="dot" style="left: 12%; top: 65%;"></div>
+                        <div class="dot" style="left: 20%; top: 55%;"></div>
+                        <div class="dot" style="left: 28%; top: 60%;"></div>
+                        <div class="dot" style="left: 35%; top: 48%;"></div>
+                        <div class="dot" style="left: 42%; top: 52%;"></div>
+                        <div class="dot" style="left: 50%; top: 42%;"></div>
+                        <div class="dot" style="left: 58%; top: 45%;"></div>
+                        <div class="dot" style="left: 68%; top: 35%;"></div>
+                        <div class="dot" style="left: 78%; top: 30%;"></div>
+                        <div class="dot" style="left: 88%; top: 22%;"></div>
+                                                <span class="axis-title x-axis-title">Heart Rate (bpm)</span>
+                        <span class="axis-title y-axis-title">Pace (min/km)</span>
+                    </div>
+                </div>
+                <div class="note">Interactive tooltips on hover</div>
+            </div>
+        </div>
+
+        <div class="footer">Data source: Garmin Connect (168 activities)</div>
+    </div>
+</body>
+</html>

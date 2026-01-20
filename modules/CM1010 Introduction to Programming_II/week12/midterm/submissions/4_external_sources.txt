@@ -1,0 +1,13 @@
+Code references:
+- Used the provided PieChart constructor structure as reference for designing BarChart and ScatterPlot
+- p5.js official reference (https://p5js.org/reference/) - for drawing function usage
+
+Libraries used:
+- p5.js (included in the template)
+
+LLM usage:
+Asked Claude (Anthropic) the following questions:
+1. "How to draw a bar chart in p5.js" - Used as reference for BarChart constructor structure
+2. "How to calculate correlation coefficient in JavaScript" - Used for scatter plot statistical analysis
+3. "Converting Japanese CSV column names to English" - Data preprocessing work
+4. "Moving average calculation algorithm" - Trend line for pace progress chart

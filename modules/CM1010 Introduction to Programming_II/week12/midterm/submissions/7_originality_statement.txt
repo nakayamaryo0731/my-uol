@@ -1,0 +1,9 @@
+This project is original because:
+
+1. Personal data: Uses my own Garmin running data collected over nearly 2 years. No one else has this exact dataset.
+
+2. Real goal connection: Designed as a training management tool for my specific goal - the Osaka Marathon 2025.
+
+3. New constructors: Created BarChart and ScatterPlot constructors following the PieChart pattern but with original implementation.
+
+4. Statistical analysis: Incorporated correlation coefficient and linear regression to analyse the relationship between heart rate and performance.

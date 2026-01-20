@@ -1,0 +1,29 @@
+Template Selected: Data Visualisation App
+
+I chose the Data Visualisation template because I am a runner who has been tracking running data with a Garmin watch for nearly 2 years. I am currently training for the Osaka Marathon in February 2025, and I wanted to visualise my personal data to monitor progress toward my goals. My training targets are running 100km per month and achieving a pace of 6:00 per kilometre.
+
+My dataset contains 168 activity records exported from Garmin Connect, including fields such as date, distance, average pace, average heart rate, and activity type (Run, Trail Run, Hiking).
+
+Extensions I am adding:
+
+1. Monthly Distance - Bar chart displaying total distance per month. This helps track progress toward my 100km/month goal. The chart aggregates all activities by year-month and displays values with labels rotated for readability.
+
+2. Pace Progress - Line chart showing how my running pace has changed over time. Includes a 10-run moving average trend line to smooth out day-to-day variation and visualise long-term improvement. Only runs of 3km or longer with reasonable pace values are included.
+
+3. Activity Types - Pie chart showing the distribution of Run, Trail Run, and Hiking activities. A dropdown selector allows switching between viewing by count (number of activities) and by distance (total kilometres).
+
+4. Heart Rate vs Pace - Scatter plot analysing the correlation between average heart rate and running pace. Features a linear regression trend line and interactive tooltips that display details when hovering over data points.
+
+Complex coding techniques used:
+
+- Constructor functions: Created two new reusable constructors (BarChart and ScatterPlot) following the same pattern as the provided PieChart
+- Arrays of objects: Data aggregation, grouping by month, and sorting operations
+- Nested loops: Monthly distance aggregation, filtering activities by type and distance
+- Statistical calculations: Moving average algorithm, Pearson correlation coefficient, least squares linear regression
+
+Expected challenges:
+
+- Converting Japanese CSV column headers to English for easier coding
+- Parsing pace data from "min:sec" string format to numerical values for calculations
+- Implementing interactive tooltips that follow mouse position on scatter plot
+- Handling edge cases such as missing heart rate data or unusually slow/fast pace values

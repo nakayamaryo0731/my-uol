@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Management Plan - Running Data Visualisation</title>
+    <style>
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            max-width: 900px;
+            margin: 15px auto;
+            padding: 15px;
+            line-height: 1.5;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .phase {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 4px solid #4a90d9;
+        }
+        .phase h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #4a90d9;
+        }
+        .phase p {
+            margin: 0;
+        }
+        ul {
+            margin: 5px 0 0 20px;
+        }
+        li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Time Management Plan</h1>
+
+    <p style="margin: 5px 0;">The Gantt chart below outlines the total 14-week project schedule from December to March.</p>
+
+    <div style="text-align: center; margin: 8px 0;">
+        <img src="gant_chart.png" alt="Gantt Chart" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div class="phase">
+        <h3>MIDTERM PHASE (Weeks 1-2)</h3>
+        <p>As shown in the chart, I allocated the first 2 weeks to planning and core implementation. This front-loaded approach was chosen because understanding the p5.js template structure and data format early would reduce rework later. I prioritised the 4 main visualisations (bar chart, line chart, pie chart, scatter plot) to establish reusable constructor patterns.</p>
+    </div>
+
+    <div class="phase">
+        <h3>FINAL PHASE (Weeks 3-14)</h3>
+        <ul>
+            <li><strong>Weeks 3-6:</strong> New visualisations. As indicated in the chart, I allocated 4 weeks here because each feature requires design, implementation, and integration. Simpler features (Goal Tracker, Pace Zones) are scheduled first to build momentum.</li>
+            <li><strong>Weeks 7-9:</strong> UI polish. Three weeks are dedicated to refinement because consistent styling across 8 visualisations requires careful iteration.</li>
+            <li><strong>Weeks 10-11:</strong> Testing and documentation. Allocated 2 weeks to ensure thorough bug fixing before the deadline.</li>
+            <li><strong>Weeks 12-14:</strong> Final review and submission buffer.</li>
+        </ul>
+    </div>
+
+    <p style="margin: 8px 0 0 0;">This schedule ensures completion before the Osaka Marathon (late February), allowing me to incorporate real race data if desired.</p>
+
+</body>
+</html>
