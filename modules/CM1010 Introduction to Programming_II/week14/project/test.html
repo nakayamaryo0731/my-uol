@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Running Data Visualisation — Test Suite</title>
+
+    <!-- Libraries -->
+    <script src="lib/p5.min.js"></script>
+
+    <!-- Source files under test -->
+    <script src="helper-functions.js"></script>
+    <script src="gallery.js"></script>
+    <script src="pie-chart.js"></script>
+    <script src="tooltip.js"></script>
+    <script src="bar-chart.js"></script>
+    <script src="scatter-plot.js"></script>
+    <script src="monthly-distance.js"></script>
+    <script src="pace-progress.js"></script>
+    <script src="activity-types.js"></script>
+    <script src="heartrate-vs-pace.js"></script>
+    <script src="goal-tracker.js"></script>
+    <script src="training-heatmap.js"></script>
+    <script src="marathon-radar.js"></script>
+
+    <!-- Test file -->
+    <script src="tests.js"></script>
+
+    <script>
+      var testRunner;
+
+      function setup() {
+        var c = createCanvas(1024, 576);
+        c.parent('test-app');
+        testRunner = runAllTests();
+      }
+
+      function draw() {
+        if (testRunner) {
+          testRunner.displayResults();
+          noLoop();
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="test-app"></div>
+  </body>
+</html>

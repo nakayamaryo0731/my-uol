@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Updated Gantt Chart — Running Data Visualisation App</title>
+  <style>
+    @page { size: A4 landscape; margin: 1.5cm; }
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 20px;
+      color: #333;
+    }
+    h1 { font-size: 16px; margin-bottom: 2px; }
+    .subtitle { font-size: 11px; color: #666; margin-bottom: 14px; }
+    table { border-collapse: collapse; width: 100%; font-size: 9.5px; table-layout: fixed; }
+    th {
+      background: #f5f5f5;
+      border: 1px solid #ccc;
+      padding: 4px 3px;
+      text-align: center;
+      font-weight: 600;
+      overflow: hidden;
+    }
+    /* table-layout:fixed uses header widths — set them here */
+    th:nth-child(2) { width: 52px; }
+    th:nth-child(n+3) { width: 40px; }
+    td {
+      border: 1px solid #ccc;
+      padding: 3px 4px;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+    .task-name { text-align: left; }
+    .complexity { text-align: center; width: 42px; font-size: 8.5px; font-weight: 600; }
+    .complexity-low { color: #27ae60; }
+    .complexity-medium { color: #f39c12; }
+    .complexity-high { color: #e74c3c; }
+    .week-cell { width: 34px; height: 20px; text-align: center; }
+
+    /* Midterm phase colours */
+    .bar-plan { background: #85c1e9; }
+    .bar-impl { background: #3498db; }
+
+    /* Final phase colours */
+    .bar-doc { background: #a9cce3; }
+    .bar-quality { background: #9b59b6; }
+    .bar-feature { background: #e67e22; }
+    .bar-test { background: #27ae60; }
+    .bar-final { background: #e74c3c; }
+
+    /* Cancelled tasks */
+    .cancelled { text-decoration: line-through; color: #999; }
+
+    .phase-row td {
+      background: #f0f0f0;
+      font-weight: 700;
+      font-size: 10px;
+      padding: 3px 5px;
+    }
+    .midterm-divider td {
+      background: #fff3cd;
+      font-weight: 600;
+      font-size: 9px;
+      text-align: center;
+      color: #856404;
+    }
+    .legend { margin-top: 12px; font-size: 10px; }
+    .legend-item { display: inline-block; margin-right: 12px; }
+    .legend-box { display: inline-block; width: 12px; height: 12px; vertical-align: middle; margin-right: 3px; }
+    .notes { margin-top: 14px; font-size: 10px; color: #555; }
+    .notes li { margin-bottom: 3px; }
+    @media print {
+      body { margin: 10px; }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Updated Gantt Chart — Full Project Timeline</h1>
+  <p class="subtitle">Running Data Visualisation App | Dec 2025 – Mar 2026 | Revised post-midterm with complexity ratings and plan changes</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="task-name">Task</th>
+        <th>Complexity</th>
+        <th>Dec<br>W2</th>
+        <th>Dec<br>W3</th>
+        <th>Dec<br>W4</th>
+        <th>Jan<br>W1</th>
+        <th>Jan<br>W2</th>
+        <th>Jan<br>W3</th>
+        <th>Jan<br>W4</th>
+        <th>Feb<br>W1</th>
+        <th>Feb<br>W2</th>
+        <th>Feb<br>W3</th>
+        <th>Feb<br>W4</th>
+        <th>Mar<br>W1</th>
+        <th>Mar W2<br><small>(Deadline)</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- MIDTERM PHASE -->
+      <tr class="phase-row">
+        <td colspan="15">MIDTERM PHASE (Weeks 1–2)</td>
+      </tr>
+      <tr>
+        <td class="task-name">Planning &amp; Research</td>
+        <td class="complexity complexity-medium">Medium</td>
+        <td class="week-cell bar-plan"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name">Core 4 visualisations (BarChart, ScatterPlot, PaceProgress, ActivityTypes)</td>
+        <td class="complexity complexity-high">High</td>
+        <td class="week-cell bar-impl"></td>
+        <td class="week-cell bar-impl"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name">Midterm submission</td>
+        <td class="complexity complexity-low">Low</td>
+        <td class="week-cell bar-impl"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+
+      <!-- MIDTERM LINE -->
+      <tr class="midterm-divider">
+        <td colspan="15">&#9650; Midterm submitted (12 Dec) — Below: revised final plan &#9660;</td>
+      </tr>
+
+      <!-- ORIGINAL PLAN: cancelled items -->
+      <tr class="phase-row">
+        <td colspan="15">ORIGINAL PLAN (changed after midterm feedback)</td>
+      </tr>
+      <tr>
+        <td class="task-name cancelled">Pace Zones (Distribution Chart)</td>
+        <td class="complexity" style="color:#999">—</td>
+        <td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell" style="background:#ddd"></td>
+        <td class="week-cell" style="background:#ddd"></td>
+        <td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name cancelled">Cumulative Distance (Area Chart)</td>
+        <td class="complexity" style="color:#999">—</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell" style="background:#ddd"></td>
+        <td class="week-cell" style="background:#ddd"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+
+      <!-- REVISED FINAL PHASE -->
+      <tr class="phase-row">
+        <td colspan="15">REVISED PLAN — New Visualisations</td>
+      </tr>
+      <tr>
+        <td class="task-name">Goal Tracker (Progress Gauge)</td>
+        <td class="complexity complexity-medium">Medium</td>
+        <td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-feature"></td>
+        <td class="week-cell bar-feature"></td>
+        <td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name">Training Heatmap (calendar grid) — <em>replaces Pace Zones</em></td>
+        <td class="complexity complexity-medium">Medium</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-feature"></td>
+        <td class="week-cell bar-feature"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name">Marathon Readiness Radar (spider chart) — <em>replaces Cumulative Distance</em></td>
+        <td class="complexity complexity-high">High</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-feature"></td>
+        <td class="week-cell bar-feature"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+
+      <!-- CODE QUALITY PHASE (unplanned) -->
+      <tr class="phase-row">
+        <td colspan="15">REVISED PLAN — Code Quality (added after reviewer feedback)</td>
+      </tr>
+      <tr>
+        <td class="task-name">Extract Tooltip to reusable class</td>
+        <td class="complexity complexity-medium">Medium</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-quality"></td>
+        <td class="week-cell bar-quality"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name">Fix missing let declarations</td>
+        <td class="complexity complexity-low">Low</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-quality"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name">Consolidate duplicate utilities (DRY)</td>
+        <td class="complexity complexity-low">Low</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-quality"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+
+      <!-- DOCUMENT PHASE -->
+      <tr class="phase-row">
+        <td colspan="15">REVISED PLAN — Documentation &amp; Reports</td>
+      </tr>
+      <tr>
+        <td class="task-name">Draft Q7, Q2, Q3 reports</td>
+        <td class="complexity complexity-medium">Medium</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-doc"></td>
+        <td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+
+      <!-- TESTING & FINAL -->
+      <tr class="phase-row">
+        <td colspan="15">REVISED PLAN — Testing &amp; Final Submission</td>
+      </tr>
+      <tr>
+        <td class="task-name">Unit tests + System test cases</td>
+        <td class="complexity complexity-medium">Medium</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-test"></td>
+        <td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name">Finalise Q1, Q4, project logs</td>
+        <td class="complexity complexity-low">Low</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-test"></td>
+        <td class="week-cell"></td><td class="week-cell"></td>
+      </tr>
+      <tr>
+        <td class="task-name">Code PDF + final review + ZIP</td>
+        <td class="complexity complexity-low">Low</td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td><td class="week-cell"></td>
+        <td class="week-cell bar-final"></td>
+        <td class="week-cell bar-final"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="legend">
+    <span class="legend-item"><span class="legend-box bar-plan"></span> Planning</span>
+    <span class="legend-item"><span class="legend-box bar-impl"></span> Midterm Implementation</span>
+    <span class="legend-item"><span class="legend-box bar-doc"></span> Documentation</span>
+    <span class="legend-item"><span class="legend-box bar-quality"></span> Code Quality</span>
+    <span class="legend-item"><span class="legend-box bar-feature"></span> New Feature</span>
+    <span class="legend-item"><span class="legend-box bar-test"></span> Testing &amp; Docs</span>
+    <span class="legend-item"><span class="legend-box bar-final"></span> Final</span>
+    <span class="legend-item" style="background:#ddd;padding:1px 6px"><s>Cancelled</s></span>
+    &nbsp;|&nbsp;
+    <span class="legend-item"><span class="complexity-low">Low</span></span>
+    <span class="legend-item"><span class="complexity-medium">Medium</span></span>
+    <span class="legend-item"><span class="complexity-high">High</span></span>
+  </div>
+
+  <div class="notes">
+    <strong>Key changes from midterm plan:</strong>
+    <ul>
+      <li><strong>Pace Zones → Training Heatmap:</strong> Pace Zones overlapped with Pace Progress; replaced with a more original GitHub-style calendar visualisation.</li>
+      <li><strong>Cumulative Distance → Marathon Readiness Radar:</strong> Radar provides a multi-dimensional assessment not available in existing tools.</li>
+      <li><strong>Code Quality phase added:</strong> Reviewer feedback identified tooltip coupling, missing <code>let</code> declarations, and DRY violations — not anticipated in the original plan.</li>
+      <li><strong>Complexity ratings added:</strong> Midterm plan allocated ~1 week per feature regardless of difficulty. The scatter plot's statistics took 2× longer than expected.</li>
+    </ul>
+  </div>
+</body>
+</html>

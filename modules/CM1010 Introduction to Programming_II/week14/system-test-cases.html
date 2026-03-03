@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>System Test Cases — Running Data Visualisation App</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 25mm 20mm 25mm;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Georgia", "Times New Roman", serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 25mm;
+    }
+
+    h1 {
+      font-size: 20pt;
+      text-align: center;
+      margin: 0 0 6pt 0;
+      padding-bottom: 6pt;
+      border-bottom: 2.5pt solid #2c3e50;
+      color: #2c3e50;
+    }
+
+    .env-info {
+      text-align: center;
+      font-size: 9.5pt;
+      color: #555;
+      margin-bottom: 18pt;
+    }
+
+    .env-info span {
+      display: inline-block;
+      margin: 0 10pt;
+    }
+
+    h2 {
+      font-size: 13pt;
+      color: #2c3e50;
+      margin: 16pt 0 6pt 0;
+      padding-bottom: 3pt;
+      border-bottom: 1pt solid #bdc3c7;
+    }
+
+    /* --- Test-case tables --- */
+    table.test-case {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14pt;
+      page-break-inside: avoid;
+    }
+
+    table.test-case th,
+    table.test-case td {
+      border: 1pt solid #999;
+      padding: 5pt 8pt;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    table.test-case th {
+      width: 18%;
+      background-color: #ecf0f1;
+      font-weight: bold;
+      font-size: 10pt;
+      color: #2c3e50;
+    }
+
+    table.test-case td {
+      font-size: 10.5pt;
+    }
+
+    table.test-case tr:last-child td {
+      font-weight: bold;
+    }
+
+    /* --- Summary table --- */
+    h2.summary-heading {
+      margin-top: 22pt;
+      font-size: 14pt;
+    }
+
+    table.summary {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10pt;
+      page-break-inside: avoid;
+    }
+
+    table.summary th {
+      background-color: #2c3e50;
+      color: #fff;
+      font-size: 10.5pt;
+      padding: 6pt 8pt;
+      text-align: left;
+      border: 1pt solid #2c3e50;
+    }
+
+    table.summary td {
+      border: 1pt solid #999;
+      padding: 5pt 8pt;
+      font-size: 10.5pt;
+    }
+
+    table.summary tbody tr:nth-child(even) {
+      background-color: #f7f9fa;
+    }
+
+    /* --- Pass / Fail badges --- */
+    .pass {
+      color: #1b7a2b;
+      font-weight: bold;
+    }
+
+    .fail {
+      color: #c0392b;
+      font-weight: bold;
+    }
+
+    /* --- Footer metadata --- */
+    .meta-footer {
+      margin-top: 12pt;
+      font-size: 10.5pt;
+      line-height: 1.7;
+    }
+
+    .meta-footer strong {
+      color: #2c3e50;
+    }
+
+    /* --- Ordered steps inside table cells --- */
+    ol.steps {
+      margin: 2pt 0 2pt 18pt;
+      padding: 0;
+    }
+
+    ol.steps li {
+      margin-bottom: 2pt;
+    }
+
+    /* --- Print-specific overrides --- */
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      h1 {
+        page-break-after: avoid;
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      table.test-case {
+        page-break-inside: avoid;
+      }
+
+      table.summary {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>System Test Cases — Running Data Visualisation App</h1>
+
+  <div class="env-info">
+    <span><strong>Browser:</strong> Google Chrome (latest)</span>
+    <span><strong>Resolution:</strong> 1024 &times; 576 canvas</span>
+    <span><strong>Data:</strong> activities.csv (185 records, April 2024 &ndash; February 2026)</span>
+  </div>
+
+  <!-- ==================== TC-01 ==================== -->
+  <h2>TC-01: Gallery Navigation</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>All 7 visualisations appear in the navigation menu and can be selected</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Open index.html in Chrome</li>
+        <li>Check the navigation menu displays all 7 items</li>
+        <li>Click each menu item in sequence</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>Each visualisation loads without errors; previous visualisation is properly destroyed</td></tr>
+    <tr><th>Actual Result</th><td>All 7 menu items displayed correctly. Each visualisation loaded on click and the previous one was properly destroyed (e.g. dropdowns removed when switching away from Activity Types and Goal Tracker).</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-02 ==================== -->
+  <h2>TC-02: Monthly Distance — Bar Chart Rendering</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Monthly Distance displays correct bar chart with axis labels</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Select "Monthly Distance" from menu</li>
+        <li>Verify bars are displayed for each month</li>
+        <li>Check Y-axis labels show distance values</li>
+        <li>Check X-axis labels show month names</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>Bars visible for months with data; axis labels readable; no visual overlaps</td></tr>
+    <tr><th>Actual Result</th><td>Bar chart rendered with bars for each month. Y-axis shows distance values, X-axis shows month labels (e.g. "Apr 24", "May 24"). Total distance displayed at bottom. No visual overlaps.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-03 ==================== -->
+  <h2>TC-03: Pace Progress — Moving Average</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Pace Progress shows data points with pace zone backgrounds and a smooth moving average trend line</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Select "Pace Progress"</li>
+        <li>Verify colour-coded pace zone backgrounds appear (Fast, Moderate, Easy)</li>
+        <li>Verify blue dots appear for individual runs</li>
+        <li>Verify red line (10-run moving average) overlays the dots</li>
+        <li>Check legend displays correctly</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>Pace zone bands visible behind data; dots and trend line visible; trend line is smoother than raw data; "Lower pace = faster" note shown</td></tr>
+    <tr><th>Actual Result</th><td>Three pace zone backgrounds displayed (green=Fast, yellow=Moderate, orange=Easy) with labels. Blue dots visible for individual runs. Red moving average line overlays the data and is visibly smoother. Legend shows "Individual runs" and "10-run moving avg". Note "Lower pace = faster running" displayed at bottom.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-04 ==================== -->
+  <h2>TC-04: Activity Types — Dropdown Switching</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Activity Types pie chart switches between count and distance views</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Select "Activity Types"</li>
+        <li>Verify pie chart shows "By Count" view by default</li>
+        <li>Change dropdown to "By Distance"</li>
+        <li>Verify pie chart updates to show distance proportions</li>
+        <li>Switch back to "By Count"</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>Pie chart re-renders correctly for each view; proportions differ between count and distance</td></tr>
+    <tr><th>Actual Result</th><td>Pie chart displayed "By Count" by default. Switching to "By Distance" updated the chart with different proportions (distance view shows Run as larger proportion). Statistics panel updated correctly for both views. Switching back to "By Count" restored the original view.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-05 ==================== -->
+  <h2>TC-05: Heart Rate vs Pace — Scatter Plot and Tooltip</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Scatter plot displays distance-proportional data points (bubble chart) with interactive tooltips and regression line</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Select "Heart Rate vs Pace"</li>
+        <li>Verify scatter plot shows data points with varying sizes (larger = longer distance)</li>
+        <li>Verify red regression trend line is visible</li>
+        <li>Hover over a data point</li>
+        <li>Check tooltip displays HR, pace, and date information</li>
+        <li>Verify correlation info box shows r-value</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>Points vary in size by distance; trend line and correlation visible; tooltip follows mouse; tooltip repositions at edges</td></tr>
+    <tr><th>Actual Result</th><td>Scatter plot displayed with blue data points sized proportionally to running distance (bubble chart effect). Red regression trend line visible. Hovering over a point showed tooltip with HR (bpm), pace (min/km), and date information. Tooltip repositioned correctly when near chart edges. Correlation info box showed r-value with interpretation.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-06 ==================== -->
+  <h2>TC-06: Goal Tracker — Gauge and Month Selector</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Goal Tracker gauge reflects selected month's distance toward 100km goal</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Select "Goal Tracker"</li>
+        <li>Check gauge displays for the default month</li>
+        <li>Change month using dropdown</li>
+        <li>Verify gauge updates (arc length, colour, percentage)</li>
+        <li>Select a month where goal was achieved (if any)</li>
+        <li>Select a month with low distance</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>Gauge colour changes with progress (red &rarr; orange &rarr; yellow &rarr; blue &rarr; green); stats update correctly</td></tr>
+    <tr><th>Actual Result</th><td>Gauge displayed for default month with correct arc length and colour. Changing months via dropdown updated the gauge arc, colour, percentage, and statistics panel. Colour changed according to progress level (red for low, green for high). Recent runs list updated per month.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-07 ==================== -->
+  <h2>TC-07: Training Heatmap — Calendar Grid</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Heatmap displays a GitHub-style calendar with distance-based colouring</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Select "Training Heatmap"</li>
+        <li>Verify calendar grid appears with weekday labels (Mon, Wed, Fri) and month labels</li>
+        <li>Verify green cells appear on active days</li>
+        <li>Verify grey cells appear on rest days</li>
+        <li>Hover over a green cell — check tooltip shows date and distance</li>
+        <li>Hover over a grey cell — check tooltip shows "Rest day"</li>
+        <li>Switch year and verify grid updates</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>365/366 cells rendered; colour intensity reflects distance; tooltip accurate; year switch works</td></tr>
+    <tr><th>Actual Result</th><td>Calendar grid rendered with weekday and month labels. Green cells appeared on active days with colour intensity reflecting distance. Grey cells on rest days. Tooltip showed date and distance for active days, "Rest day" for inactive days. Year selector switched between years correctly with grid updating.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-08 ==================== -->
+  <h2>TC-08: Marathon Readiness Radar — Spider Chart</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Radar chart displays five normalised metrics with polygon and concentric grid</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Select "Marathon Readiness"</li>
+        <li>Verify 5 axes with labels are visible</li>
+        <li>Verify concentric pentagons (20%&ndash;100%) are drawn</li>
+        <li>Verify blue filled polygon connects data points</li>
+        <li>Check raw values displayed under each label</li>
+        <li>Check readiness score at bottom-left</li>
+        <li>Switch month and verify polygon shape changes</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>5 axes at equal angles; polygon shape reflects metric values; score updates on month change</td></tr>
+    <tr><th>Actual Result</th><td>Five axes displayed at equal angular intervals with metric labels. Concentric pentagons drawn as reference grid. Blue filled polygon connected normalised data points. Raw values shown under labels. Readiness score displayed. Month selector changed the polygon shape and updated all values.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-09 ==================== -->
+  <h2>TC-09: Tooltip Reusability</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Tooltip component works consistently across scatter plot and heatmap</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Open "Heart Rate vs Pace" and hover over a point — note tooltip style</li>
+        <li>Switch to "Training Heatmap" and hover over a cell — note tooltip style</li>
+        <li>Compare visual consistency (background, border, text size)</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>Both tooltips use the same visual style (white bg, gray border, rounded corners)</td></tr>
+    <tr><th>Actual Result</th><td>Both visualisations use the shared Tooltip class. Visual style is consistent: white background, gray border, rounded corners. Boundary repositioning works in both contexts.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== TC-10 ==================== -->
+  <h2>TC-10: Data Integrity — No Console Errors</h2>
+  <table class="test-case">
+    <tr><th>Description</th><td>Application runs without JavaScript errors in the browser console</td></tr>
+    <tr><th>Steps</th><td>
+      <ol class="steps">
+        <li>Open Chrome DevTools (F12) &rarr; Console tab</li>
+        <li>Load index.html</li>
+        <li>Navigate through all 7 visualisations</li>
+        <li>Check console for any error messages</li>
+      </ol>
+    </td></tr>
+    <tr><th>Expected Result</th><td>No JavaScript errors in the console; warnings (if any) are non-critical</td></tr>
+    <tr><th>Actual Result</th><td>No JavaScript errors in the console. All 7 visualisations loaded and rendered without errors. CSV data loaded successfully for all visualisations.</td></tr>
+    <tr><th>Pass / Fail</th><td><span class="pass">Pass</span></td></tr>
+  </table>
+
+  <!-- ==================== Summary ==================== -->
+  <h2 class="summary-heading">Test Summary</h2>
+  <table class="summary">
+    <thead>
+      <tr>
+        <th style="width:12%">Test ID</th>
+        <th>Description</th>
+        <th style="width:14%">Pass / Fail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>TC-01</td><td>Gallery Navigation</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-02</td><td>Monthly Distance</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-03</td><td>Pace Progress</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-04</td><td>Activity Types Dropdown</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-05</td><td>HR vs Pace Tooltip</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-06</td><td>Goal Tracker Gauge</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-07</td><td>Training Heatmap</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-08</td><td>Marathon Radar</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-09</td><td>Tooltip Reusability</td><td><span class="pass">Pass</span></td></tr>
+      <tr><td>TC-10</td><td>No Console Errors</td><td><span class="pass">Pass</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="meta-footer">
+    <strong>Total Passed:</strong> 10 / 10<br>
+    <strong>Tested By:</strong> Ryo Nakayama (250151349)<br>
+    <strong>Date:</strong> 2 March 2026
+  </div>
+
+</body>
+</html>

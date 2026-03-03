@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Introduction to Programming II — Project Log</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm;
+    }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #000;
+      margin: 2cm;
+    }
+    h1 {
+      font-size: 24pt;
+      margin-bottom: 0.2em;
+    }
+    h2 {
+      font-size: 13pt;
+      margin-top: 1.5em;
+      margin-bottom: 0.3em;
+    }
+    .field-label {
+      font-weight: bold;
+      margin-top: 1em;
+      margin-bottom: 0.2em;
+    }
+    .field-value {
+      margin-top: 0;
+      margin-bottom: 0.5em;
+    }
+    .log-entry {
+      page-break-inside: avoid;
+      margin-bottom: 2em;
+      padding-bottom: 1.5em;
+      border-bottom: 1px solid #ccc;
+    }
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+    .meta-row {
+      margin-bottom: 0.3em;
+    }
+    .meta-label {
+      font-weight: bold;
+      display: inline-block;
+      width: 100px;
+    }
+    @media print {
+      body { margin: 0; }
+      .log-entry { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Log Entry 1 -->
+<div class="log-entry">
+  <h1>Introduction to Programming II project log</h1>
+
+  <div class="meta-row"><span class="meta-label">Project title:</span> Running Data Visualisation App</div>
+  <div class="meta-row"><span class="meta-label">Topic:</span> Initial planning, data analysis, and template study</div>
+
+  <p class="field-label">What progress have you made on this topic?</p>
+  <p class="field-value">Exported 167 activity records from Garmin. Studied the Gallery and PieChart constructor patterns in the template. Sketched layouts for four visualisations (Monthly Distance, Pace Progress, Activity Types, Heart Rate vs Pace). Designed BarChart and ScatterPlot constructors following the PieChart structure.</p>
+
+  <p class="field-label">What problems have you faced and were you able to solve them?</p>
+  <p class="field-value">Garmin export had Japanese column headers — needed to translate. Pace data stored as "6:30" string format required a custom parser to convert to decimal minutes.</p>
+
+  <p class="field-label">What are you planning to do over the next few weeks?</p>
+  <p class="field-value">Implement BarChart constructor and Monthly Distance visualisation. Begin Pace Progress with moving average.</p>
+
+  <p class="field-label">Are you on target to successfully complete your project? If you aren't on target, how will you address the issue?</p>
+  <p class="field-value">Yes — planning phase complete on schedule.</p>
+</div>
+
+<!-- Log Entry 2 -->
+<div class="log-entry">
+  <h1>Introduction to Programming II project log</h1>
+
+  <div class="meta-row"><span class="meta-label">Project title:</span> Running Data Visualisation App</div>
+  <div class="meta-row"><span class="meta-label">Topic:</span> Core visualisations implementation</div>
+
+  <p class="field-label">What progress have you made on this topic?</p>
+  <p class="field-value">Completed all four planned visualisations: Monthly Distance (bar chart), Pace Progress (line chart + moving average), Activity Types (pie chart + dropdown), Heart Rate vs Pace (scatter plot + correlation + regression). Implemented Pearson's correlation coefficient and linear regression from mathematical formulae. Total new code: approximately 1,000 lines.</p>
+
+  <p class="field-label">What problems have you faced and were you able to solve them?</p>
+  <p class="field-value">The scatter plot tooltips were difficult to position correctly — they would go off-screen near edges. Solved by adding boundary detection that repositions the tooltip. The correlation and regression calculations required careful research to implement correctly without a statistics library.</p>
+
+  <p class="field-label">What are you planning to do over the next few weeks?</p>
+  <p class="field-value">Submit midterm. Plan Goal Tracker for next phase.</p>
+
+  <p class="field-label">Are you on target to successfully complete your project? If you aren't on target, how will you address the issue?</p>
+  <p class="field-value">Yes — midterm submission ready with four complete extensions.</p>
+</div>
+
+<!-- Log Entry 3 -->
+<div class="log-entry">
+  <h1>Introduction to Programming II project log</h1>
+
+  <div class="meta-row"><span class="meta-label">Project title:</span> Running Data Visualisation App</div>
+  <div class="meta-row"><span class="meta-label">Topic:</span> Code quality improvements and new visualisation design</div>
+
+  <p class="field-label">What progress have you made on this topic?</p>
+  <p class="field-value">Addressed reviewer feedback: extracted tooltip rendering into a reusable Tooltip class (separation of concerns), fixed missing <code>let</code> declarations in loop counters, and consolidated duplicate <code>paceToMinutes()</code> function into helper-functions.js. Completed Goal Tracker with trigonometric gauge. Redesigned the remaining extensions — replaced Pace Zones (too similar to existing chart) with a Training Heatmap inspired by GitHub's contribution calendar.</p>
+
+  <p class="field-label">What problems have you faced and were you able to solve them?</p>
+  <p class="field-value">Original plan had Pace Zones and Cumulative Distance, but Pace Zones overlapped with Pace Progress. Decided to pivot to more original visualisations. The code refactoring took longer than expected as the tooltip was tightly coupled to ScatterPlot.</p>
+
+  <p class="field-label">What are you planning to do over the next few weeks?</p>
+  <p class="field-value">Implement Training Heatmap and Marathon Readiness Radar. Begin system testing.</p>
+
+  <p class="field-label">Are you on target to successfully complete your project? If you aren't on target, how will you address the issue?</p>
+  <p class="field-value">Slightly behind on new features due to refactoring, but the code quality is significantly improved.</p>
+</div>
+
+<!-- Log Entry 4 -->
+<div class="log-entry">
+  <h1>Introduction to Programming II project log</h1>
+
+  <div class="meta-row"><span class="meta-label">Project title:</span> Running Data Visualisation App</div>
+  <div class="meta-row"><span class="meta-label">Topic:</span> New visualisations, testing, and final documentation</div>
+
+  <p class="field-label">What progress have you made on this topic?</p>
+  <p class="field-value">Completed Training Heatmap (GitHub-style calendar with nested loops, date calculations, colour mapping) and Marathon Readiness Radar (spider chart with trigonometry, 5 normalised metrics, polygon drawing). Created 10 system test cases covering all visualisations. Drafted all report sections (Q1–Q4, Q7).</p>
+
+  <p class="field-label">What problems have you faced and were you able to solve them?</p>
+  <p class="field-value">The radar chart required trigonometric calculations (sin/cos at 72-degree intervals) and normalisation of five different metric types to a 0–1 scale. Had to carefully handle edge cases where heart rate data was missing for some activities.</p>
+
+  <p class="field-label">What are you planning to do over the next few weeks?</p>
+  <p class="field-value">Run all system tests in Chrome. Finalise report writing. Create annotated code PDF. Package and submit.</p>
+
+  <p class="field-label">Are you on target to successfully complete your project? If you aren't on target, how will you address the issue?</p>
+  <p class="field-value">Yes — all major features complete with time for testing and documentation before deadline.</p>
+</div>
+
+</body>
+</html>

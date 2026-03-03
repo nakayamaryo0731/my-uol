@@ -1,0 +1,2738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Running Data Visualisation — Annotated Source Code</title>
+<style>
+@page {
+  size: A4;
+  margin: 15mm 12mm 15mm 12mm;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 10pt;
+  line-height: 1.45;
+  color: #1a1a1a;
+}
+.title-page {
+  text-align: center;
+  padding-top: 80px;
+  page-break-after: always;
+}
+.title-page h1 {
+  font-size: 22pt;
+  margin-bottom: 8px;
+}
+.title-page .subtitle {
+  font-size: 14pt;
+  color: #555;
+  margin-bottom: 30px;
+}
+.title-page .meta {
+  font-size: 12pt;
+  color: #666;
+  margin-bottom: 40px;
+}
+.toc {
+  page-break-after: always;
+  padding: 20px;
+}
+.toc h2 {
+  font-size: 16pt;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #333;
+  padding-bottom: 6px;
+}
+.toc ol {
+  padding-left: 24px;
+  font-size: 10.5pt;
+  line-height: 1.8;
+}
+.file-section {
+  page-break-before: always;
+  padding: 0 8px;
+}
+.file-section:first-of-type {
+  page-break-before: auto;
+}
+h2 {
+  font-size: 13pt;
+  color: #2c3e50;
+  border-bottom: 1.5px solid #2c3e50;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+.file-desc {
+  font-size: 9.5pt;
+  color: #555;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+.template-note {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;
+  margin: 4px 0;
+  padding: 3px 8px;
+  background: #f5f5f5;
+  border-left: 3px solid #ccc;
+}
+pre {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 8.5pt;
+  line-height: 1.35;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 8px 4px;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+code {
+  font-family: inherit;
+}
+.ln {
+  color: #999;
+  user-select: none;
+  display: inline-block;
+  width: 3.5em;
+  text-align: right;
+  margin-right: 8px;
+  border-right: 1px solid #ddd;
+  padding-right: 6px;
+}
+@media print {
+  body { padding: 0; }
+  pre {
+    page-break-inside: auto;
+    border: 0.5px solid #ccc;
+    background: #fafafa !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .template-note {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+@media screen {
+  body {
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 15mm;
+  }
+  .file-section {
+    border-top: 1px dashed #ccc;
+    padding-top: 15px;
+    margin-top: 15px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="title-page">
+  <h1>Running Data Visualisation</h1>
+  <div class="subtitle">Annotated Source Code</div>
+  <div class="meta">
+    CM1010 Introduction to Programming II<br>
+    Ryo Nakayama (250151349) — March 2026
+  </div>
+</div>
+
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><strong>index.html</strong> — HTML entry point — script loading order and own-code markers</li>
+<li><strong>sketch.js</strong> — Main sketch — Gallery registration of all 7 visualisations</li>
+<li><strong>helper-functions.js</strong> — Shared pace helper functions (own code: lines 42-63)</li>
+<li><strong>tooltip.js</strong> — Reusable tooltip component (composition pattern)</li>
+<li><strong>bar-chart.js</strong> — Reusable bar chart constructor</li>
+<li><strong>scatter-plot.js</strong> — Reusable scatter plot constructor with bubble chart support</li>
+<li><strong>monthly-distance.js</strong> — Monthly Distance — bar chart of distance per month</li>
+<li><strong>pace-progress.js</strong> — Pace Progress — moving average and pace zone backgrounds</li>
+<li><strong>activity-types.js</strong> — Activity Types — pie chart with dropdown switcher</li>
+<li><strong>heartrate-vs-pace.js</strong> — Heart Rate vs Pace — scatter plot with statistical analysis</li>
+<li><strong>goal-tracker.js</strong> — Goal Tracker — semicircular gauge with trigonometry</li>
+<li><strong>training-heatmap.js</strong> — Training Heatmap — GitHub-style calendar grid</li>
+<li><strong>marathon-radar.js</strong> — Marathon Readiness Radar — spider chart with 5 normalised metrics</li>
+<li><strong>tests.js</strong> — Unit and integration tests (TestRunner, black-box testing)</li>
+  </ol>
+</div>
+
+<section class="file-section">
+<h2>1. index.html</h2>
+<p class="file-desc">HTML entry point — script loading order and own-code markers</p>
+
+<pre><code><span class="ln">   1</span> &lt;!DOCTYPE html&gt;
+<span class="ln">   2</span> &lt;html lang=&quot;en&quot;&gt;
+<span class="ln">   3</span>   &lt;head&gt;
+<span class="ln">   4</span>     &lt;meta charset=&quot;utf-8&quot;&gt;
+<span class="ln">   5</span>     &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+<span class="ln">   6</span>     &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+<span class="ln">   7</span>     &lt;title&gt;Running Data Visualisation&lt;/title&gt;
+<span class="ln">   8</span> 
+<span class="ln">   9</span>     &lt;!-- Libraries --&gt;
+<span class="ln">  10</span>     &lt;script src=&quot;lib/p5.min.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  11</span> 
+<span class="ln">  12</span>     &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;
+<span class="ln">  13</span> 
+<span class="ln">  14</span>     &lt;!-- Main sketch file --&gt;
+<span class="ln">  15</span>     &lt;script src=&quot;sketch.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  16</span> 
+<span class="ln">  17</span>     &lt;!-- Helper functions and core components (from template) --&gt;
+<span class="ln">  18</span>     &lt;script src=&quot;helper-functions.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  19</span>     &lt;script src=&quot;gallery.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  20</span>     &lt;script src=&quot;pie-chart.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  21</span> 
+<span class="ln">  22</span>     &lt;!-- Start of my own code --&gt;
+<span class="ln">  23</span>     &lt;!-- New reusable chart constructors --&gt;
+<span class="ln">  24</span>     &lt;script src=&quot;tooltip.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  25</span>     &lt;script src=&quot;bar-chart.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  26</span>     &lt;script src=&quot;scatter-plot.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  27</span> 
+<span class="ln">  28</span>     &lt;!-- New running data visualisations --&gt;
+<span class="ln">  29</span>     &lt;script src=&quot;monthly-distance.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  30</span>     &lt;script src=&quot;pace-progress.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  31</span>     &lt;script src=&quot;activity-types.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  32</span>     &lt;script src=&quot;heartrate-vs-pace.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  33</span>     &lt;script src=&quot;goal-tracker.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  34</span>     &lt;script src=&quot;training-heatmap.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  35</span>     &lt;script src=&quot;marathon-radar.js&quot;&gt;&lt;/script&gt;
+<span class="ln">  36</span>     &lt;!-- End of my own code --&gt;
+<span class="ln">  37</span>   &lt;/head&gt;
+<span class="ln">  38</span>   &lt;body&gt;
+<span class="ln">  39</span>     &lt;div id=&quot;app&quot; class=&quot;container&quot;&gt;
+<span class="ln">  40</span>       &lt;ul id=&quot;visuals-menu&quot;&gt;&lt;/ul&gt;
+<span class="ln">  41</span>     &lt;/div&gt;
+<span class="ln">  42</span>   &lt;/body&gt;
+<span class="ln">  43</span> &lt;/html&gt;</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>2. sketch.js</h2>
+<p class="file-desc">Main sketch — Gallery registration of all 7 visualisations</p>
+
+<pre><code><span class="ln">   1</span> 
+<span class="ln">   2</span> // Global variable to store the gallery object. The gallery object is
+<span class="ln">   3</span> // a container for all the visualisations.
+<span class="ln">   4</span> var gallery;
+<span class="ln">   5</span> 
+<span class="ln">   6</span> function setup() {
+<span class="ln">   7</span>   // Create a canvas to fill the content div from index.html.
+<span class="ln">   8</span>   var c = createCanvas(1024, 576);
+<span class="ln">   9</span>   c.parent(&#x27;app&#x27;);
+<span class="ln">  10</span> 
+<span class="ln">  11</span>   // Create a new gallery object.
+<span class="ln">  12</span>   gallery = new Gallery();
+<span class="ln">  13</span> 
+<span class="ln">  14</span>   /* Start of my own code */
+<span class="ln">  15</span>   // Add running data visualisations
+<span class="ln">  16</span>   gallery.addVisual(new MonthlyDistance());
+<span class="ln">  17</span>   gallery.addVisual(new PaceProgress());
+<span class="ln">  18</span>   gallery.addVisual(new ActivityTypes());
+<span class="ln">  19</span>   gallery.addVisual(new HeartRateVsPace());
+<span class="ln">  20</span>   gallery.addVisual(new GoalTracker());
+<span class="ln">  21</span>   gallery.addVisual(new TrainingHeatmap());
+<span class="ln">  22</span>   gallery.addVisual(new MarathonRadar());
+<span class="ln">  23</span>   /* End of my own code */
+<span class="ln">  24</span> }
+<span class="ln">  25</span> 
+<span class="ln">  26</span> function draw() {
+<span class="ln">  27</span>   background(255);
+<span class="ln">  28</span>   if (gallery.selectedVisual != null) {
+<span class="ln">  29</span>     gallery.selectedVisual.draw();
+<span class="ln">  30</span>   }
+<span class="ln">  31</span> }</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>3. helper-functions.js</h2>
+<p class="file-desc">Shared pace helper functions (own code: lines 42-63)</p>
+<p class="template-note">Lines 1–41: template code (not shown)</p>
+<pre><code><span class="ln">  42</span> // --------------------------------------------------------------------
+<span class="ln">  43</span> // Pace helper functions (shared across visualisations)
+<span class="ln">  44</span> // --------------------------------------------------------------------
+<span class="ln">  45</span> 
+<span class="ln">  46</span> // Converts pace string &quot;6:30&quot; to decimal minutes (6.5)
+<span class="ln">  47</span> function paceToMinutes(paceStr) {
+<span class="ln">  48</span>   var parts = paceStr.split(&#x27;:&#x27;);
+<span class="ln">  49</span>   if (parts.length == 2) {
+<span class="ln">  50</span>     return parseInt(parts[0]) + parseInt(parts[1]) / 60;
+<span class="ln">  51</span>   }
+<span class="ln">  52</span>   return 0;
+<span class="ln">  53</span> }
+<span class="ln">  54</span> 
+<span class="ln">  55</span> // Converts decimal minutes (6.5) to pace string &quot;6:30&quot;
+<span class="ln">  56</span> function formatPace(paceMinutes) {
+<span class="ln">  57</span>   var minutes = Math.floor(paceMinutes);
+<span class="ln">  58</span>   var seconds = Math.round((paceMinutes - minutes) * 60);
+<span class="ln">  59</span>   if (seconds &lt; 10) {
+<span class="ln">  60</span>     return minutes + &#x27;:0&#x27; + seconds;
+<span class="ln">  61</span>   }
+<span class="ln">  62</span>   return minutes + &#x27;:&#x27; + seconds;
+<span class="ln">  63</span> }</code></pre>
+<p class="template-note">Lines 64–154: template code (not shown)</p>
+</section>
+
+<section class="file-section">
+<h2>4. tooltip.js</h2>
+<p class="file-desc">Reusable tooltip component (composition pattern)</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Reusable tooltip component using composition pattern.
+<span class="ln">   3</span> // Extracted from ScatterPlot to enable reuse across visualisations.
+<span class="ln">   4</span> function Tooltip() {
+<span class="ln">   5</span>   this.width = 120;
+<span class="ln">   6</span>   this.padding = 5;
+<span class="ln">   7</span>   this.lineHeight = 15;
+<span class="ln">   8</span>   this.cornerRadius = 5;
+<span class="ln">   9</span> 
+<span class="ln">  10</span>   this.draw = function(x, y, lines, layout) {
+<span class="ln">  11</span>     var tooltipHeight = this.lineHeight * lines.length + this.padding * 2;
+<span class="ln">  12</span>     var tooltipX = x + 10;
+<span class="ln">  13</span>     var tooltipY = y - tooltipHeight - 10;
+<span class="ln">  14</span> 
+<span class="ln">  15</span>     // Boundary detection: reposition if tooltip would go off-screen
+<span class="ln">  16</span>     if (layout) {
+<span class="ln">  17</span>       if (tooltipX + this.width &gt; layout.rightMargin) {
+<span class="ln">  18</span>         tooltipX = x - this.width - 10;
+<span class="ln">  19</span>       }
+<span class="ln">  20</span>       if (tooltipY &lt; layout.topMargin) {
+<span class="ln">  21</span>         tooltipY = y + 10;
+<span class="ln">  22</span>       }
+<span class="ln">  23</span>     }
+<span class="ln">  24</span> 
+<span class="ln">  25</span>     // Background
+<span class="ln">  26</span>     fill(255, 255, 255, 230);
+<span class="ln">  27</span>     stroke(100);
+<span class="ln">  28</span>     strokeWeight(1);
+<span class="ln">  29</span>     rect(tooltipX, tooltipY, this.width, tooltipHeight, this.cornerRadius);
+<span class="ln">  30</span> 
+<span class="ln">  31</span>     // Text lines
+<span class="ln">  32</span>     fill(0);
+<span class="ln">  33</span>     noStroke();
+<span class="ln">  34</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln">  35</span>     textSize(10);
+<span class="ln">  36</span> 
+<span class="ln">  37</span>     for (var i = 0; i &lt; lines.length; i++) {
+<span class="ln">  38</span>       text(lines[i], tooltipX + this.padding, tooltipY + this.padding + (i * this.lineHeight));
+<span class="ln">  39</span>     }
+<span class="ln">  40</span>   };
+<span class="ln">  41</span> }
+<span class="ln">  42</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>5. bar-chart.js</h2>
+<p class="file-desc">Reusable bar chart constructor</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // BarChart: Reusable bar chart constructor that dynamically calculates
+<span class="ln">   3</span> // bar width based on data length and plot area. Accepts layout, data
+<span class="ln">   4</span> // array, labels, and colour parameters.
+<span class="ln">   5</span> function BarChart(layout) {
+<span class="ln">   6</span>   this.layout = layout;
+<span class="ln">   7</span>   this.barWidth = 30;
+<span class="ln">   8</span>   this.barGap = 10;
+<span class="ln">   9</span> 
+<span class="ln">  10</span>   this.draw = function(data, labels, colours, title) {
+<span class="ln">  11</span>     if (data.length == 0) {
+<span class="ln">  12</span>       console.log(&#x27;Data has length zero!&#x27;);
+<span class="ln">  13</span>       return;
+<span class="ln">  14</span>     }
+<span class="ln">  15</span> 
+<span class="ln">  16</span>     if (labels.length != data.length) {
+<span class="ln">  17</span>       console.log(&#x27;Data and labels arrays must be the same length!&#x27;);
+<span class="ln">  18</span>       return;
+<span class="ln">  19</span>     }
+<span class="ln">  20</span> 
+<span class="ln">  21</span>     var plotWidth = this.layout.rightMargin - this.layout.leftMargin;
+<span class="ln">  22</span>     var plotHeight = this.layout.bottomMargin - this.layout.topMargin;
+<span class="ln">  23</span>     this.barWidth = (plotWidth - (data.length + 1) * this.barGap) / data.length;
+<span class="ln">  24</span>     var maxValue = max(data);
+<span class="ln">  25</span> 
+<span class="ln">  26</span>     if (title) {
+<span class="ln">  27</span>       noStroke();
+<span class="ln">  28</span>       fill(0);
+<span class="ln">  29</span>       textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln">  30</span>       textSize(16);
+<span class="ln">  31</span>       text(title,
+<span class="ln">  32</span>            (this.layout.leftMargin + this.layout.rightMargin) / 2,
+<span class="ln">  33</span>            this.layout.topMargin - 20);
+<span class="ln">  34</span>     }
+<span class="ln">  35</span> 
+<span class="ln">  36</span>     for (var i = 0; i &lt; data.length; i++) {
+<span class="ln">  37</span>       var x = this.layout.leftMargin + this.barGap + i * (this.barWidth + this.barGap);
+<span class="ln">  38</span>       var barHeight = map(data[i], 0, maxValue, 0, plotHeight);
+<span class="ln">  39</span>       var y = this.layout.bottomMargin - barHeight;
+<span class="ln">  40</span> 
+<span class="ln">  41</span>       if (Array.isArray(colours)) {
+<span class="ln">  42</span>         fill(colours[i % colours.length]);
+<span class="ln">  43</span>       } else {
+<span class="ln">  44</span>         fill(colours);
+<span class="ln">  45</span>       }
+<span class="ln">  46</span> 
+<span class="ln">  47</span>       stroke(0);
+<span class="ln">  48</span>       strokeWeight(1);
+<span class="ln">  49</span>       rect(x, y, this.barWidth, barHeight);
+<span class="ln">  50</span> 
+<span class="ln">  51</span>       noStroke();
+<span class="ln">  52</span>       fill(0);
+<span class="ln">  53</span>       textAlign(&#x27;center&#x27;, &#x27;bottom&#x27;);
+<span class="ln">  54</span>       textSize(10);
+<span class="ln">  55</span>       text(data[i].toFixed(1), x + this.barWidth / 2, y - 5);
+<span class="ln">  56</span> 
+<span class="ln">  57</span>       push();
+<span class="ln">  58</span>       translate(x + this.barWidth / 2, this.layout.bottomMargin + 10);
+<span class="ln">  59</span>       rotate(radians(-45));
+<span class="ln">  60</span>       textAlign(&#x27;right&#x27;, &#x27;center&#x27;);
+<span class="ln">  61</span>       textSize(10);
+<span class="ln">  62</span>       text(labels[i], 0, 0);
+<span class="ln">  63</span>       pop();
+<span class="ln">  64</span>     }
+<span class="ln">  65</span>   };
+<span class="ln">  66</span> 
+<span class="ln">  67</span>   this.drawYAxisTickLabels = function(minValue, maxValue, numTicks, decimalPlaces) {
+<span class="ln">  68</span>     var range = maxValue - minValue;
+<span class="ln">  69</span>     var tickStep = range / numTicks;
+<span class="ln">  70</span> 
+<span class="ln">  71</span>     fill(0);
+<span class="ln">  72</span>     noStroke();
+<span class="ln">  73</span>     textAlign(&#x27;right&#x27;, &#x27;center&#x27;);
+<span class="ln">  74</span>     textSize(12);
+<span class="ln">  75</span> 
+<span class="ln">  76</span>     for (var i = 0; i &lt;= numTicks; i++) {
+<span class="ln">  77</span>       var value = minValue + (i * tickStep);
+<span class="ln">  78</span>       var y = map(value, minValue, maxValue,
+<span class="ln">  79</span>                   this.layout.bottomMargin,
+<span class="ln">  80</span>                   this.layout.topMargin);
+<span class="ln">  81</span> 
+<span class="ln">  82</span>       text(value.toFixed(decimalPlaces),
+<span class="ln">  83</span>            this.layout.leftMargin - 10,
+<span class="ln">  84</span>            y);
+<span class="ln">  85</span> 
+<span class="ln">  86</span>       stroke(220);
+<span class="ln">  87</span>       strokeWeight(1);
+<span class="ln">  88</span>       line(this.layout.leftMargin, y,
+<span class="ln">  89</span>            this.layout.rightMargin, y);
+<span class="ln">  90</span>     }
+<span class="ln">  91</span>   };
+<span class="ln">  92</span> }
+<span class="ln">  93</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>6. scatter-plot.js</h2>
+<p class="file-desc">Reusable scatter plot constructor with bubble chart support</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // ScatterPlot: Reusable scatter plot constructor that renders data points
+<span class="ln">   3</span> // on a 2D plane. Uses composition with a Tooltip instance for hover
+<span class="ln">   4</span> // interaction. Accepts layout, data arrays, and axis ranges as parameters.
+<span class="ln">   5</span> function ScatterPlot(layout) {
+<span class="ln">   6</span>   this.layout = layout;
+<span class="ln">   7</span>   this.pointSize = 8;
+<span class="ln">   8</span>   this.tooltip = new Tooltip();
+<span class="ln">   9</span> 
+<span class="ln">  10</span>   // sizes: optional array of per-point diameters (bubble chart mode)
+<span class="ln">  11</span>   this.draw = function(xData, yData, xRange, yRange, colour, labels, sizes) {
+<span class="ln">  12</span>     if (xData.length == 0 || yData.length == 0) {
+<span class="ln">  13</span>       console.log(&#x27;Data has length zero!&#x27;);
+<span class="ln">  14</span>       return;
+<span class="ln">  15</span>     }
+<span class="ln">  16</span> 
+<span class="ln">  17</span>     if (xData.length != yData.length) {
+<span class="ln">  18</span>       console.log(&#x27;X and Y data arrays must be the same length!&#x27;);
+<span class="ln">  19</span>       return;
+<span class="ln">  20</span>     }
+<span class="ln">  21</span> 
+<span class="ln">  22</span>     for (var i = 0; i &lt; xData.length; i++) {
+<span class="ln">  23</span>       var x = this.mapToX(xData[i], xRange.min, xRange.max);
+<span class="ln">  24</span>       var y = this.mapToY(yData[i], yRange.min, yRange.max);
+<span class="ln">  25</span>       var currentSize = (sizes &amp;&amp; i &lt; sizes.length) ? sizes[i] : this.pointSize;
+<span class="ln">  26</span>       var isHovered = dist(mouseX, mouseY, x, y) &lt; currentSize;
+<span class="ln">  27</span> 
+<span class="ln">  28</span>       if (isHovered) {
+<span class="ln">  29</span>         fill(255, 100, 100);
+<span class="ln">  30</span>         noStroke();
+<span class="ln">  31</span>         ellipse(x, y, currentSize * 1.5, currentSize * 1.5);
+<span class="ln">  32</span> 
+<span class="ln">  33</span>         // Build tooltip lines using shared formatPace from helper-functions.js
+<span class="ln">  34</span>         var lines = [
+<span class="ln">  35</span>           &#x27;HR: &#x27; + xData[i].toFixed(0) + &#x27; bpm&#x27;,
+<span class="ln">  36</span>           &#x27;Pace: &#x27; + formatPace(yData[i]) + &#x27;/km&#x27;
+<span class="ln">  37</span>         ];
+<span class="ln">  38</span>         if (labels &amp;&amp; labels[i]) {
+<span class="ln">  39</span>           lines.push(labels[i]);
+<span class="ln">  40</span>         }
+<span class="ln">  41</span>         this.tooltip.draw(x, y, lines, this.layout);
+<span class="ln">  42</span>       } else {
+<span class="ln">  43</span>         fill(colour);
+<span class="ln">  44</span>         stroke(0);
+<span class="ln">  45</span>         strokeWeight(0.5);
+<span class="ln">  46</span>         ellipse(x, y, currentSize, currentSize);
+<span class="ln">  47</span>       }
+<span class="ln">  48</span>     }
+<span class="ln">  49</span>   };
+<span class="ln">  50</span> 
+<span class="ln">  51</span>   this.mapToX = function(value, minVal, maxVal) {
+<span class="ln">  52</span>     return map(value, minVal, maxVal,
+<span class="ln">  53</span>                this.layout.leftMargin,
+<span class="ln">  54</span>                this.layout.rightMargin);
+<span class="ln">  55</span>   };
+<span class="ln">  56</span> 
+<span class="ln">  57</span>   this.mapToY = function(value, minVal, maxVal) {
+<span class="ln">  58</span>     return map(value, minVal, maxVal,
+<span class="ln">  59</span>                this.layout.bottomMargin,
+<span class="ln">  60</span>                this.layout.topMargin);
+<span class="ln">  61</span>   };
+<span class="ln">  62</span> 
+<span class="ln">  63</span>   this.drawXAxisTicks = function(minVal, maxVal, numTicks, label) {
+<span class="ln">  64</span>     var range = maxVal - minVal;
+<span class="ln">  65</span>     var step = range / numTicks;
+<span class="ln">  66</span> 
+<span class="ln">  67</span>     fill(0);
+<span class="ln">  68</span>     noStroke();
+<span class="ln">  69</span>     textAlign(&#x27;center&#x27;, &#x27;top&#x27;);
+<span class="ln">  70</span>     textSize(10);
+<span class="ln">  71</span> 
+<span class="ln">  72</span>     for (var i = 0; i &lt;= numTicks; i++) {
+<span class="ln">  73</span>       var value = minVal + (i * step);
+<span class="ln">  74</span>       var x = this.mapToX(value, minVal, maxVal);
+<span class="ln">  75</span> 
+<span class="ln">  76</span>       stroke(0);
+<span class="ln">  77</span>       line(x, this.layout.bottomMargin, x, this.layout.bottomMargin + 5);
+<span class="ln">  78</span> 
+<span class="ln">  79</span>       noStroke();
+<span class="ln">  80</span>       text(value.toFixed(0), x, this.layout.bottomMargin + 8);
+<span class="ln">  81</span> 
+<span class="ln">  82</span>       stroke(220);
+<span class="ln">  83</span>       line(x, this.layout.topMargin, x, this.layout.bottomMargin);
+<span class="ln">  84</span>     }
+<span class="ln">  85</span> 
+<span class="ln">  86</span>     textSize(12);
+<span class="ln">  87</span>     text(label,
+<span class="ln">  88</span>          (this.layout.leftMargin + this.layout.rightMargin) / 2,
+<span class="ln">  89</span>          this.layout.bottomMargin + 30);
+<span class="ln">  90</span>   };
+<span class="ln">  91</span> 
+<span class="ln">  92</span>   this.drawYAxisTicks = function(minVal, maxVal, numTicks, label) {
+<span class="ln">  93</span>     var range = maxVal - minVal;
+<span class="ln">  94</span>     var step = range / numTicks;
+<span class="ln">  95</span> 
+<span class="ln">  96</span>     fill(0);
+<span class="ln">  97</span>     noStroke();
+<span class="ln">  98</span>     textAlign(&#x27;right&#x27;, &#x27;center&#x27;);
+<span class="ln">  99</span>     textSize(10);
+<span class="ln"> 100</span> 
+<span class="ln"> 101</span>     for (var i = 0; i &lt;= numTicks; i++) {
+<span class="ln"> 102</span>       var value = minVal + (i * step);
+<span class="ln"> 103</span>       var y = this.mapToY(value, minVal, maxVal);
+<span class="ln"> 104</span> 
+<span class="ln"> 105</span>       text(formatPace(value), this.layout.leftMargin - 8, y);
+<span class="ln"> 106</span> 
+<span class="ln"> 107</span>       stroke(220);
+<span class="ln"> 108</span>       line(this.layout.leftMargin, y, this.layout.rightMargin, y);
+<span class="ln"> 109</span>     }
+<span class="ln"> 110</span> 
+<span class="ln"> 111</span>     push();
+<span class="ln"> 112</span>     translate(this.layout.leftMargin - 45, height / 2);
+<span class="ln"> 113</span>     rotate(-PI / 2);
+<span class="ln"> 114</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 115</span>     textSize(12);
+<span class="ln"> 116</span>     text(label, 0, 0);
+<span class="ln"> 117</span>     pop();
+<span class="ln"> 118</span>   };
+<span class="ln"> 119</span> }
+<span class="ln"> 120</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>7. monthly-distance.js</h2>
+<p class="file-desc">Monthly Distance — bar chart of distance per month</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Monthly Distance: Bar chart showing total running distance per month.
+<span class="ln">   3</span> // Aggregates 185 activity records by year-month using object-based grouping,
+<span class="ln">   4</span> // then delegates rendering to a reusable BarChart constructor.
+<span class="ln">   5</span> function MonthlyDistance() {
+<span class="ln">   6</span>   this.name = &#x27;Monthly Distance&#x27;;
+<span class="ln">   7</span>   this.id = &#x27;monthly-distance&#x27;;
+<span class="ln">   8</span>   this.loaded = false;
+<span class="ln">   9</span> 
+<span class="ln">  10</span>   var marginSize = 35;
+<span class="ln">  11</span>   this.layout = {
+<span class="ln">  12</span>     marginSize: marginSize,
+<span class="ln">  13</span>     leftMargin: marginSize * 2,
+<span class="ln">  14</span>     rightMargin: width - marginSize,
+<span class="ln">  15</span>     topMargin: marginSize * 2,
+<span class="ln">  16</span>     bottomMargin: height - marginSize * 3,
+<span class="ln">  17</span>     pad: 5,
+<span class="ln">  18</span>     plotWidth: function() {
+<span class="ln">  19</span>       return this.rightMargin - this.leftMargin;
+<span class="ln">  20</span>     },
+<span class="ln">  21</span>     plotHeight: function() {
+<span class="ln">  22</span>       return this.bottomMargin - this.topMargin;
+<span class="ln">  23</span>     },
+<span class="ln">  24</span>     grid: true,
+<span class="ln">  25</span>     numYTickLabels: 6
+<span class="ln">  26</span>   };
+<span class="ln">  27</span> 
+<span class="ln">  28</span>   this.barChart = new BarChart(this.layout);
+<span class="ln">  29</span> 
+<span class="ln">  30</span>   this.preload = function() {
+<span class="ln">  31</span>     var self = this;
+<span class="ln">  32</span>     this.data = loadTable(
+<span class="ln">  33</span>       &#x27;./data/running/activities.csv&#x27;, &#x27;csv&#x27;, &#x27;header&#x27;,
+<span class="ln">  34</span>       function(table) {
+<span class="ln">  35</span>         self.loaded = true;
+<span class="ln">  36</span>       });
+<span class="ln">  37</span>   };
+<span class="ln">  38</span> 
+<span class="ln">  39</span>   this.setup = function() {
+<span class="ln">  40</span>     if (!this.loaded) {
+<span class="ln">  41</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  42</span>       return;
+<span class="ln">  43</span>     }
+<span class="ln">  44</span>     this.monthlyData = this.aggregateByMonth();
+<span class="ln">  45</span>   };
+<span class="ln">  46</span> 
+<span class="ln">  47</span>   this.destroy = function() {};
+<span class="ln">  48</span> 
+<span class="ln">  49</span>   this.aggregateByMonth = function() {
+<span class="ln">  50</span>     var months = {};
+<span class="ln">  51</span> 
+<span class="ln">  52</span>     for (var i = 0; i &lt; this.data.getRowCount(); i++) {
+<span class="ln">  53</span>       var dateStr = this.data.getString(i, &#x27;date&#x27;);
+<span class="ln">  54</span>       var distance = this.data.getNum(i, &#x27;distance&#x27;);
+<span class="ln">  55</span>       var yearMonth = dateStr.substring(0, 7);
+<span class="ln">  56</span> 
+<span class="ln">  57</span>       if (months[yearMonth]) {
+<span class="ln">  58</span>         months[yearMonth] += distance;
+<span class="ln">  59</span>       } else {
+<span class="ln">  60</span>         months[yearMonth] = distance;
+<span class="ln">  61</span>       }
+<span class="ln">  62</span>     }
+<span class="ln">  63</span> 
+<span class="ln">  64</span>     var sortedMonths = Object.keys(months).sort();
+<span class="ln">  65</span>     var labels = [];
+<span class="ln">  66</span>     var values = [];
+<span class="ln">  67</span> 
+<span class="ln">  68</span>     for (var j = 0; j &lt; sortedMonths.length; j++) {
+<span class="ln">  69</span>       var ym = sortedMonths[j];
+<span class="ln">  70</span>       var parts = ym.split(&#x27;-&#x27;);
+<span class="ln">  71</span>       var monthNames = [&#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;May&#x27;, &#x27;Jun&#x27;,
+<span class="ln">  72</span>                         &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;];
+<span class="ln">  73</span>       var monthLabel = monthNames[parseInt(parts[1]) - 1] + &#x27; &#x27; + parts[0].substring(2);
+<span class="ln">  74</span>       labels.push(monthLabel);
+<span class="ln">  75</span>       values.push(months[ym]);
+<span class="ln">  76</span>     }
+<span class="ln">  77</span> 
+<span class="ln">  78</span>     return { labels: labels, values: values };
+<span class="ln">  79</span>   };
+<span class="ln">  80</span> 
+<span class="ln">  81</span>   this.draw = function() {
+<span class="ln">  82</span>     if (!this.loaded) {
+<span class="ln">  83</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  84</span>       return;
+<span class="ln">  85</span>     }
+<span class="ln">  86</span> 
+<span class="ln">  87</span>     fill(0);
+<span class="ln">  88</span>     noStroke();
+<span class="ln">  89</span>     textSize(20);
+<span class="ln">  90</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln">  91</span>     text(&#x27;Monthly Running Distance&#x27;,
+<span class="ln">  92</span>          (this.layout.leftMargin + this.layout.rightMargin) / 2,
+<span class="ln">  93</span>          this.layout.topMargin / 2);
+<span class="ln">  94</span> 
+<span class="ln">  95</span>     push();
+<span class="ln">  96</span>     translate(this.layout.leftMargin / 3, height / 2);
+<span class="ln">  97</span>     rotate(-PI / 2);
+<span class="ln">  98</span>     textSize(14);
+<span class="ln">  99</span>     text(&#x27;Distance (km)&#x27;, 0, 0);
+<span class="ln"> 100</span>     pop();
+<span class="ln"> 101</span> 
+<span class="ln"> 102</span>     stroke(0);
+<span class="ln"> 103</span>     strokeWeight(1);
+<span class="ln"> 104</span>     line(this.layout.leftMargin, this.layout.topMargin,
+<span class="ln"> 105</span>          this.layout.leftMargin, this.layout.bottomMargin);
+<span class="ln"> 106</span>     line(this.layout.leftMargin, this.layout.bottomMargin,
+<span class="ln"> 107</span>          this.layout.rightMargin, this.layout.bottomMargin);
+<span class="ln"> 108</span> 
+<span class="ln"> 109</span>     var maxDistance = max(this.monthlyData.values);
+<span class="ln"> 110</span>     this.barChart.drawYAxisTickLabels(0, maxDistance, this.layout.numYTickLabels, 0);
+<span class="ln"> 111</span> 
+<span class="ln"> 112</span>     var barColour = color(66, 133, 244);
+<span class="ln"> 113</span>     this.barChart.draw(
+<span class="ln"> 114</span>       this.monthlyData.values,
+<span class="ln"> 115</span>       this.monthlyData.labels,
+<span class="ln"> 116</span>       barColour,
+<span class="ln"> 117</span>       null
+<span class="ln"> 118</span>     );
+<span class="ln"> 119</span> 
+<span class="ln"> 120</span>     var totalDistance = this.monthlyData.values.reduce(function(a, b) {
+<span class="ln"> 121</span>       return a + b;
+<span class="ln"> 122</span>     }, 0);
+<span class="ln"> 123</span> 
+<span class="ln"> 124</span>     textSize(12);
+<span class="ln"> 125</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 126</span>     fill(100);
+<span class="ln"> 127</span>     text(&#x27;Total Distance: &#x27; + totalDistance.toFixed(1) + &#x27; km&#x27;,
+<span class="ln"> 128</span>          this.layout.leftMargin,
+<span class="ln"> 129</span>          this.layout.bottomMargin + 60);
+<span class="ln"> 130</span>   };
+<span class="ln"> 131</span> }
+<span class="ln"> 132</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>8. pace-progress.js</h2>
+<p class="file-desc">Pace Progress — moving average and pace zone backgrounds</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Pace Progress: Displays running pace over time with individual data points
+<span class="ln">   3</span> // and a 10-run trailing moving average trend line. Filters runs by minimum
+<span class="ln">   4</span> // distance (3 km) and valid pace range (4–10 min/km) to ensure data quality.
+<span class="ln">   5</span> function PaceProgress() {
+<span class="ln">   6</span>   this.name = &#x27;Pace Progress&#x27;;
+<span class="ln">   7</span>   this.id = &#x27;pace-progress&#x27;;
+<span class="ln">   8</span>   this.title = &#x27;Running Pace Progress Over Time&#x27;;
+<span class="ln">   9</span>   this.xAxisLabel = &#x27;Date&#x27;;
+<span class="ln">  10</span>   this.yAxisLabel = &#x27;Pace (min/km)&#x27;;
+<span class="ln">  11</span> 
+<span class="ln">  12</span>   var marginSize = 35;
+<span class="ln">  13</span>   this.layout = {
+<span class="ln">  14</span>     marginSize: marginSize,
+<span class="ln">  15</span>     leftMargin: marginSize * 2,
+<span class="ln">  16</span>     rightMargin: width - marginSize,
+<span class="ln">  17</span>     topMargin: marginSize * 2,
+<span class="ln">  18</span>     bottomMargin: height - marginSize * 2,
+<span class="ln">  19</span>     pad: 5,
+<span class="ln">  20</span>     plotWidth: function() {
+<span class="ln">  21</span>       return this.rightMargin - this.leftMargin;
+<span class="ln">  22</span>     },
+<span class="ln">  23</span>     plotHeight: function() {
+<span class="ln">  24</span>       return this.bottomMargin - this.topMargin;
+<span class="ln">  25</span>     },
+<span class="ln">  26</span>     grid: true,
+<span class="ln">  27</span>     numXTickLabels: 8,
+<span class="ln">  28</span>     numYTickLabels: 8
+<span class="ln">  29</span>   };
+<span class="ln">  30</span> 
+<span class="ln">  31</span>   this.loaded = false;
+<span class="ln">  32</span> 
+<span class="ln">  33</span>   this.preload = function() {
+<span class="ln">  34</span>     var self = this;
+<span class="ln">  35</span>     this.data = loadTable(
+<span class="ln">  36</span>       &#x27;./data/running/activities.csv&#x27;, &#x27;csv&#x27;, &#x27;header&#x27;,
+<span class="ln">  37</span>       function(table) {
+<span class="ln">  38</span>         self.loaded = true;
+<span class="ln">  39</span>       });
+<span class="ln">  40</span>   };
+<span class="ln">  41</span> 
+<span class="ln">  42</span>   this.setup = function() {
+<span class="ln">  43</span>     if (!this.loaded) {
+<span class="ln">  44</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  45</span>       return;
+<span class="ln">  46</span>     }
+<span class="ln">  47</span> 
+<span class="ln">  48</span>     this.processedData = this.processData();
+<span class="ln">  49</span>     this.startDate = this.processedData.dates[0];
+<span class="ln">  50</span>     this.endDate = this.processedData.dates[this.processedData.dates.length - 1];
+<span class="ln">  51</span>     this.minPace = Math.floor(min(this.processedData.paces)) - 0.5;
+<span class="ln">  52</span>     this.maxPace = Math.ceil(max(this.processedData.paces)) + 0.5;
+<span class="ln">  53</span>   };
+<span class="ln">  54</span> 
+<span class="ln">  55</span>   this.destroy = function() {};
+<span class="ln">  56</span> 
+<span class="ln">  57</span>   this.processData = function() {
+<span class="ln">  58</span>     var dates = [];
+<span class="ln">  59</span>     var paces = [];
+<span class="ln">  60</span>     var distances = [];
+<span class="ln">  61</span> 
+<span class="ln">  62</span>     for (var i = 0; i &lt; this.data.getRowCount(); i++) {
+<span class="ln">  63</span>       var activityType = this.data.getString(i, &#x27;activity_type&#x27;);
+<span class="ln">  64</span> 
+<span class="ln">  65</span>       if (activityType === &#x27;Run&#x27;) {
+<span class="ln">  66</span>         var dateStr = this.data.getString(i, &#x27;date&#x27;);
+<span class="ln">  67</span>         var paceStr = this.data.getString(i, &#x27;avg_pace&#x27;);
+<span class="ln">  68</span>         var distance = this.data.getNum(i, &#x27;distance&#x27;);
+<span class="ln">  69</span> 
+<span class="ln">  70</span>         if (distance &gt;= 3) {
+<span class="ln">  71</span>           var paceMinutes = paceToMinutes(paceStr);
+<span class="ln">  72</span> 
+<span class="ln">  73</span>           if (paceMinutes &gt;= 4 &amp;&amp; paceMinutes &lt;= 10) {
+<span class="ln">  74</span>             dates.push(new Date(dateStr));
+<span class="ln">  75</span>             paces.push(paceMinutes);
+<span class="ln">  76</span>             distances.push(distance);
+<span class="ln">  77</span>           }
+<span class="ln">  78</span>         }
+<span class="ln">  79</span>       }
+<span class="ln">  80</span>     }
+<span class="ln">  81</span> 
+<span class="ln">  82</span>     var combined = [];
+<span class="ln">  83</span>     for (var j = 0; j &lt; dates.length; j++) {
+<span class="ln">  84</span>       combined.push({
+<span class="ln">  85</span>         date: dates[j],
+<span class="ln">  86</span>         pace: paces[j],
+<span class="ln">  87</span>         distance: distances[j]
+<span class="ln">  88</span>       });
+<span class="ln">  89</span>     }
+<span class="ln">  90</span>     combined.sort(function(a, b) {
+<span class="ln">  91</span>       return a.date - b.date;
+<span class="ln">  92</span>     });
+<span class="ln">  93</span> 
+<span class="ln">  94</span>     var sortedDates = [];
+<span class="ln">  95</span>     var sortedPaces = [];
+<span class="ln">  96</span>     var sortedDistances = [];
+<span class="ln">  97</span>     for (var k = 0; k &lt; combined.length; k++) {
+<span class="ln">  98</span>       sortedDates.push(combined[k].date);
+<span class="ln">  99</span>       sortedPaces.push(combined[k].pace);
+<span class="ln"> 100</span>       sortedDistances.push(combined[k].distance);
+<span class="ln"> 101</span>     }
+<span class="ln"> 102</span> 
+<span class="ln"> 103</span>     return {
+<span class="ln"> 104</span>       dates: sortedDates,
+<span class="ln"> 105</span>       paces: sortedPaces,
+<span class="ln"> 106</span>       distances: sortedDistances
+<span class="ln"> 107</span>     };
+<span class="ln"> 108</span>   };
+<span class="ln"> 109</span> 
+<span class="ln"> 110</span>   // Moving average smooths out short-term fluctuations.
+<span class="ln"> 111</span>   // O(n * w) time complexity where n = data length, w = window size.
+<span class="ln"> 112</span>   this.calculateMovingAverage = function(data, windowSize) {
+<span class="ln"> 113</span>     var result = [];
+<span class="ln"> 114</span>     for (var i = 0; i &lt; data.length; i++) {
+<span class="ln"> 115</span>       var start = Math.max(0, i - windowSize + 1);
+<span class="ln"> 116</span>       var sum = 0;
+<span class="ln"> 117</span>       var count = 0;
+<span class="ln"> 118</span>       for (var j = start; j &lt;= i; j++) {
+<span class="ln"> 119</span>         sum += data[j];
+<span class="ln"> 120</span>         count++;
+<span class="ln"> 121</span>       }
+<span class="ln"> 122</span>       result.push(sum / count);
+<span class="ln"> 123</span>     }
+<span class="ln"> 124</span>     return result;
+<span class="ln"> 125</span>   };
+<span class="ln"> 126</span> 
+<span class="ln"> 127</span>   // Draw colour-coded background bands for pace zones
+<span class="ln"> 128</span>   this.drawPaceZones = function() {
+<span class="ln"> 129</span>     noStroke();
+<span class="ln"> 130</span>     var plotLeft = this.layout.leftMargin;
+<span class="ln"> 131</span>     var plotWidth = this.layout.rightMargin - this.layout.leftMargin;
+<span class="ln"> 132</span> 
+<span class="ln"> 133</span>     var zones = [
+<span class="ln"> 134</span>       { min: this.minPace, max: 6, col: [144, 238, 144, 30], label: &#x27;Fast&#x27; },
+<span class="ln"> 135</span>       { min: 6, max: 7, col: [255, 236, 153, 30], label: &#x27;Moderate&#x27; },
+<span class="ln"> 136</span>       { min: 7, max: this.maxPace, col: [255, 180, 150, 30], label: &#x27;Easy&#x27; }
+<span class="ln"> 137</span>     ];
+<span class="ln"> 138</span> 
+<span class="ln"> 139</span>     for (var i = 0; i &lt; zones.length; i++) {
+<span class="ln"> 140</span>       var zone = zones[i];
+<span class="ln"> 141</span>       if (zone.min &gt;= this.maxPace || zone.max &lt;= this.minPace) continue;
+<span class="ln"> 142</span> 
+<span class="ln"> 143</span>       var clampedMin = Math.max(zone.min, this.minPace);
+<span class="ln"> 144</span>       var clampedMax = Math.min(zone.max, this.maxPace);
+<span class="ln"> 145</span>       var yTop = this.mapPaceToHeight(clampedMin);
+<span class="ln"> 146</span>       var yBottom = this.mapPaceToHeight(clampedMax);
+<span class="ln"> 147</span> 
+<span class="ln"> 148</span>       fill(zone.col[0], zone.col[1], zone.col[2], zone.col[3]);
+<span class="ln"> 149</span>       rect(plotLeft, yTop, plotWidth, yBottom - yTop);
+<span class="ln"> 150</span> 
+<span class="ln"> 151</span>       fill(100, 80);
+<span class="ln"> 152</span>       textSize(9);
+<span class="ln"> 153</span>       textAlign(&#x27;right&#x27;, &#x27;center&#x27;);
+<span class="ln"> 154</span>       text(zone.label, this.layout.rightMargin - 5, (yTop + yBottom) / 2);
+<span class="ln"> 155</span>     }
+<span class="ln"> 156</span>   };
+<span class="ln"> 157</span> 
+<span class="ln"> 158</span>   this.draw = function() {
+<span class="ln"> 159</span>     if (!this.loaded) {
+<span class="ln"> 160</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln"> 161</span>       return;
+<span class="ln"> 162</span>     }
+<span class="ln"> 163</span> 
+<span class="ln"> 164</span>     this.drawTitle();
+<span class="ln"> 165</span>     this.drawPaceZones();
+<span class="ln"> 166</span> 
+<span class="ln"> 167</span>     drawYAxisTickLabels(this.minPace,
+<span class="ln"> 168</span>                         this.maxPace,
+<span class="ln"> 169</span>                         this.layout,
+<span class="ln"> 170</span>                         this.mapPaceToHeight.bind(this),
+<span class="ln"> 171</span>                         1);
+<span class="ln"> 172</span> 
+<span class="ln"> 173</span>     drawAxis(this.layout);
+<span class="ln"> 174</span>     drawAxisLabels(this.xAxisLabel, this.yAxisLabel, this.layout);
+<span class="ln"> 175</span> 
+<span class="ln"> 176</span>     var dates = this.processedData.dates;
+<span class="ln"> 177</span>     var paces = this.processedData.paces;
+<span class="ln"> 178</span> 
+<span class="ln"> 179</span>     for (var i = 0; i &lt; dates.length; i++) {
+<span class="ln"> 180</span>       var x = this.mapDateToWidth(dates[i]);
+<span class="ln"> 181</span>       var y = this.mapPaceToHeight(paces[i]);
+<span class="ln"> 182</span> 
+<span class="ln"> 183</span>       fill(100, 149, 237, 150);
+<span class="ln"> 184</span>       noStroke();
+<span class="ln"> 185</span>       ellipse(x, y, 6, 6);
+<span class="ln"> 186</span>     }
+<span class="ln"> 187</span> 
+<span class="ln"> 188</span>     var movingAvg = this.calculateMovingAverage(paces, 10);
+<span class="ln"> 189</span>     stroke(220, 20, 60);
+<span class="ln"> 190</span>     strokeWeight(2);
+<span class="ln"> 191</span>     noFill();
+<span class="ln"> 192</span>     beginShape();
+<span class="ln"> 193</span>     for (var j = 0; j &lt; dates.length; j++) {
+<span class="ln"> 194</span>       var trendX = this.mapDateToWidth(dates[j]);
+<span class="ln"> 195</span>       var trendY = this.mapPaceToHeight(movingAvg[j]);
+<span class="ln"> 196</span>       vertex(trendX, trendY);
+<span class="ln"> 197</span>     }
+<span class="ln"> 198</span>     endShape();
+<span class="ln"> 199</span> 
+<span class="ln"> 200</span>     this.drawXAxisLabels();
+<span class="ln"> 201</span>     this.drawLegend();
+<span class="ln"> 202</span> 
+<span class="ln"> 203</span>     fill(100);
+<span class="ln"> 204</span>     noStroke();
+<span class="ln"> 205</span>     textSize(10);
+<span class="ln"> 206</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 207</span>     text(&#x27;Note: Lower pace = faster running&#x27;,
+<span class="ln"> 208</span>          this.layout.leftMargin,
+<span class="ln"> 209</span>          this.layout.bottomMargin + 45);
+<span class="ln"> 210</span>   };
+<span class="ln"> 211</span> 
+<span class="ln"> 212</span>   this.drawTitle = function() {
+<span class="ln"> 213</span>     fill(0);
+<span class="ln"> 214</span>     noStroke();
+<span class="ln"> 215</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 216</span>     textSize(18);
+<span class="ln"> 217</span>     text(this.title,
+<span class="ln"> 218</span>          (this.layout.plotWidth() / 2) + this.layout.leftMargin,
+<span class="ln"> 219</span>          this.layout.topMargin / 2);
+<span class="ln"> 220</span>   };
+<span class="ln"> 221</span> 
+<span class="ln"> 222</span>   this.drawXAxisLabels = function() {
+<span class="ln"> 223</span>     var dates = this.processedData.dates;
+<span class="ln"> 224</span>     var numLabels = Math.min(this.layout.numXTickLabels, dates.length);
+<span class="ln"> 225</span>     var step = Math.floor(dates.length / numLabels);
+<span class="ln"> 226</span> 
+<span class="ln"> 227</span>     fill(0);
+<span class="ln"> 228</span>     noStroke();
+<span class="ln"> 229</span>     textSize(10);
+<span class="ln"> 230</span>     textAlign(&#x27;center&#x27;, &#x27;top&#x27;);
+<span class="ln"> 231</span> 
+<span class="ln"> 232</span>     for (var i = 0; i &lt; dates.length; i += step) {
+<span class="ln"> 233</span>       var x = this.mapDateToWidth(dates[i]);
+<span class="ln"> 234</span>       var dateLabel = this.formatDate(dates[i]);
+<span class="ln"> 235</span> 
+<span class="ln"> 236</span>       stroke(0);
+<span class="ln"> 237</span>       line(x, this.layout.bottomMargin, x, this.layout.bottomMargin + 5);
+<span class="ln"> 238</span> 
+<span class="ln"> 239</span>       noStroke();
+<span class="ln"> 240</span>       text(dateLabel, x, this.layout.bottomMargin + 8);
+<span class="ln"> 241</span>     }
+<span class="ln"> 242</span>   };
+<span class="ln"> 243</span> 
+<span class="ln"> 244</span>   this.formatDate = function(date) {
+<span class="ln"> 245</span>     var months = [&#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;May&#x27;, &#x27;Jun&#x27;,
+<span class="ln"> 246</span>                   &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;];
+<span class="ln"> 247</span>     return months[date.getMonth()] + &#x27; &#x27; + (date.getFullYear() % 100);
+<span class="ln"> 248</span>   };
+<span class="ln"> 249</span> 
+<span class="ln"> 250</span>   this.drawLegend = function() {
+<span class="ln"> 251</span>     var legendX = this.layout.rightMargin - 150;
+<span class="ln"> 252</span>     var legendY = this.layout.topMargin + 10;
+<span class="ln"> 253</span> 
+<span class="ln"> 254</span>     fill(100, 149, 237);
+<span class="ln"> 255</span>     noStroke();
+<span class="ln"> 256</span>     ellipse(legendX, legendY, 6, 6);
+<span class="ln"> 257</span>     fill(0);
+<span class="ln"> 258</span>     textAlign(&#x27;left&#x27;, &#x27;center&#x27;);
+<span class="ln"> 259</span>     textSize(11);
+<span class="ln"> 260</span>     text(&#x27;Individual runs&#x27;, legendX + 10, legendY);
+<span class="ln"> 261</span> 
+<span class="ln"> 262</span>     stroke(220, 20, 60);
+<span class="ln"> 263</span>     strokeWeight(2);
+<span class="ln"> 264</span>     line(legendX - 10, legendY + 20, legendX + 10, legendY + 20);
+<span class="ln"> 265</span>     noStroke();
+<span class="ln"> 266</span>     fill(0);
+<span class="ln"> 267</span>     text(&#x27;10-run moving avg&#x27;, legendX + 15, legendY + 20);
+<span class="ln"> 268</span>   };
+<span class="ln"> 269</span> 
+<span class="ln"> 270</span>   this.mapDateToWidth = function(date) {
+<span class="ln"> 271</span>     var startTime = this.startDate.getTime();
+<span class="ln"> 272</span>     var endTime = this.endDate.getTime();
+<span class="ln"> 273</span>     return map(date.getTime(),
+<span class="ln"> 274</span>                startTime,
+<span class="ln"> 275</span>                endTime,
+<span class="ln"> 276</span>                this.layout.leftMargin,
+<span class="ln"> 277</span>                this.layout.rightMargin);
+<span class="ln"> 278</span>   };
+<span class="ln"> 279</span> 
+<span class="ln"> 280</span>   this.mapPaceToHeight = function(value) {
+<span class="ln"> 281</span>     return map(value,
+<span class="ln"> 282</span>                this.minPace,
+<span class="ln"> 283</span>                this.maxPace,
+<span class="ln"> 284</span>                this.layout.topMargin,
+<span class="ln"> 285</span>                this.layout.bottomMargin);
+<span class="ln"> 286</span>   };
+<span class="ln"> 287</span> }
+<span class="ln"> 288</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>9. activity-types.js</h2>
+<p class="file-desc">Activity Types — pie chart with dropdown switcher</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Activity Types: Pie chart showing distribution of Run, Trail Run, and
+<span class="ln">   3</span> // Hiking activities. Uses a dropdown selector (createSelect) to switch
+<span class="ln">   4</span> // between count-based and distance-based views. Delegates rendering to
+<span class="ln">   5</span> // the template&#x27;s PieChart constructor.
+<span class="ln">   6</span> function ActivityTypes() {
+<span class="ln">   7</span>   this.name = &#x27;Activity Types&#x27;;
+<span class="ln">   8</span>   this.id = &#x27;activity-types&#x27;;
+<span class="ln">   9</span>   this.loaded = false;
+<span class="ln">  10</span> 
+<span class="ln">  11</span>   this.pie = new PieChart(width / 2, height / 2, width * 0.35);
+<span class="ln">  12</span> 
+<span class="ln">  13</span>   this.preload = function() {
+<span class="ln">  14</span>     var self = this;
+<span class="ln">  15</span>     this.data = loadTable(
+<span class="ln">  16</span>       &#x27;./data/running/activities.csv&#x27;, &#x27;csv&#x27;, &#x27;header&#x27;,
+<span class="ln">  17</span>       function(table) {
+<span class="ln">  18</span>         self.loaded = true;
+<span class="ln">  19</span>       });
+<span class="ln">  20</span>   };
+<span class="ln">  21</span> 
+<span class="ln">  22</span>   this.setup = function() {
+<span class="ln">  23</span>     if (!this.loaded) {
+<span class="ln">  24</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  25</span>       return;
+<span class="ln">  26</span>     }
+<span class="ln">  27</span> 
+<span class="ln">  28</span>     this.activityCounts = this.countActivityTypes();
+<span class="ln">  29</span>     this.distanceByType = this.sumDistanceByType();
+<span class="ln">  30</span> 
+<span class="ln">  31</span>     this.select = createSelect();
+<span class="ln">  32</span>     this.select.position(350, 40);
+<span class="ln">  33</span>     this.select.option(&#x27;By Count&#x27;);
+<span class="ln">  34</span>     this.select.option(&#x27;By Distance&#x27;);
+<span class="ln">  35</span>   };
+<span class="ln">  36</span> 
+<span class="ln">  37</span>   this.destroy = function() {
+<span class="ln">  38</span>     this.select.remove();
+<span class="ln">  39</span>   };
+<span class="ln">  40</span> 
+<span class="ln">  41</span>   this.countActivityTypes = function() {
+<span class="ln">  42</span>     var counts = {};
+<span class="ln">  43</span> 
+<span class="ln">  44</span>     for (var i = 0; i &lt; this.data.getRowCount(); i++) {
+<span class="ln">  45</span>       var activityType = this.data.getString(i, &#x27;activity_type&#x27;);
+<span class="ln">  46</span> 
+<span class="ln">  47</span>       if (counts[activityType]) {
+<span class="ln">  48</span>         counts[activityType]++;
+<span class="ln">  49</span>       } else {
+<span class="ln">  50</span>         counts[activityType] = 1;
+<span class="ln">  51</span>       }
+<span class="ln">  52</span>     }
+<span class="ln">  53</span> 
+<span class="ln">  54</span>     return counts;
+<span class="ln">  55</span>   };
+<span class="ln">  56</span> 
+<span class="ln">  57</span>   this.sumDistanceByType = function() {
+<span class="ln">  58</span>     var distances = {};
+<span class="ln">  59</span> 
+<span class="ln">  60</span>     for (var i = 0; i &lt; this.data.getRowCount(); i++) {
+<span class="ln">  61</span>       var activityType = this.data.getString(i, &#x27;activity_type&#x27;);
+<span class="ln">  62</span>       var distance = this.data.getNum(i, &#x27;distance&#x27;);
+<span class="ln">  63</span> 
+<span class="ln">  64</span>       if (distances[activityType]) {
+<span class="ln">  65</span>         distances[activityType] += distance;
+<span class="ln">  66</span>       } else {
+<span class="ln">  67</span>         distances[activityType] = distance;
+<span class="ln">  68</span>       }
+<span class="ln">  69</span>     }
+<span class="ln">  70</span> 
+<span class="ln">  71</span>     return distances;
+<span class="ln">  72</span>   };
+<span class="ln">  73</span> 
+<span class="ln">  74</span>   this.draw = function() {
+<span class="ln">  75</span>     if (!this.loaded) {
+<span class="ln">  76</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  77</span>       return;
+<span class="ln">  78</span>     }
+<span class="ln">  79</span> 
+<span class="ln">  80</span>     var viewMode = this.select.value();
+<span class="ln">  81</span>     var dataToShow;
+<span class="ln">  82</span>     var title;
+<span class="ln">  83</span> 
+<span class="ln">  84</span>     if (viewMode === &#x27;By Count&#x27;) {
+<span class="ln">  85</span>       dataToShow = this.activityCounts;
+<span class="ln">  86</span>       title = &#x27;Activity Types by Count&#x27;;
+<span class="ln">  87</span>     } else {
+<span class="ln">  88</span>       dataToShow = this.distanceByType;
+<span class="ln">  89</span>       title = &#x27;Activity Types by Distance (km)&#x27;;
+<span class="ln">  90</span>     }
+<span class="ln">  91</span> 
+<span class="ln">  92</span>     var labels = Object.keys(dataToShow);
+<span class="ln">  93</span>     var values = [];
+<span class="ln">  94</span>     for (var i = 0; i &lt; labels.length; i++) {
+<span class="ln">  95</span>       values.push(dataToShow[labels[i]]);
+<span class="ln">  96</span>     }
+<span class="ln">  97</span> 
+<span class="ln">  98</span>     var colours = [
+<span class="ln">  99</span>       color(66, 133, 244),
+<span class="ln"> 100</span>       color(52, 168, 83),
+<span class="ln"> 101</span>       color(251, 188, 5)
+<span class="ln"> 102</span>     ];
+<span class="ln"> 103</span> 
+<span class="ln"> 104</span>     this.pie.draw(values, labels, colours, title);
+<span class="ln"> 105</span>     this.drawStats(dataToShow, viewMode);
+<span class="ln"> 106</span>   };
+<span class="ln"> 107</span> 
+<span class="ln"> 108</span>   this.drawStats = function(data, viewMode) {
+<span class="ln"> 109</span>     var labels = Object.keys(data);
+<span class="ln"> 110</span>     var total = 0;
+<span class="ln"> 111</span>     for (var i = 0; i &lt; labels.length; i++) {
+<span class="ln"> 112</span>       total += data[labels[i]];
+<span class="ln"> 113</span>     }
+<span class="ln"> 114</span> 
+<span class="ln"> 115</span>     var statsX = 80;
+<span class="ln"> 116</span>     var statsY = height - 100;
+<span class="ln"> 117</span> 
+<span class="ln"> 118</span>     fill(0);
+<span class="ln"> 119</span>     noStroke();
+<span class="ln"> 120</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 121</span>     textSize(12);
+<span class="ln"> 122</span> 
+<span class="ln"> 123</span>     if (viewMode === &#x27;By Count&#x27;) {
+<span class="ln"> 124</span>       text(&#x27;Total Activities: &#x27; + total, statsX, statsY);
+<span class="ln"> 125</span>     } else {
+<span class="ln"> 126</span>       text(&#x27;Total Distance: &#x27; + total.toFixed(1) + &#x27; km&#x27;, statsX, statsY);
+<span class="ln"> 127</span>     }
+<span class="ln"> 128</span> 
+<span class="ln"> 129</span>     textSize(11);
+<span class="ln"> 130</span>     for (var j = 0; j &lt; labels.length; j++) {
+<span class="ln"> 131</span>       var percentage = ((data[labels[j]] / total) * 100).toFixed(1);
+<span class="ln"> 132</span>       var valueStr = viewMode === &#x27;By Count&#x27;
+<span class="ln"> 133</span>         ? data[labels[j]] + &#x27; activities&#x27;
+<span class="ln"> 134</span>         : data[labels[j]].toFixed(1) + &#x27; km&#x27;;
+<span class="ln"> 135</span>       text(labels[j] + &#x27;: &#x27; + valueStr + &#x27; (&#x27; + percentage + &#x27;%)&#x27;,
+<span class="ln"> 136</span>            statsX, statsY + 18 + (j * 16));
+<span class="ln"> 137</span>     }
+<span class="ln"> 138</span>   };
+<span class="ln"> 139</span> }
+<span class="ln"> 140</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>10. heartrate-vs-pace.js</h2>
+<p class="file-desc">Heart Rate vs Pace — scatter plot with statistical analysis</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Heart Rate vs Pace: Scatter plot with statistical analysis showing the
+<span class="ln">   3</span> // relationship between heart rate and running pace. Calculates Pearson&#x27;s
+<span class="ln">   4</span> // correlation coefficient and draws a least-squares linear regression line.
+<span class="ln">   5</span> // Uses composition with ScatterPlot for point rendering and Tooltip for
+<span class="ln">   6</span> // hover interaction.
+<span class="ln">   7</span> function HeartRateVsPace() {
+<span class="ln">   8</span>   this.name = &#x27;Heart Rate vs Pace&#x27;;
+<span class="ln">   9</span>   this.id = &#x27;heartrate-vs-pace&#x27;;
+<span class="ln">  10</span>   this.title = &#x27;Heart Rate vs Running Pace&#x27;;
+<span class="ln">  11</span> 
+<span class="ln">  12</span>   var marginSize = 35;
+<span class="ln">  13</span>   this.layout = {
+<span class="ln">  14</span>     marginSize: marginSize,
+<span class="ln">  15</span>     leftMargin: marginSize * 2.5,
+<span class="ln">  16</span>     rightMargin: width - marginSize,
+<span class="ln">  17</span>     topMargin: marginSize * 2,
+<span class="ln">  18</span>     bottomMargin: height - marginSize * 2.5,
+<span class="ln">  19</span>     pad: 5,
+<span class="ln">  20</span>     plotWidth: function() {
+<span class="ln">  21</span>       return this.rightMargin - this.leftMargin;
+<span class="ln">  22</span>     },
+<span class="ln">  23</span>     plotHeight: function() {
+<span class="ln">  24</span>       return this.bottomMargin - this.topMargin;
+<span class="ln">  25</span>     },
+<span class="ln">  26</span>     grid: true,
+<span class="ln">  27</span>     numXTickLabels: 6,
+<span class="ln">  28</span>     numYTickLabels: 6
+<span class="ln">  29</span>   };
+<span class="ln">  30</span> 
+<span class="ln">  31</span>   this.scatterPlot = new ScatterPlot(this.layout);
+<span class="ln">  32</span>   this.loaded = false;
+<span class="ln">  33</span> 
+<span class="ln">  34</span>   this.preload = function() {
+<span class="ln">  35</span>     var self = this;
+<span class="ln">  36</span>     this.data = loadTable(
+<span class="ln">  37</span>       &#x27;./data/running/activities.csv&#x27;, &#x27;csv&#x27;, &#x27;header&#x27;,
+<span class="ln">  38</span>       function(table) {
+<span class="ln">  39</span>         self.loaded = true;
+<span class="ln">  40</span>       });
+<span class="ln">  41</span>   };
+<span class="ln">  42</span> 
+<span class="ln">  43</span>   this.setup = function() {
+<span class="ln">  44</span>     if (!this.loaded) {
+<span class="ln">  45</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  46</span>       return;
+<span class="ln">  47</span>     }
+<span class="ln">  48</span> 
+<span class="ln">  49</span>     this.processedData = this.processData();
+<span class="ln">  50</span> 
+<span class="ln">  51</span>     this.xRange = {
+<span class="ln">  52</span>       min: Math.floor(min(this.processedData.heartRates) / 10) * 10 - 5,
+<span class="ln">  53</span>       max: Math.ceil(max(this.processedData.heartRates) / 10) * 10 + 5
+<span class="ln">  54</span>     };
+<span class="ln">  55</span> 
+<span class="ln">  56</span>     this.yRange = {
+<span class="ln">  57</span>       min: Math.floor(min(this.processedData.paces) * 2) / 2 - 0.5,
+<span class="ln">  58</span>       max: Math.ceil(max(this.processedData.paces) * 2) / 2 + 0.5
+<span class="ln">  59</span>     };
+<span class="ln">  60</span>   };
+<span class="ln">  61</span> 
+<span class="ln">  62</span>   this.destroy = function() {};
+<span class="ln">  63</span> 
+<span class="ln">  64</span>   this.processData = function() {
+<span class="ln">  65</span>     var heartRates = [];
+<span class="ln">  66</span>     var paces = [];
+<span class="ln">  67</span>     var distances = [];
+<span class="ln">  68</span>     var labels = [];
+<span class="ln">  69</span> 
+<span class="ln">  70</span>     for (var i = 0; i &lt; this.data.getRowCount(); i++) {
+<span class="ln">  71</span>       var activityType = this.data.getString(i, &#x27;activity_type&#x27;);
+<span class="ln">  72</span> 
+<span class="ln">  73</span>       if (activityType === &#x27;Run&#x27;) {
+<span class="ln">  74</span>         var heartRate = this.data.getNum(i, &#x27;avg_heart_rate&#x27;);
+<span class="ln">  75</span>         var paceStr = this.data.getString(i, &#x27;avg_pace&#x27;);
+<span class="ln">  76</span>         var distance = this.data.getNum(i, &#x27;distance&#x27;);
+<span class="ln">  77</span>         var date = this.data.getString(i, &#x27;date&#x27;);
+<span class="ln">  78</span> 
+<span class="ln">  79</span>         if (heartRate &gt; 0 &amp;&amp; distance &gt;= 3) {
+<span class="ln">  80</span>           var paceMinutes = paceToMinutes(paceStr);
+<span class="ln">  81</span> 
+<span class="ln">  82</span>           if (paceMinutes &gt;= 5 &amp;&amp; paceMinutes &lt;= 9) {
+<span class="ln">  83</span>             heartRates.push(heartRate);
+<span class="ln">  84</span>             paces.push(paceMinutes);
+<span class="ln">  85</span>             distances.push(distance);
+<span class="ln">  86</span>             labels.push(date + &#x27; - &#x27; + distance.toFixed(1) + &#x27;km&#x27;);
+<span class="ln">  87</span>           }
+<span class="ln">  88</span>         }
+<span class="ln">  89</span>       }
+<span class="ln">  90</span>     }
+<span class="ln">  91</span> 
+<span class="ln">  92</span>     return {
+<span class="ln">  93</span>       heartRates: heartRates,
+<span class="ln">  94</span>       paces: paces,
+<span class="ln">  95</span>       distances: distances,
+<span class="ln">  96</span>       labels: labels
+<span class="ln">  97</span>     };
+<span class="ln">  98</span>   };
+<span class="ln">  99</span> 
+<span class="ln"> 100</span>   // Pearson correlation coefficient: measures linear relationship between two variables.
+<span class="ln"> 101</span>   // Single-pass algorithm: O(n) time complexity where n = number of data points.
+<span class="ln"> 102</span>   this.calculateCorrelation = function(x, y) {
+<span class="ln"> 103</span>     var n = x.length;
+<span class="ln"> 104</span>     var sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+<span class="ln"> 105</span> 
+<span class="ln"> 106</span>     for (var i = 0; i &lt; n; i++) {
+<span class="ln"> 107</span>       sumX += x[i];
+<span class="ln"> 108</span>       sumY += y[i];
+<span class="ln"> 109</span>       sumXY += x[i] * y[i];
+<span class="ln"> 110</span>       sumX2 += x[i] * x[i];
+<span class="ln"> 111</span>       sumY2 += y[i] * y[i];
+<span class="ln"> 112</span>     }
+<span class="ln"> 113</span> 
+<span class="ln"> 114</span>     var numerator = (n * sumXY) - (sumX * sumY);
+<span class="ln"> 115</span>     var denominator = Math.sqrt(((n * sumX2) - (sumX * sumX)) *
+<span class="ln"> 116</span>                                  ((n * sumY2) - (sumY * sumY)));
+<span class="ln"> 117</span> 
+<span class="ln"> 118</span>     if (denominator === 0) return 0;
+<span class="ln"> 119</span>     return numerator / denominator;
+<span class="ln"> 120</span>   };
+<span class="ln"> 121</span> 
+<span class="ln"> 122</span>   // Least squares linear regression: finds best fit line y = mx + b.
+<span class="ln"> 123</span>   // O(n) time complexity — single pass through the data.
+<span class="ln"> 124</span>   this.calculateRegression = function(x, y) {
+<span class="ln"> 125</span>     var n = x.length;
+<span class="ln"> 126</span>     var sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+<span class="ln"> 127</span> 
+<span class="ln"> 128</span>     for (var i = 0; i &lt; n; i++) {
+<span class="ln"> 129</span>       sumX += x[i];
+<span class="ln"> 130</span>       sumY += y[i];
+<span class="ln"> 131</span>       sumXY += x[i] * y[i];
+<span class="ln"> 132</span>       sumX2 += x[i] * x[i];
+<span class="ln"> 133</span>     }
+<span class="ln"> 134</span> 
+<span class="ln"> 135</span>     var slope = ((n * sumXY) - (sumX * sumY)) / ((n * sumX2) - (sumX * sumX));
+<span class="ln"> 136</span>     var intercept = (sumY - (slope * sumX)) / n;
+<span class="ln"> 137</span> 
+<span class="ln"> 138</span>     return { slope: slope, intercept: intercept };
+<span class="ln"> 139</span>   };
+<span class="ln"> 140</span> 
+<span class="ln"> 141</span>   this.draw = function() {
+<span class="ln"> 142</span>     if (!this.loaded) {
+<span class="ln"> 143</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln"> 144</span>       return;
+<span class="ln"> 145</span>     }
+<span class="ln"> 146</span> 
+<span class="ln"> 147</span>     fill(0);
+<span class="ln"> 148</span>     noStroke();
+<span class="ln"> 149</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 150</span>     textSize(18);
+<span class="ln"> 151</span>     text(this.title,
+<span class="ln"> 152</span>          (this.layout.leftMargin + this.layout.rightMargin) / 2,
+<span class="ln"> 153</span>          this.layout.topMargin / 2);
+<span class="ln"> 154</span> 
+<span class="ln"> 155</span>     stroke(0);
+<span class="ln"> 156</span>     strokeWeight(1);
+<span class="ln"> 157</span>     line(this.layout.leftMargin, this.layout.topMargin,
+<span class="ln"> 158</span>          this.layout.leftMargin, this.layout.bottomMargin);
+<span class="ln"> 159</span>     line(this.layout.leftMargin, this.layout.bottomMargin,
+<span class="ln"> 160</span>          this.layout.rightMargin, this.layout.bottomMargin);
+<span class="ln"> 161</span> 
+<span class="ln"> 162</span>     this.scatterPlot.drawXAxisTicks(this.xRange.min, this.xRange.max,
+<span class="ln"> 163</span>                                      this.layout.numXTickLabels,
+<span class="ln"> 164</span>                                      &#x27;Average Heart Rate (bpm)&#x27;);
+<span class="ln"> 165</span>     this.scatterPlot.drawYAxisTicks(this.yRange.min, this.yRange.max,
+<span class="ln"> 166</span>                                      this.layout.numYTickLabels,
+<span class="ln"> 167</span>                                      &#x27;Pace (min/km)&#x27;);
+<span class="ln"> 168</span> 
+<span class="ln"> 169</span>     var regression = this.calculateRegression(
+<span class="ln"> 170</span>       this.processedData.heartRates,
+<span class="ln"> 171</span>       this.processedData.paces
+<span class="ln"> 172</span>     );
+<span class="ln"> 173</span>     this.drawTrendLine(regression);
+<span class="ln"> 174</span> 
+<span class="ln"> 175</span>     // Map distance to point size: longer runs get larger bubbles
+<span class="ln"> 176</span>     var distances = this.processedData.distances;
+<span class="ln"> 177</span>     var minDist = min(distances);
+<span class="ln"> 178</span>     var maxDist = max(distances);
+<span class="ln"> 179</span>     var sizes = [];
+<span class="ln"> 180</span>     for (var i = 0; i &lt; distances.length; i++) {
+<span class="ln"> 181</span>       sizes.push(map(distances[i], minDist, maxDist, 4, 28));
+<span class="ln"> 182</span>     }
+<span class="ln"> 183</span> 
+<span class="ln"> 184</span>     var pointColour = color(66, 133, 244, 180);
+<span class="ln"> 185</span>     this.scatterPlot.draw(
+<span class="ln"> 186</span>       this.processedData.heartRates,
+<span class="ln"> 187</span>       this.processedData.paces,
+<span class="ln"> 188</span>       this.xRange,
+<span class="ln"> 189</span>       this.yRange,
+<span class="ln"> 190</span>       pointColour,
+<span class="ln"> 191</span>       this.processedData.labels,
+<span class="ln"> 192</span>       sizes
+<span class="ln"> 193</span>     );
+<span class="ln"> 194</span> 
+<span class="ln"> 195</span>     this.drawCorrelationInfo();
+<span class="ln"> 196</span> 
+<span class="ln"> 197</span>     fill(100);
+<span class="ln"> 198</span>     textSize(10);
+<span class="ln"> 199</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 200</span>     text(&#x27;Hover over points to see details&#x27;,
+<span class="ln"> 201</span>          this.layout.leftMargin,
+<span class="ln"> 202</span>          this.layout.bottomMargin + 50);
+<span class="ln"> 203</span>   };
+<span class="ln"> 204</span> 
+<span class="ln"> 205</span>   this.drawTrendLine = function(regression) {
+<span class="ln"> 206</span>     var x1 = this.xRange.min;
+<span class="ln"> 207</span>     var x2 = this.xRange.max;
+<span class="ln"> 208</span>     var y1 = regression.slope * x1 + regression.intercept;
+<span class="ln"> 209</span>     var y2 = regression.slope * x2 + regression.intercept;
+<span class="ln"> 210</span> 
+<span class="ln"> 211</span>     y1 = constrain(y1, this.yRange.min, this.yRange.max);
+<span class="ln"> 212</span>     y2 = constrain(y2, this.yRange.min, this.yRange.max);
+<span class="ln"> 213</span> 
+<span class="ln"> 214</span>     var screenX1 = this.scatterPlot.mapToX(x1, this.xRange.min, this.xRange.max);
+<span class="ln"> 215</span>     var screenY1 = this.scatterPlot.mapToY(y1, this.yRange.min, this.yRange.max);
+<span class="ln"> 216</span>     var screenX2 = this.scatterPlot.mapToX(x2, this.xRange.min, this.xRange.max);
+<span class="ln"> 217</span>     var screenY2 = this.scatterPlot.mapToY(y2, this.yRange.min, this.yRange.max);
+<span class="ln"> 218</span> 
+<span class="ln"> 219</span>     stroke(220, 20, 60);
+<span class="ln"> 220</span>     strokeWeight(2);
+<span class="ln"> 221</span>     line(screenX1, screenY1, screenX2, screenY2);
+<span class="ln"> 222</span>   };
+<span class="ln"> 223</span> 
+<span class="ln"> 224</span>   this.drawCorrelationInfo = function() {
+<span class="ln"> 225</span>     var correlation = this.calculateCorrelation(
+<span class="ln"> 226</span>       this.processedData.heartRates,
+<span class="ln"> 227</span>       this.processedData.paces
+<span class="ln"> 228</span>     );
+<span class="ln"> 229</span> 
+<span class="ln"> 230</span>     var infoX = this.layout.rightMargin - 180;
+<span class="ln"> 231</span>     var infoY = this.layout.topMargin + 10;
+<span class="ln"> 232</span> 
+<span class="ln"> 233</span>     fill(255, 255, 255, 200);
+<span class="ln"> 234</span>     stroke(200);
+<span class="ln"> 235</span>     strokeWeight(1);
+<span class="ln"> 236</span>     rect(infoX - 10, infoY - 5, 180, 70, 5);
+<span class="ln"> 237</span> 
+<span class="ln"> 238</span>     fill(0);
+<span class="ln"> 239</span>     noStroke();
+<span class="ln"> 240</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 241</span>     textSize(11);
+<span class="ln"> 242</span> 
+<span class="ln"> 243</span>     text(&#x27;Correlation: &#x27; + correlation.toFixed(3), infoX, infoY);
+<span class="ln"> 244</span>     text(&#x27;Data points: &#x27; + this.processedData.heartRates.length, infoX, infoY + 16);
+<span class="ln"> 245</span> 
+<span class="ln"> 246</span>     textSize(10);
+<span class="ln"> 247</span>     fill(100);
+<span class="ln"> 248</span>     var interpretation;
+<span class="ln"> 249</span>     if (correlation &lt; -0.3) {
+<span class="ln"> 250</span>       interpretation = &#x27;Negative correlation: higher HR,&#x27;;
+<span class="ln"> 251</span>       text(interpretation, infoX, infoY + 36);
+<span class="ln"> 252</span>       text(&#x27;faster pace (lower number)&#x27;, infoX, infoY + 48);
+<span class="ln"> 253</span>     } else if (correlation &gt; 0.3) {
+<span class="ln"> 254</span>       interpretation = &#x27;Positive correlation: higher HR,&#x27;;
+<span class="ln"> 255</span>       text(interpretation, infoX, infoY + 36);
+<span class="ln"> 256</span>       text(&#x27;slower pace&#x27;, infoX, infoY + 48);
+<span class="ln"> 257</span>     } else {
+<span class="ln"> 258</span>       text(&#x27;Weak correlation&#x27;, infoX, infoY + 36);
+<span class="ln"> 259</span>     }
+<span class="ln"> 260</span>   };
+<span class="ln"> 261</span> }
+<span class="ln"> 262</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>11. goal-tracker.js</h2>
+<p class="file-desc">Goal Tracker — semicircular gauge with trigonometry</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Goal Tracker: Semicircular gauge displaying monthly distance progress
+<span class="ln">   3</span> // toward a 100 km goal. Uses trigonometric functions (cos/sin) for polar
+<span class="ln">   4</span> // coordinate positioning along a 270-degree arc, with a five-tier colour
+<span class="ln">   5</span> // system (red → green) for visual feedback.
+<span class="ln">   6</span> function GoalTracker() {
+<span class="ln">   7</span>   this.name = &#x27;Goal Tracker&#x27;;
+<span class="ln">   8</span>   this.id = &#x27;goal-tracker&#x27;;
+<span class="ln">   9</span>   this.title = &#x27;Monthly Distance Goal&#x27;;
+<span class="ln">  10</span>   this.loaded = false;
+<span class="ln">  11</span> 
+<span class="ln">  12</span>   // Goal: 100km per month
+<span class="ln">  13</span>   this.monthlyGoal = 100;
+<span class="ln">  14</span> 
+<span class="ln">  15</span>   // Gauge settings
+<span class="ln">  16</span>   this.gaugeX = width / 2;
+<span class="ln">  17</span>   this.gaugeY = height / 2 - 30;
+<span class="ln">  18</span>   this.gaugeRadius = 150;
+<span class="ln">  19</span>   this.gaugeWeight = 25;
+<span class="ln">  20</span> 
+<span class="ln">  21</span>   this.preload = function() {
+<span class="ln">  22</span>     var self = this;
+<span class="ln">  23</span>     this.data = loadTable(
+<span class="ln">  24</span>       &#x27;./data/running/activities.csv&#x27;, &#x27;csv&#x27;, &#x27;header&#x27;,
+<span class="ln">  25</span>       function(table) {
+<span class="ln">  26</span>         self.loaded = true;
+<span class="ln">  27</span>       });
+<span class="ln">  28</span>   };
+<span class="ln">  29</span> 
+<span class="ln">  30</span>   this.setup = function() {
+<span class="ln">  31</span>     if (!this.loaded) {
+<span class="ln">  32</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  33</span>       return;
+<span class="ln">  34</span>     }
+<span class="ln">  35</span> 
+<span class="ln">  36</span>     this.monthlyData = this.calculateMonthlyDistances();
+<span class="ln">  37</span>     this.currentMonth = this.getCurrentMonthKey();
+<span class="ln">  38</span> 
+<span class="ln">  39</span>     // Create month selector
+<span class="ln">  40</span>     this.select = createSelect();
+<span class="ln">  41</span>     this.select.position(420, 40);
+<span class="ln">  42</span> 
+<span class="ln">  43</span>     var months = Object.keys(this.monthlyData).sort().reverse();
+<span class="ln">  44</span>     for (var i = 0; i &lt; months.length; i++) {
+<span class="ln">  45</span>       this.select.option(this.formatMonthLabel(months[i]), months[i]);
+<span class="ln">  46</span>     }
+<span class="ln">  47</span>     this.select.selected(this.currentMonth);
+<span class="ln">  48</span>   };
+<span class="ln">  49</span> 
+<span class="ln">  50</span>   this.destroy = function() {
+<span class="ln">  51</span>     this.select.remove();
+<span class="ln">  52</span>   };
+<span class="ln">  53</span> 
+<span class="ln">  54</span>   this.getCurrentMonthKey = function() {
+<span class="ln">  55</span>     var now = new Date();
+<span class="ln">  56</span>     var year = now.getFullYear();
+<span class="ln">  57</span>     var month = (now.getMonth() + 1).toString().padStart(2, &#x27;0&#x27;);
+<span class="ln">  58</span>     return year + &#x27;-&#x27; + month;
+<span class="ln">  59</span>   };
+<span class="ln">  60</span> 
+<span class="ln">  61</span>   this.formatMonthLabel = function(yearMonth) {
+<span class="ln">  62</span>     var parts = yearMonth.split(&#x27;-&#x27;);
+<span class="ln">  63</span>     var monthNames = [&#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;May&#x27;, &#x27;Jun&#x27;,
+<span class="ln">  64</span>                       &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;];
+<span class="ln">  65</span>     return monthNames[parseInt(parts[1]) - 1] + &#x27; &#x27; + parts[0];
+<span class="ln">  66</span>   };
+<span class="ln">  67</span> 
+<span class="ln">  68</span>   this.calculateMonthlyDistances = function() {
+<span class="ln">  69</span>     var months = {};
+<span class="ln">  70</span> 
+<span class="ln">  71</span>     for (var i = 0; i &lt; this.data.getRowCount(); i++) {
+<span class="ln">  72</span>       var dateStr = this.data.getString(i, &#x27;date&#x27;);
+<span class="ln">  73</span>       var distance = this.data.getNum(i, &#x27;distance&#x27;);
+<span class="ln">  74</span>       var yearMonth = dateStr.substring(0, 7);
+<span class="ln">  75</span> 
+<span class="ln">  76</span>       if (months[yearMonth]) {
+<span class="ln">  77</span>         months[yearMonth].total += distance;
+<span class="ln">  78</span>         months[yearMonth].runs.push({
+<span class="ln">  79</span>           date: dateStr,
+<span class="ln">  80</span>           distance: distance
+<span class="ln">  81</span>         });
+<span class="ln">  82</span>       } else {
+<span class="ln">  83</span>         months[yearMonth] = {
+<span class="ln">  84</span>           total: distance,
+<span class="ln">  85</span>           runs: [{
+<span class="ln">  86</span>             date: dateStr,
+<span class="ln">  87</span>             distance: distance
+<span class="ln">  88</span>           }]
+<span class="ln">  89</span>         };
+<span class="ln">  90</span>       }
+<span class="ln">  91</span>     }
+<span class="ln">  92</span> 
+<span class="ln">  93</span>     return months;
+<span class="ln">  94</span>   };
+<span class="ln">  95</span> 
+<span class="ln">  96</span>   this.draw = function() {
+<span class="ln">  97</span>     if (!this.loaded) {
+<span class="ln">  98</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  99</span>       return;
+<span class="ln"> 100</span>     }
+<span class="ln"> 101</span> 
+<span class="ln"> 102</span>     var selectedMonth = this.select.value();
+<span class="ln"> 103</span>     var monthData = this.monthlyData[selectedMonth];
+<span class="ln"> 104</span> 
+<span class="ln"> 105</span>     if (!monthData) {
+<span class="ln"> 106</span>       fill(0);
+<span class="ln"> 107</span>       textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 108</span>       textSize(16);
+<span class="ln"> 109</span>       text(&#x27;No data for selected month&#x27;, width / 2, height / 2);
+<span class="ln"> 110</span>       return;
+<span class="ln"> 111</span>     }
+<span class="ln"> 112</span> 
+<span class="ln"> 113</span>     var currentDistance = monthData.total;
+<span class="ln"> 114</span>     var progress = currentDistance / this.monthlyGoal;
+<span class="ln"> 115</span>     var progressPercent = Math.min(progress * 100, 100);
+<span class="ln"> 116</span> 
+<span class="ln"> 117</span>     // Draw title
+<span class="ln"> 118</span>     fill(0);
+<span class="ln"> 119</span>     noStroke();
+<span class="ln"> 120</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 121</span>     textSize(20);
+<span class="ln"> 122</span>     text(this.title, width / 2, 40);
+<span class="ln"> 123</span> 
+<span class="ln"> 124</span>     textSize(14);
+<span class="ln"> 125</span>     fill(100);
+<span class="ln"> 126</span>     text(&#x27;Target: &#x27; + this.monthlyGoal + &#x27; km/month&#x27;, width / 2, 65);
+<span class="ln"> 127</span> 
+<span class="ln"> 128</span>     // Draw gauge
+<span class="ln"> 129</span>     this.drawGauge(progressPercent, currentDistance);
+<span class="ln"> 130</span> 
+<span class="ln"> 131</span>     // Draw stats
+<span class="ln"> 132</span>     this.drawStats(monthData, currentDistance, progress);
+<span class="ln"> 133</span> 
+<span class="ln"> 134</span>     // Draw recent runs
+<span class="ln"> 135</span>     this.drawRecentRuns(monthData.runs);
+<span class="ln"> 136</span>   };
+<span class="ln"> 137</span> 
+<span class="ln"> 138</span>   this.drawGauge = function(percent, distance) {
+<span class="ln"> 139</span>     var startAngle = PI * 0.75;
+<span class="ln"> 140</span>     var endAngle = PI * 2.25;
+<span class="ln"> 141</span>     var totalArc = endAngle - startAngle;
+<span class="ln"> 142</span> 
+<span class="ln"> 143</span>     // Background arc
+<span class="ln"> 144</span>     noFill();
+<span class="ln"> 145</span>     stroke(230);
+<span class="ln"> 146</span>     strokeWeight(this.gaugeWeight);
+<span class="ln"> 147</span>     strokeCap(ROUND);
+<span class="ln"> 148</span>     arc(this.gaugeX, this.gaugeY, this.gaugeRadius * 2, this.gaugeRadius * 2,
+<span class="ln"> 149</span>         startAngle, endAngle);
+<span class="ln"> 150</span> 
+<span class="ln"> 151</span>     // Progress arc with color based on progress
+<span class="ln"> 152</span>     var progressAngle = startAngle + (totalArc * Math.min(percent / 100, 1));
+<span class="ln"> 153</span>     var gaugeColor = this.getProgressColor(percent);
+<span class="ln"> 154</span>     stroke(gaugeColor);
+<span class="ln"> 155</span>     strokeWeight(this.gaugeWeight);
+<span class="ln"> 156</span>     arc(this.gaugeX, this.gaugeY, this.gaugeRadius * 2, this.gaugeRadius * 2,
+<span class="ln"> 157</span>         startAngle, progressAngle);
+<span class="ln"> 158</span> 
+<span class="ln"> 159</span>     // Center text
+<span class="ln"> 160</span>     noStroke();
+<span class="ln"> 161</span>     fill(0);
+<span class="ln"> 162</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 163</span>     textSize(42);
+<span class="ln"> 164</span>     textStyle(BOLD);
+<span class="ln"> 165</span>     text(distance.toFixed(1), this.gaugeX, this.gaugeY - 10);
+<span class="ln"> 166</span> 
+<span class="ln"> 167</span>     textSize(16);
+<span class="ln"> 168</span>     textStyle(NORMAL);
+<span class="ln"> 169</span>     fill(100);
+<span class="ln"> 170</span>     text(&#x27;km&#x27;, this.gaugeX, this.gaugeY + 20);
+<span class="ln"> 171</span> 
+<span class="ln"> 172</span>     // Percentage
+<span class="ln"> 173</span>     textSize(18);
+<span class="ln"> 174</span>     fill(gaugeColor);
+<span class="ln"> 175</span>     text(percent.toFixed(0) + &#x27;%&#x27;, this.gaugeX, this.gaugeY + 50);
+<span class="ln"> 176</span> 
+<span class="ln"> 177</span>     // Goal markers
+<span class="ln"> 178</span>     this.drawGoalMarkers(startAngle, totalArc);
+<span class="ln"> 179</span>   };
+<span class="ln"> 180</span> 
+<span class="ln"> 181</span>   this.drawGoalMarkers = function(startAngle, totalArc) {
+<span class="ln"> 182</span>     var markers = [0, 25, 50, 75, 100];
+<span class="ln"> 183</span>     var markerRadius = this.gaugeRadius + 25;
+<span class="ln"> 184</span> 
+<span class="ln"> 185</span>     fill(100);
+<span class="ln"> 186</span>     noStroke();
+<span class="ln"> 187</span>     textSize(10);
+<span class="ln"> 188</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 189</span> 
+<span class="ln"> 190</span>     for (var i = 0; i &lt; markers.length; i++) {
+<span class="ln"> 191</span>       var angle = startAngle + (totalArc * markers[i] / 100);
+<span class="ln"> 192</span>       var x = this.gaugeX + cos(angle) * markerRadius;
+<span class="ln"> 193</span>       var y = this.gaugeY + sin(angle) * markerRadius;
+<span class="ln"> 194</span>       text(markers[i] + &#x27;km&#x27;, x, y);
+<span class="ln"> 195</span>     }
+<span class="ln"> 196</span>   };
+<span class="ln"> 197</span> 
+<span class="ln"> 198</span>   this.getProgressColor = function(percent) {
+<span class="ln"> 199</span>     if (percent &gt;= 100) {
+<span class="ln"> 200</span>       return color(46, 204, 113); // Green - goal achieved
+<span class="ln"> 201</span>     } else if (percent &gt;= 75) {
+<span class="ln"> 202</span>       return color(52, 152, 219); // Blue - on track
+<span class="ln"> 203</span>     } else if (percent &gt;= 50) {
+<span class="ln"> 204</span>       return color(241, 196, 15); // Yellow - halfway
+<span class="ln"> 205</span>     } else if (percent &gt;= 25) {
+<span class="ln"> 206</span>       return color(230, 126, 34); // Orange - needs effort
+<span class="ln"> 207</span>     } else {
+<span class="ln"> 208</span>       return color(231, 76, 60); // Red - just started
+<span class="ln"> 209</span>     }
+<span class="ln"> 210</span>   };
+<span class="ln"> 211</span> 
+<span class="ln"> 212</span>   this.drawStats = function(monthData, currentDistance, progress) {
+<span class="ln"> 213</span>     var statsX = 80;
+<span class="ln"> 214</span>     var statsY = height - 140;
+<span class="ln"> 215</span> 
+<span class="ln"> 216</span>     fill(0);
+<span class="ln"> 217</span>     noStroke();
+<span class="ln"> 218</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 219</span>     textSize(14);
+<span class="ln"> 220</span>     textStyle(BOLD);
+<span class="ln"> 221</span>     text(&#x27;Statistics&#x27;, statsX, statsY);
+<span class="ln"> 222</span> 
+<span class="ln"> 223</span>     textSize(12);
+<span class="ln"> 224</span>     textStyle(NORMAL);
+<span class="ln"> 225</span>     fill(60);
+<span class="ln"> 226</span> 
+<span class="ln"> 227</span>     var remaining = Math.max(0, this.monthlyGoal - currentDistance);
+<span class="ln"> 228</span>     var numRuns = monthData.runs.length;
+<span class="ln"> 229</span>     var avgPerRun = numRuns &gt; 0 ? currentDistance / numRuns : 0;
+<span class="ln"> 230</span> 
+<span class="ln"> 231</span>     text(&#x27;Total runs: &#x27; + numRuns, statsX, statsY + 25);
+<span class="ln"> 232</span>     text(&#x27;Average per run: &#x27; + avgPerRun.toFixed(1) + &#x27; km&#x27;, statsX, statsY + 45);
+<span class="ln"> 233</span>     text(&#x27;Remaining: &#x27; + remaining.toFixed(1) + &#x27; km&#x27;, statsX, statsY + 65);
+<span class="ln"> 234</span> 
+<span class="ln"> 235</span>     if (progress &gt;= 1) {
+<span class="ln"> 236</span>       fill(46, 204, 113);
+<span class="ln"> 237</span>       textStyle(BOLD);
+<span class="ln"> 238</span>       text(&#x27;Goal achieved!&#x27;, statsX, statsY + 90);
+<span class="ln"> 239</span>     } else {
+<span class="ln"> 240</span>       fill(100);
+<span class="ln"> 241</span>       var runsNeeded = Math.ceil(remaining / avgPerRun);
+<span class="ln"> 242</span>       if (avgPerRun &gt; 0 &amp;&amp; runsNeeded &gt; 0) {
+<span class="ln"> 243</span>         text(&#x27;~&#x27; + runsNeeded + &#x27; more runs needed (at current avg)&#x27;, statsX, statsY + 90);
+<span class="ln"> 244</span>       }
+<span class="ln"> 245</span>     }
+<span class="ln"> 246</span>   };
+<span class="ln"> 247</span> 
+<span class="ln"> 248</span>   this.drawRecentRuns = function(runs) {
+<span class="ln"> 249</span>     var listX = width - 250;
+<span class="ln"> 250</span>     var listY = height - 140;
+<span class="ln"> 251</span> 
+<span class="ln"> 252</span>     fill(0);
+<span class="ln"> 253</span>     noStroke();
+<span class="ln"> 254</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 255</span>     textSize(14);
+<span class="ln"> 256</span>     textStyle(BOLD);
+<span class="ln"> 257</span>     text(&#x27;Recent Runs&#x27;, listX, listY);
+<span class="ln"> 258</span> 
+<span class="ln"> 259</span>     textSize(11);
+<span class="ln"> 260</span>     textStyle(NORMAL);
+<span class="ln"> 261</span>     fill(60);
+<span class="ln"> 262</span> 
+<span class="ln"> 263</span>     // Sort by date descending and show last 5
+<span class="ln"> 264</span>     var sortedRuns = runs.slice().sort(function(a, b) {
+<span class="ln"> 265</span>       return new Date(b.date) - new Date(a.date);
+<span class="ln"> 266</span>     });
+<span class="ln"> 267</span> 
+<span class="ln"> 268</span>     var displayCount = Math.min(5, sortedRuns.length);
+<span class="ln"> 269</span>     for (var i = 0; i &lt; displayCount; i++) {
+<span class="ln"> 270</span>       var run = sortedRuns[i];
+<span class="ln"> 271</span>       var dateFormatted = this.formatDate(run.date);
+<span class="ln"> 272</span>       text(dateFormatted + &#x27;: &#x27; + run.distance.toFixed(1) + &#x27; km&#x27;,
+<span class="ln"> 273</span>            listX, listY + 25 + (i * 18));
+<span class="ln"> 274</span>     }
+<span class="ln"> 275</span>   };
+<span class="ln"> 276</span> 
+<span class="ln"> 277</span>   this.formatDate = function(dateStr) {
+<span class="ln"> 278</span>     var date = new Date(dateStr);
+<span class="ln"> 279</span>     var months = [&#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;May&#x27;, &#x27;Jun&#x27;,
+<span class="ln"> 280</span>                   &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;];
+<span class="ln"> 281</span>     return months[date.getMonth()] + &#x27; &#x27; + date.getDate();
+<span class="ln"> 282</span>   };
+<span class="ln"> 283</span> }
+<span class="ln"> 284</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>12. training-heatmap.js</h2>
+<p class="file-desc">Training Heatmap — GitHub-style calendar grid</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Training Heatmap: GitHub-style contribution calendar for running data.
+<span class="ln">   3</span> // Displays daily running distances on a weekly calendar grid using
+<span class="ln">   4</span> // nested loops (weeks x weekdays) and distance-to-colour mapping.
+<span class="ln">   5</span> function TrainingHeatmap() {
+<span class="ln">   6</span>   this.name = &#x27;Training Heatmap&#x27;;
+<span class="ln">   7</span>   this.id = &#x27;training-heatmap&#x27;;
+<span class="ln">   8</span>   this.title = &#x27;Training Consistency Heatmap&#x27;;
+<span class="ln">   9</span>   this.loaded = false;
+<span class="ln">  10</span> 
+<span class="ln">  11</span>   // Grid layout settings
+<span class="ln">  12</span>   this.cellSize = 13;
+<span class="ln">  13</span>   this.cellGap = 2;
+<span class="ln">  14</span>   this.startX = 105;
+<span class="ln">  15</span>   this.startY = 110;
+<span class="ln">  16</span> 
+<span class="ln">  17</span>   // GitHub-inspired green colour scale
+<span class="ln">  18</span>   this.colors = [
+<span class="ln">  19</span>     [235, 237, 240],  // Level 0: No activity (light gray)
+<span class="ln">  20</span>     [155, 233, 168],  // Level 1: Short distance (light green)
+<span class="ln">  21</span>     [64, 196, 99],    // Level 2: Medium distance
+<span class="ln">  22</span>     [48, 161, 78],    // Level 3: High distance
+<span class="ln">  23</span>     [33, 110, 57]     // Level 4: Very high distance (dark green)
+<span class="ln">  24</span>   ];
+<span class="ln">  25</span> 
+<span class="ln">  26</span>   this.tooltip = new Tooltip();
+<span class="ln">  27</span> 
+<span class="ln">  28</span>   this.preload = function() {
+<span class="ln">  29</span>     var self = this;
+<span class="ln">  30</span>     this.data = loadTable(
+<span class="ln">  31</span>       &#x27;./data/running/activities.csv&#x27;, &#x27;csv&#x27;, &#x27;header&#x27;,
+<span class="ln">  32</span>       function(table) {
+<span class="ln">  33</span>         self.loaded = true;
+<span class="ln">  34</span>       });
+<span class="ln">  35</span>   };
+<span class="ln">  36</span> 
+<span class="ln">  37</span>   this.setup = function() {
+<span class="ln">  38</span>     if (!this.loaded) {
+<span class="ln">  39</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  40</span>       return;
+<span class="ln">  41</span>     }
+<span class="ln">  42</span> 
+<span class="ln">  43</span>     this.dailyData = this.processDailyData();
+<span class="ln">  44</span>     this.years = Object.keys(this.dailyData).sort().reverse();
+<span class="ln">  45</span> 
+<span class="ln">  46</span>     // Create year selector dropdown
+<span class="ln">  47</span>     this.select = createSelect();
+<span class="ln">  48</span>     this.select.position(420, 40);
+<span class="ln">  49</span>     for (var i = 0; i &lt; this.years.length; i++) {
+<span class="ln">  50</span>       this.select.option(this.years[i]);
+<span class="ln">  51</span>     }
+<span class="ln">  52</span>   };
+<span class="ln">  53</span> 
+<span class="ln">  54</span>   this.destroy = function() {
+<span class="ln">  55</span>     this.select.remove();
+<span class="ln">  56</span>   };
+<span class="ln">  57</span> 
+<span class="ln">  58</span>   // Aggregate daily distances grouped by year and date
+<span class="ln">  59</span>   this.processDailyData = function() {
+<span class="ln">  60</span>     var data = {};
+<span class="ln">  61</span> 
+<span class="ln">  62</span>     for (var i = 0; i &lt; this.data.getRowCount(); i++) {
+<span class="ln">  63</span>       var dateStr = this.data.getString(i, &#x27;date&#x27;);
+<span class="ln">  64</span>       var distance = this.data.getNum(i, &#x27;distance&#x27;);
+<span class="ln">  65</span>       var year = dateStr.substring(0, 4);
+<span class="ln">  66</span> 
+<span class="ln">  67</span>       if (!data[year]) {
+<span class="ln">  68</span>         data[year] = {};
+<span class="ln">  69</span>       }
+<span class="ln">  70</span> 
+<span class="ln">  71</span>       if (data[year][dateStr]) {
+<span class="ln">  72</span>         data[year][dateStr] += distance;
+<span class="ln">  73</span>       } else {
+<span class="ln">  74</span>         data[year][dateStr] = distance;
+<span class="ln">  75</span>       }
+<span class="ln">  76</span>     }
+<span class="ln">  77</span> 
+<span class="ln">  78</span>     return data;
+<span class="ln">  79</span>   };
+<span class="ln">  80</span> 
+<span class="ln">  81</span>   this.draw = function() {
+<span class="ln">  82</span>     if (!this.loaded) {
+<span class="ln">  83</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  84</span>       return;
+<span class="ln">  85</span>     }
+<span class="ln">  86</span> 
+<span class="ln">  87</span>     var selectedYear = this.select.value();
+<span class="ln">  88</span>     var yearData = this.dailyData[selectedYear] || {};
+<span class="ln">  89</span> 
+<span class="ln">  90</span>     // Title
+<span class="ln">  91</span>     fill(0);
+<span class="ln">  92</span>     noStroke();
+<span class="ln">  93</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln">  94</span>     textSize(20);
+<span class="ln">  95</span>     text(this.title, width / 2, 40);
+<span class="ln">  96</span> 
+<span class="ln">  97</span>     textSize(14);
+<span class="ln">  98</span>     fill(100);
+<span class="ln">  99</span>     text(selectedYear, width / 2, 65);
+<span class="ln"> 100</span> 
+<span class="ln"> 101</span>     // Draw calendar components
+<span class="ln"> 102</span>     this.drawWeekdayLabels();
+<span class="ln"> 103</span>     this.drawMonthLabels(parseInt(selectedYear));
+<span class="ln"> 104</span>     var hoveredCell = this.drawCalendarGrid(parseInt(selectedYear), yearData);
+<span class="ln"> 105</span>     this.drawLegend();
+<span class="ln"> 106</span>     this.drawYearStats(yearData);
+<span class="ln"> 107</span> 
+<span class="ln"> 108</span>     // Draw tooltip last so it appears on top of all cells
+<span class="ln"> 109</span>     if (hoveredCell) {
+<span class="ln"> 110</span>       this.tooltip.draw(mouseX, mouseY, hoveredCell.lines, null);
+<span class="ln"> 111</span>     }
+<span class="ln"> 112</span>   };
+<span class="ln"> 113</span> 
+<span class="ln"> 114</span>   // Draw weekday labels (Mon, Wed, Fri only to avoid crowding)
+<span class="ln"> 115</span>   this.drawWeekdayLabels = function() {
+<span class="ln"> 116</span>     var days = [&#x27;Sun&#x27;, &#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;, &#x27;Sat&#x27;];
+<span class="ln"> 117</span>     fill(100);
+<span class="ln"> 118</span>     noStroke();
+<span class="ln"> 119</span>     textSize(9);
+<span class="ln"> 120</span>     textAlign(&#x27;right&#x27;, &#x27;center&#x27;);
+<span class="ln"> 121</span> 
+<span class="ln"> 122</span>     for (var d = 0; d &lt; 7; d++) {
+<span class="ln"> 123</span>       if (d == 1 || d == 3 || d == 5) {
+<span class="ln"> 124</span>         var y = this.startY + d * (this.cellSize + this.cellGap) + this.cellSize / 2;
+<span class="ln"> 125</span>         text(days[d], this.startX - 8, y);
+<span class="ln"> 126</span>       }
+<span class="ln"> 127</span>     }
+<span class="ln"> 128</span>   };
+<span class="ln"> 129</span> 
+<span class="ln"> 130</span>   // Draw month labels along the top of the grid
+<span class="ln"> 131</span>   this.drawMonthLabels = function(year) {
+<span class="ln"> 132</span>     var months = [&#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;May&#x27;, &#x27;Jun&#x27;,
+<span class="ln"> 133</span>                   &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;];
+<span class="ln"> 134</span>     var jan1 = new Date(year, 0, 1);
+<span class="ln"> 135</span>     var startDayOfWeek = jan1.getDay();
+<span class="ln"> 136</span> 
+<span class="ln"> 137</span>     fill(100);
+<span class="ln"> 138</span>     noStroke();
+<span class="ln"> 139</span>     textSize(9);
+<span class="ln"> 140</span>     textAlign(&#x27;left&#x27;, &#x27;bottom&#x27;);
+<span class="ln"> 141</span> 
+<span class="ln"> 142</span>     for (var m = 0; m &lt; 12; m++) {
+<span class="ln"> 143</span>       var firstOfMonth = new Date(year, m, 1);
+<span class="ln"> 144</span>       var dayOfYear = Math.floor((firstOfMonth - jan1) / (24 * 60 * 60 * 1000));
+<span class="ln"> 145</span>       var weekNum = Math.floor((dayOfYear + startDayOfWeek) / 7);
+<span class="ln"> 146</span> 
+<span class="ln"> 147</span>       var x = this.startX + weekNum * (this.cellSize + this.cellGap);
+<span class="ln"> 148</span>       text(months[m], x, this.startY - 5);
+<span class="ln"> 149</span>     }
+<span class="ln"> 150</span>   };
+<span class="ln"> 151</span> 
+<span class="ln"> 152</span>   // Draw the calendar grid using nested loops (weeks x weekdays).
+<span class="ln"> 153</span>   // O(W * 7) where W = number of weeks (~53), so O(365) per frame.
+<span class="ln"> 154</span>   // Returns hovered cell info for tooltip rendering.
+<span class="ln"> 155</span>   this.drawCalendarGrid = function(year, yearData) {
+<span class="ln"> 156</span>     var jan1 = new Date(year, 0, 1);
+<span class="ln"> 157</span>     var startDayOfWeek = jan1.getDay();
+<span class="ln"> 158</span> 
+<span class="ln"> 159</span>     // Calculate max distance for colour scaling
+<span class="ln"> 160</span>     var maxDist = 0;
+<span class="ln"> 161</span>     var allDistances = Object.values(yearData);
+<span class="ln"> 162</span>     for (var d = 0; d &lt; allDistances.length; d++) {
+<span class="ln"> 163</span>       if (allDistances[d] &gt; maxDist) {
+<span class="ln"> 164</span>         maxDist = allDistances[d];
+<span class="ln"> 165</span>       }
+<span class="ln"> 166</span>     }
+<span class="ln"> 167</span>     if (maxDist === 0) {
+<span class="ln"> 168</span>       maxDist = 1;
+<span class="ln"> 169</span>     }
+<span class="ln"> 170</span> 
+<span class="ln"> 171</span>     var hoveredCell = null;
+<span class="ln"> 172</span>     var isLeapYear = (year % 4 === 0 &amp;&amp; year % 100 !== 0) || (year % 400 === 0);
+<span class="ln"> 173</span>     var totalDays = isLeapYear ? 366 : 365;
+<span class="ln"> 174</span> 
+<span class="ln"> 175</span>     // Nested loop: iterate through each week and each day within that week
+<span class="ln"> 176</span>     var totalWeeks = Math.ceil((totalDays + startDayOfWeek) / 7);
+<span class="ln"> 177</span> 
+<span class="ln"> 178</span>     for (var week = 0; week &lt; totalWeeks; week++) {
+<span class="ln"> 179</span>       for (var dayOfWeek = 0; dayOfWeek &lt; 7; dayOfWeek++) {
+<span class="ln"> 180</span>         var dayIndex = week * 7 + dayOfWeek - startDayOfWeek;
+<span class="ln"> 181</span> 
+<span class="ln"> 182</span>         // Skip cells before Jan 1 and after Dec 31
+<span class="ln"> 183</span>         if (dayIndex &lt; 0 || dayIndex &gt;= totalDays) {
+<span class="ln"> 184</span>           continue;
+<span class="ln"> 185</span>         }
+<span class="ln"> 186</span> 
+<span class="ln"> 187</span>         var cellDate = new Date(year, 0, 1 + dayIndex);
+<span class="ln"> 188</span>         var dateStr = this.formatDateStr(cellDate);
+<span class="ln"> 189</span>         var distance = yearData[dateStr] || 0;
+<span class="ln"> 190</span> 
+<span class="ln"> 191</span>         var x = this.startX + week * (this.cellSize + this.cellGap);
+<span class="ln"> 192</span>         var y = this.startY + dayOfWeek * (this.cellSize + this.cellGap);
+<span class="ln"> 193</span> 
+<span class="ln"> 194</span>         // Map distance to colour
+<span class="ln"> 195</span>         var c = this.getDistanceColor(distance, maxDist);
+<span class="ln"> 196</span>         fill(c[0], c[1], c[2]);
+<span class="ln"> 197</span>         noStroke();
+<span class="ln"> 198</span>         rect(x, y, this.cellSize, this.cellSize, 2);
+<span class="ln"> 199</span> 
+<span class="ln"> 200</span>         // Check if mouse hovers over this cell
+<span class="ln"> 201</span>         if (mouseX &gt;= x &amp;&amp; mouseX &lt;= x + this.cellSize &amp;&amp;
+<span class="ln"> 202</span>             mouseY &gt;= y &amp;&amp; mouseY &lt;= y + this.cellSize) {
+<span class="ln"> 203</span>           // Highlight hovered cell
+<span class="ln"> 204</span>           noFill();
+<span class="ln"> 205</span>           stroke(0);
+<span class="ln"> 206</span>           strokeWeight(1);
+<span class="ln"> 207</span>           rect(x, y, this.cellSize, this.cellSize, 2);
+<span class="ln"> 208</span> 
+<span class="ln"> 209</span>           var lines = [dateStr];
+<span class="ln"> 210</span>           if (distance &gt; 0) {
+<span class="ln"> 211</span>             lines.push(distance.toFixed(1) + &#x27; km&#x27;);
+<span class="ln"> 212</span>           } else {
+<span class="ln"> 213</span>             lines.push(&#x27;Rest day&#x27;);
+<span class="ln"> 214</span>           }
+<span class="ln"> 215</span>           hoveredCell = { lines: lines };
+<span class="ln"> 216</span>         }
+<span class="ln"> 217</span>       }
+<span class="ln"> 218</span>     }
+<span class="ln"> 219</span> 
+<span class="ln"> 220</span>     return hoveredCell;
+<span class="ln"> 221</span>   };
+<span class="ln"> 222</span> 
+<span class="ln"> 223</span>   // Format a Date object to &quot;YYYY-MM-DD&quot; string
+<span class="ln"> 224</span>   this.formatDateStr = function(date) {
+<span class="ln"> 225</span>     var y = date.getFullYear();
+<span class="ln"> 226</span>     var m = (date.getMonth() + 1).toString().padStart(2, &#x27;0&#x27;);
+<span class="ln"> 227</span>     var d = date.getDate().toString().padStart(2, &#x27;0&#x27;);
+<span class="ln"> 228</span>     return y + &#x27;-&#x27; + m + &#x27;-&#x27; + d;
+<span class="ln"> 229</span>   };
+<span class="ln"> 230</span> 
+<span class="ln"> 231</span>   // Map distance to colour level using quartile-based thresholds
+<span class="ln"> 232</span>   this.getDistanceColor = function(distance, maxDist) {
+<span class="ln"> 233</span>     if (distance === 0) {
+<span class="ln"> 234</span>       return this.colors[0];
+<span class="ln"> 235</span>     }
+<span class="ln"> 236</span> 
+<span class="ln"> 237</span>     var ratio = distance / maxDist;
+<span class="ln"> 238</span>     if (ratio &lt;= 0.25) return this.colors[1];
+<span class="ln"> 239</span>     if (ratio &lt;= 0.50) return this.colors[2];
+<span class="ln"> 240</span>     if (ratio &lt;= 0.75) return this.colors[3];
+<span class="ln"> 241</span>     return this.colors[4];
+<span class="ln"> 242</span>   };
+<span class="ln"> 243</span> 
+<span class="ln"> 244</span>   // Draw colour legend (Less → More)
+<span class="ln"> 245</span>   this.drawLegend = function() {
+<span class="ln"> 246</span>     var legendX = width - 220;
+<span class="ln"> 247</span>     var legendY = this.startY + 7 * (this.cellSize + this.cellGap) + 30;
+<span class="ln"> 248</span> 
+<span class="ln"> 249</span>     fill(100);
+<span class="ln"> 250</span>     noStroke();
+<span class="ln"> 251</span>     textSize(10);
+<span class="ln"> 252</span>     textAlign(&#x27;right&#x27;, &#x27;center&#x27;);
+<span class="ln"> 253</span>     text(&#x27;Less&#x27;, legendX - 5, legendY + this.cellSize / 2);
+<span class="ln"> 254</span> 
+<span class="ln"> 255</span>     for (var i = 0; i &lt; this.colors.length; i++) {
+<span class="ln"> 256</span>       var c = this.colors[i];
+<span class="ln"> 257</span>       fill(c[0], c[1], c[2]);
+<span class="ln"> 258</span>       noStroke();
+<span class="ln"> 259</span>       rect(legendX + i * (this.cellSize + 2), legendY, this.cellSize, this.cellSize, 2);
+<span class="ln"> 260</span>     }
+<span class="ln"> 261</span> 
+<span class="ln"> 262</span>     fill(100);
+<span class="ln"> 263</span>     textAlign(&#x27;left&#x27;, &#x27;center&#x27;);
+<span class="ln"> 264</span>     text(&#x27;More&#x27;, legendX + this.colors.length * (this.cellSize + 2) + 5,
+<span class="ln"> 265</span>          legendY + this.cellSize / 2);
+<span class="ln"> 266</span>   };
+<span class="ln"> 267</span> 
+<span class="ln"> 268</span>   // Draw year summary statistics below the grid
+<span class="ln"> 269</span>   this.drawYearStats = function(yearData) {
+<span class="ln"> 270</span>     var totalDist = 0;
+<span class="ln"> 271</span>     var activeDays = 0;
+<span class="ln"> 272</span>     var maxSingleRun = 0;
+<span class="ln"> 273</span>     var allDistances = Object.values(yearData);
+<span class="ln"> 274</span> 
+<span class="ln"> 275</span>     for (var i = 0; i &lt; allDistances.length; i++) {
+<span class="ln"> 276</span>       totalDist += allDistances[i];
+<span class="ln"> 277</span>       activeDays++;
+<span class="ln"> 278</span>       if (allDistances[i] &gt; maxSingleRun) {
+<span class="ln"> 279</span>         maxSingleRun = allDistances[i];
+<span class="ln"> 280</span>       }
+<span class="ln"> 281</span>     }
+<span class="ln"> 282</span> 
+<span class="ln"> 283</span>     var statsX = this.startX;
+<span class="ln"> 284</span>     var statsY = this.startY + 7 * (this.cellSize + this.cellGap) + 25;
+<span class="ln"> 285</span> 
+<span class="ln"> 286</span>     fill(0);
+<span class="ln"> 287</span>     noStroke();
+<span class="ln"> 288</span>     textSize(13);
+<span class="ln"> 289</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 290</span>     textStyle(BOLD);
+<span class="ln"> 291</span>     text(&#x27;Year Summary&#x27;, statsX, statsY);
+<span class="ln"> 292</span> 
+<span class="ln"> 293</span>     textStyle(NORMAL);
+<span class="ln"> 294</span>     textSize(12);
+<span class="ln"> 295</span>     fill(60);
+<span class="ln"> 296</span>     text(&#x27;Total distance: &#x27; + totalDist.toFixed(1) + &#x27; km&#x27;, statsX, statsY + 22);
+<span class="ln"> 297</span>     text(&#x27;Active days: &#x27; + activeDays, statsX, statsY + 40);
+<span class="ln"> 298</span>     text(&#x27;Average per active day: &#x27; +
+<span class="ln"> 299</span>          (activeDays &gt; 0 ? (totalDist / activeDays).toFixed(1) : &#x27;0&#x27;) + &#x27; km&#x27;,
+<span class="ln"> 300</span>          statsX, statsY + 58);
+<span class="ln"> 301</span>     text(&#x27;Longest run: &#x27; + maxSingleRun.toFixed(1) + &#x27; km&#x27;, statsX, statsY + 76);
+<span class="ln"> 302</span>   };
+<span class="ln"> 303</span> }
+<span class="ln"> 304</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>13. marathon-radar.js</h2>
+<p class="file-desc">Marathon Readiness Radar — spider chart with 5 normalised metrics</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Marathon Readiness Radar: spider chart plotting five normalised training
+<span class="ln">   3</span> // metrics using trigonometry (sin/cos at 72-degree intervals).
+<span class="ln">   4</span> // Provides a multi-dimensional readiness assessment in a single view.
+<span class="ln">   5</span> function MarathonRadar() {
+<span class="ln">   6</span>   this.name = &#x27;Marathon Readiness&#x27;;
+<span class="ln">   7</span>   this.id = &#x27;marathon-radar&#x27;;
+<span class="ln">   8</span>   this.title = &#x27;Marathon Readiness Radar&#x27;;
+<span class="ln">   9</span>   this.loaded = false;
+<span class="ln">  10</span> 
+<span class="ln">  11</span>   // Radar chart settings
+<span class="ln">  12</span>   this.centerX = width / 2;
+<span class="ln">  13</span>   this.centerY = height / 2 + 10;
+<span class="ln">  14</span>   this.radius = 170;
+<span class="ln">  15</span>   this.numAxes = 5;
+<span class="ln">  16</span>   // 72 degrees between each axis (360 / 5 = 72)
+<span class="ln">  17</span>   this.angleStep = TWO_PI / this.numAxes;
+<span class="ln">  18</span>   // Start from top (-PI/2) so first axis points upward
+<span class="ln">  19</span>   this.startAngle = -PI / 2;
+<span class="ln">  20</span> 
+<span class="ln">  21</span>   // Five training metrics with labels and targets
+<span class="ln">  22</span>   this.metrics = [
+<span class="ln">  23</span>     { label: &#x27;Monthly\nDistance&#x27;, unit: &#x27;km&#x27;, target: 100 },
+<span class="ln">  24</span>     { label: &#x27;Average\nPace&#x27;, unit: &#x27;min/km&#x27;, target: 6.0 },
+<span class="ln">  25</span>     { label: &#x27;Training\nConsistency&#x27;, unit: &#x27;days&#x27;, target: 30 },
+<span class="ln">  26</span>     { label: &#x27;Long Runs\n(10km+)&#x27;, unit: &#x27;runs&#x27;, target: 4 },
+<span class="ln">  27</span>     { label: &#x27;Heart Rate\nEfficiency&#x27;, unit: &#x27;bpm&#x27;, target: 140 }
+<span class="ln">  28</span>   ];
+<span class="ln">  29</span> 
+<span class="ln">  30</span>   this.tooltip = new Tooltip();
+<span class="ln">  31</span> 
+<span class="ln">  32</span>   this.preload = function() {
+<span class="ln">  33</span>     var self = this;
+<span class="ln">  34</span>     this.data = loadTable(
+<span class="ln">  35</span>       &#x27;./data/running/activities.csv&#x27;, &#x27;csv&#x27;, &#x27;header&#x27;,
+<span class="ln">  36</span>       function(table) {
+<span class="ln">  37</span>         self.loaded = true;
+<span class="ln">  38</span>       });
+<span class="ln">  39</span>   };
+<span class="ln">  40</span> 
+<span class="ln">  41</span>   this.setup = function() {
+<span class="ln">  42</span>     if (!this.loaded) {
+<span class="ln">  43</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln">  44</span>       return;
+<span class="ln">  45</span>     }
+<span class="ln">  46</span> 
+<span class="ln">  47</span>     this.monthlyMetrics = this.calculateAllMonthlyMetrics();
+<span class="ln">  48</span>     this.months = Object.keys(this.monthlyMetrics).sort().reverse();
+<span class="ln">  49</span> 
+<span class="ln">  50</span>     // Create month selector
+<span class="ln">  51</span>     this.select = createSelect();
+<span class="ln">  52</span>     this.select.position(420, 40);
+<span class="ln">  53</span> 
+<span class="ln">  54</span>     for (var i = 0; i &lt; this.months.length; i++) {
+<span class="ln">  55</span>       this.select.option(this.formatMonthLabel(this.months[i]), this.months[i]);
+<span class="ln">  56</span>     }
+<span class="ln">  57</span>   };
+<span class="ln">  58</span> 
+<span class="ln">  59</span>   this.destroy = function() {
+<span class="ln">  60</span>     this.select.remove();
+<span class="ln">  61</span>   };
+<span class="ln">  62</span> 
+<span class="ln">  63</span>   this.formatMonthLabel = function(yearMonth) {
+<span class="ln">  64</span>     var parts = yearMonth.split(&#x27;-&#x27;);
+<span class="ln">  65</span>     var monthNames = [&#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;May&#x27;, &#x27;Jun&#x27;,
+<span class="ln">  66</span>                       &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;];
+<span class="ln">  67</span>     return monthNames[parseInt(parts[1]) - 1] + &#x27; &#x27; + parts[0];
+<span class="ln">  68</span>   };
+<span class="ln">  69</span> 
+<span class="ln">  70</span>   // Calculate all five metrics for each month
+<span class="ln">  71</span>   this.calculateAllMonthlyMetrics = function() {
+<span class="ln">  72</span>     var months = {};
+<span class="ln">  73</span> 
+<span class="ln">  74</span>     for (var i = 0; i &lt; this.data.getRowCount(); i++) {
+<span class="ln">  75</span>       var activityType = this.data.getString(i, &#x27;activity_type&#x27;);
+<span class="ln">  76</span>       if (activityType !== &#x27;Run&#x27;) continue;
+<span class="ln">  77</span> 
+<span class="ln">  78</span>       var dateStr = this.data.getString(i, &#x27;date&#x27;);
+<span class="ln">  79</span>       var distance = this.data.getNum(i, &#x27;distance&#x27;);
+<span class="ln">  80</span>       var paceStr = this.data.getString(i, &#x27;avg_pace&#x27;);
+<span class="ln">  81</span>       var heartRate = this.data.getNum(i, &#x27;avg_heart_rate&#x27;);
+<span class="ln">  82</span>       var yearMonth = dateStr.substring(0, 7);
+<span class="ln">  83</span> 
+<span class="ln">  84</span>       if (!months[yearMonth]) {
+<span class="ln">  85</span>         months[yearMonth] = {
+<span class="ln">  86</span>           totalDistance: 0,
+<span class="ln">  87</span>           paces: [],
+<span class="ln">  88</span>           activeDays: {},
+<span class="ln">  89</span>           longRuns: 0,
+<span class="ln">  90</span>           heartRates: []
+<span class="ln">  91</span>         };
+<span class="ln">  92</span>       }
+<span class="ln">  93</span> 
+<span class="ln">  94</span>       months[yearMonth].totalDistance += distance;
+<span class="ln">  95</span> 
+<span class="ln">  96</span>       var pace = paceToMinutes(paceStr);
+<span class="ln">  97</span>       if (pace &gt; 0) {
+<span class="ln">  98</span>         months[yearMonth].paces.push(pace);
+<span class="ln">  99</span>       }
+<span class="ln"> 100</span> 
+<span class="ln"> 101</span>       months[yearMonth].activeDays[dateStr] = true;
+<span class="ln"> 102</span> 
+<span class="ln"> 103</span>       if (distance &gt;= 10) {
+<span class="ln"> 104</span>         months[yearMonth].longRuns++;
+<span class="ln"> 105</span>       }
+<span class="ln"> 106</span> 
+<span class="ln"> 107</span>       if (heartRate &gt; 0) {
+<span class="ln"> 108</span>         months[yearMonth].heartRates.push(heartRate);
+<span class="ln"> 109</span>       }
+<span class="ln"> 110</span>     }
+<span class="ln"> 111</span> 
+<span class="ln"> 112</span>     // Normalise each metric to 0-1 scale
+<span class="ln"> 113</span>     var result = {};
+<span class="ln"> 114</span>     var monthKeys = Object.keys(months);
+<span class="ln"> 115</span> 
+<span class="ln"> 116</span>     for (var m = 0; m &lt; monthKeys.length; m++) {
+<span class="ln"> 117</span>       var key = monthKeys[m];
+<span class="ln"> 118</span>       var raw = months[key];
+<span class="ln"> 119</span> 
+<span class="ln"> 120</span>       var avgPace = 0;
+<span class="ln"> 121</span>       if (raw.paces.length &gt; 0) {
+<span class="ln"> 122</span>         var paceSum = 0;
+<span class="ln"> 123</span>         for (var p = 0; p &lt; raw.paces.length; p++) {
+<span class="ln"> 124</span>           paceSum += raw.paces[p];
+<span class="ln"> 125</span>         }
+<span class="ln"> 126</span>         avgPace = paceSum / raw.paces.length;
+<span class="ln"> 127</span>       }
+<span class="ln"> 128</span> 
+<span class="ln"> 129</span>       var avgHR = 0;
+<span class="ln"> 130</span>       if (raw.heartRates.length &gt; 0) {
+<span class="ln"> 131</span>         var hrSum = 0;
+<span class="ln"> 132</span>         for (var h = 0; h &lt; raw.heartRates.length; h++) {
+<span class="ln"> 133</span>           hrSum += raw.heartRates[h];
+<span class="ln"> 134</span>         }
+<span class="ln"> 135</span>         avgHR = hrSum / raw.heartRates.length;
+<span class="ln"> 136</span>       }
+<span class="ln"> 137</span> 
+<span class="ln"> 138</span>       var activeDayCount = Object.keys(raw.activeDays).length;
+<span class="ln"> 139</span> 
+<span class="ln"> 140</span>       result[key] = {
+<span class="ln"> 141</span>         raw: [
+<span class="ln"> 142</span>           raw.totalDistance,
+<span class="ln"> 143</span>           avgPace,
+<span class="ln"> 144</span>           activeDayCount,
+<span class="ln"> 145</span>           raw.longRuns,
+<span class="ln"> 146</span>           avgHR
+<span class="ln"> 147</span>         ],
+<span class="ln"> 148</span>         normalised: [
+<span class="ln"> 149</span>           // 1. Monthly distance: 0-100km → 0-1 (capped at 1)
+<span class="ln"> 150</span>           Math.min(raw.totalDistance / 100, 1),
+<span class="ln"> 151</span>           // 2. Average pace: 6:00 = perfect (1.0), 9:00 = worst (0.0)
+<span class="ln"> 152</span>           avgPace &gt; 0 ? Math.max(0, Math.min(1, 1 - (avgPace - 6.0) / 3.0)) : 0,
+<span class="ln"> 153</span>           // 3. Consistency: active days / 30
+<span class="ln"> 154</span>           Math.min(activeDayCount / 30, 1),
+<span class="ln"> 155</span>           // 4. Long runs: count / target of 4
+<span class="ln"> 156</span>           Math.min(raw.longRuns / 4, 1),
+<span class="ln"> 157</span>           // 5. Heart rate efficiency: lower avg HR = better
+<span class="ln"> 158</span>           // 130 bpm = perfect (1.0), 170 bpm = worst (0.0)
+<span class="ln"> 159</span>           avgHR &gt; 0 ? Math.max(0, Math.min(1, 1 - (avgHR - 130) / 40)) : 0
+<span class="ln"> 160</span>         ]
+<span class="ln"> 161</span>       };
+<span class="ln"> 162</span>     }
+<span class="ln"> 163</span> 
+<span class="ln"> 164</span>     return result;
+<span class="ln"> 165</span>   };
+<span class="ln"> 166</span> 
+<span class="ln"> 167</span>   this.draw = function() {
+<span class="ln"> 168</span>     if (!this.loaded) {
+<span class="ln"> 169</span>       console.log(&#x27;Data not yet loaded&#x27;);
+<span class="ln"> 170</span>       return;
+<span class="ln"> 171</span>     }
+<span class="ln"> 172</span> 
+<span class="ln"> 173</span>     var selectedMonth = this.select.value();
+<span class="ln"> 174</span>     var monthData = this.monthlyMetrics[selectedMonth];
+<span class="ln"> 175</span> 
+<span class="ln"> 176</span>     // Title
+<span class="ln"> 177</span>     fill(0);
+<span class="ln"> 178</span>     noStroke();
+<span class="ln"> 179</span>     textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 180</span>     textSize(20);
+<span class="ln"> 181</span>     text(this.title, width / 2, 40);
+<span class="ln"> 182</span> 
+<span class="ln"> 183</span>     textSize(14);
+<span class="ln"> 184</span>     fill(100);
+<span class="ln"> 185</span>     text(this.formatMonthLabel(selectedMonth), width / 2, 65);
+<span class="ln"> 186</span> 
+<span class="ln"> 187</span>     if (!monthData) {
+<span class="ln"> 188</span>       textSize(16);
+<span class="ln"> 189</span>       text(&#x27;No running data for selected month&#x27;, width / 2, height / 2);
+<span class="ln"> 190</span>       return;
+<span class="ln"> 191</span>     }
+<span class="ln"> 192</span> 
+<span class="ln"> 193</span>     // Draw radar chart components
+<span class="ln"> 194</span>     this.drawGridLines();
+<span class="ln"> 195</span>     this.drawAxes();
+<span class="ln"> 196</span>     this.drawDataPolygon(monthData.normalised);
+<span class="ln"> 197</span>     this.drawAxisLabels(monthData);
+<span class="ln"> 198</span>     this.drawScorecard(monthData);
+<span class="ln"> 199</span>   };
+<span class="ln"> 200</span> 
+<span class="ln"> 201</span>   // Draw concentric pentagons as reference grid (20%, 40%, 60%, 80%, 100%)
+<span class="ln"> 202</span>   this.drawGridLines = function() {
+<span class="ln"> 203</span>     var levels = [0.2, 0.4, 0.6, 0.8, 1.0];
+<span class="ln"> 204</span> 
+<span class="ln"> 205</span>     for (var lvl = 0; lvl &lt; levels.length; lvl++) {
+<span class="ln"> 206</span>       var r = this.radius * levels[lvl];
+<span class="ln"> 207</span> 
+<span class="ln"> 208</span>       stroke(220);
+<span class="ln"> 209</span>       strokeWeight(0.5);
+<span class="ln"> 210</span>       noFill();
+<span class="ln"> 211</span>       beginShape();
+<span class="ln"> 212</span> 
+<span class="ln"> 213</span>       for (var i = 0; i &lt; this.numAxes; i++) {
+<span class="ln"> 214</span>         var angle = this.startAngle + i * this.angleStep;
+<span class="ln"> 215</span>         var x = this.centerX + cos(angle) * r;
+<span class="ln"> 216</span>         var y = this.centerY + sin(angle) * r;
+<span class="ln"> 217</span>         vertex(x, y);
+<span class="ln"> 218</span>       }
+<span class="ln"> 219</span> 
+<span class="ln"> 220</span>       endShape(CLOSE);
+<span class="ln"> 221</span> 
+<span class="ln"> 222</span>       // Percentage label on first axis
+<span class="ln"> 223</span>       if (lvl &lt; levels.length) {
+<span class="ln"> 224</span>         fill(180);
+<span class="ln"> 225</span>         noStroke();
+<span class="ln"> 226</span>         textSize(8);
+<span class="ln"> 227</span>         textAlign(&#x27;center&#x27;, &#x27;bottom&#x27;);
+<span class="ln"> 228</span>         var labelY = this.centerY - r - 2;
+<span class="ln"> 229</span>         text(Math.round(levels[lvl] * 100) + &#x27;%&#x27;, this.centerX, labelY);
+<span class="ln"> 230</span>       }
+<span class="ln"> 231</span>     }
+<span class="ln"> 232</span>   };
+<span class="ln"> 233</span> 
+<span class="ln"> 234</span>   // Draw the five axes from center to edge
+<span class="ln"> 235</span>   this.drawAxes = function() {
+<span class="ln"> 236</span>     stroke(200);
+<span class="ln"> 237</span>     strokeWeight(1);
+<span class="ln"> 238</span> 
+<span class="ln"> 239</span>     for (var i = 0; i &lt; this.numAxes; i++) {
+<span class="ln"> 240</span>       var angle = this.startAngle + i * this.angleStep;
+<span class="ln"> 241</span>       var x = this.centerX + cos(angle) * this.radius;
+<span class="ln"> 242</span>       var y = this.centerY + sin(angle) * this.radius;
+<span class="ln"> 243</span>       line(this.centerX, this.centerY, x, y);
+<span class="ln"> 244</span>     }
+<span class="ln"> 245</span>   };
+<span class="ln"> 246</span> 
+<span class="ln"> 247</span>   // Draw the filled data polygon connecting all five metric values
+<span class="ln"> 248</span>   this.drawDataPolygon = function(values) {
+<span class="ln"> 249</span>     // Filled polygon
+<span class="ln"> 250</span>     fill(66, 133, 244, 80);
+<span class="ln"> 251</span>     stroke(66, 133, 244);
+<span class="ln"> 252</span>     strokeWeight(2);
+<span class="ln"> 253</span>     beginShape();
+<span class="ln"> 254</span> 
+<span class="ln"> 255</span>     for (var i = 0; i &lt; this.numAxes; i++) {
+<span class="ln"> 256</span>       var angle = this.startAngle + i * this.angleStep;
+<span class="ln"> 257</span>       var r = this.radius * values[i];
+<span class="ln"> 258</span>       var x = this.centerX + cos(angle) * r;
+<span class="ln"> 259</span>       var y = this.centerY + sin(angle) * r;
+<span class="ln"> 260</span>       vertex(x, y);
+<span class="ln"> 261</span>     }
+<span class="ln"> 262</span> 
+<span class="ln"> 263</span>     endShape(CLOSE);
+<span class="ln"> 264</span> 
+<span class="ln"> 265</span>     // Data points at each vertex
+<span class="ln"> 266</span>     for (var j = 0; j &lt; this.numAxes; j++) {
+<span class="ln"> 267</span>       var pointAngle = this.startAngle + j * this.angleStep;
+<span class="ln"> 268</span>       var pointR = this.radius * values[j];
+<span class="ln"> 269</span>       var px = this.centerX + cos(pointAngle) * pointR;
+<span class="ln"> 270</span>       var py = this.centerY + sin(pointAngle) * pointR;
+<span class="ln"> 271</span> 
+<span class="ln"> 272</span>       fill(66, 133, 244);
+<span class="ln"> 273</span>       noStroke();
+<span class="ln"> 274</span>       ellipse(px, py, 8, 8);
+<span class="ln"> 275</span>     }
+<span class="ln"> 276</span>   };
+<span class="ln"> 277</span> 
+<span class="ln"> 278</span>   // Draw metric labels at the end of each axis
+<span class="ln"> 279</span>   this.drawAxisLabels = function(monthData) {
+<span class="ln"> 280</span>     var labelOffset = 30;
+<span class="ln"> 281</span> 
+<span class="ln"> 282</span>     for (var i = 0; i &lt; this.numAxes; i++) {
+<span class="ln"> 283</span>       var angle = this.startAngle + i * this.angleStep;
+<span class="ln"> 284</span>       var x = this.centerX + cos(angle) * (this.radius + labelOffset);
+<span class="ln"> 285</span>       var y = this.centerY + sin(angle) * (this.radius + labelOffset);
+<span class="ln"> 286</span> 
+<span class="ln"> 287</span>       fill(0);
+<span class="ln"> 288</span>       noStroke();
+<span class="ln"> 289</span>       textSize(10);
+<span class="ln"> 290</span>       textStyle(BOLD);
+<span class="ln"> 291</span>       textAlign(&#x27;center&#x27;, &#x27;center&#x27;);
+<span class="ln"> 292</span> 
+<span class="ln"> 293</span>       // Split label into multiple lines
+<span class="ln"> 294</span>       var labelLines = this.metrics[i].label.split(&#x27;\n&#x27;);
+<span class="ln"> 295</span>       for (var l = 0; l &lt; labelLines.length; l++) {
+<span class="ln"> 296</span>         text(labelLines[l], x, y + (l * 13) - 6);
+<span class="ln"> 297</span>       }
+<span class="ln"> 298</span> 
+<span class="ln"> 299</span>       // Show raw value below label
+<span class="ln"> 300</span>       textStyle(NORMAL);
+<span class="ln"> 301</span>       textSize(9);
+<span class="ln"> 302</span>       fill(100);
+<span class="ln"> 303</span>       var rawVal = monthData.raw[i];
+<span class="ln"> 304</span>       var displayVal;
+<span class="ln"> 305</span> 
+<span class="ln"> 306</span>       if (i === 0) {
+<span class="ln"> 307</span>         displayVal = rawVal.toFixed(1) + &#x27; km&#x27;;
+<span class="ln"> 308</span>       } else if (i === 1) {
+<span class="ln"> 309</span>         displayVal = formatPace(rawVal) + &#x27;/km&#x27;;
+<span class="ln"> 310</span>       } else if (i === 2) {
+<span class="ln"> 311</span>         displayVal = rawVal + &#x27; days&#x27;;
+<span class="ln"> 312</span>       } else if (i === 3) {
+<span class="ln"> 313</span>         displayVal = rawVal + &#x27; runs&#x27;;
+<span class="ln"> 314</span>       } else {
+<span class="ln"> 315</span>         displayVal = rawVal &gt; 0 ? rawVal.toFixed(0) + &#x27; bpm&#x27; : &#x27;N/A&#x27;;
+<span class="ln"> 316</span>       }
+<span class="ln"> 317</span> 
+<span class="ln"> 318</span>       text(displayVal, x, y + labelLines.length * 13 - 2);
+<span class="ln"> 319</span>     }
+<span class="ln"> 320</span>   };
+<span class="ln"> 321</span> 
+<span class="ln"> 322</span>   // Draw overall readiness score and interpretation
+<span class="ln"> 323</span>   this.drawScorecard = function(monthData) {
+<span class="ln"> 324</span>     var values = monthData.normalised;
+<span class="ln"> 325</span>     var totalScore = 0;
+<span class="ln"> 326</span>     for (var i = 0; i &lt; values.length; i++) {
+<span class="ln"> 327</span>       totalScore += values[i];
+<span class="ln"> 328</span>     }
+<span class="ln"> 329</span>     var avgScore = totalScore / values.length;
+<span class="ln"> 330</span>     var percent = Math.round(avgScore * 100);
+<span class="ln"> 331</span> 
+<span class="ln"> 332</span>     var cardX = 30;
+<span class="ln"> 333</span>     var cardY = height - 90;
+<span class="ln"> 334</span> 
+<span class="ln"> 335</span>     fill(0);
+<span class="ln"> 336</span>     noStroke();
+<span class="ln"> 337</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln"> 338</span>     textSize(14);
+<span class="ln"> 339</span>     textStyle(BOLD);
+<span class="ln"> 340</span>     text(&#x27;Readiness Score&#x27;, cardX, cardY);
+<span class="ln"> 341</span> 
+<span class="ln"> 342</span>     // Color-coded score
+<span class="ln"> 343</span>     if (percent &gt;= 75) {
+<span class="ln"> 344</span>       fill(46, 204, 113);
+<span class="ln"> 345</span>     } else if (percent &gt;= 50) {
+<span class="ln"> 346</span>       fill(52, 152, 219);
+<span class="ln"> 347</span>     } else if (percent &gt;= 25) {
+<span class="ln"> 348</span>       fill(241, 196, 15);
+<span class="ln"> 349</span>     } else {
+<span class="ln"> 350</span>       fill(231, 76, 60);
+<span class="ln"> 351</span>     }
+<span class="ln"> 352</span>     textSize(28);
+<span class="ln"> 353</span>     text(percent + &#x27;%&#x27;, cardX, cardY + 22);
+<span class="ln"> 354</span> 
+<span class="ln"> 355</span>     // Interpretation
+<span class="ln"> 356</span>     textStyle(NORMAL);
+<span class="ln"> 357</span>     textSize(11);
+<span class="ln"> 358</span>     fill(100);
+<span class="ln"> 359</span>     var interpretation;
+<span class="ln"> 360</span>     if (percent &gt;= 75) {
+<span class="ln"> 361</span>       interpretation = &#x27;Excellent - Ready for marathon&#x27;;
+<span class="ln"> 362</span>     } else if (percent &gt;= 50) {
+<span class="ln"> 363</span>       interpretation = &#x27;Good - On track, keep training&#x27;;
+<span class="ln"> 364</span>     } else if (percent &gt;= 25) {
+<span class="ln"> 365</span>       interpretation = &#x27;Fair - More training needed&#x27;;
+<span class="ln"> 366</span>     } else {
+<span class="ln"> 367</span>       interpretation = &#x27;Low - Significant work needed&#x27;;
+<span class="ln"> 368</span>     }
+<span class="ln"> 369</span>     text(interpretation, cardX, cardY + 60);
+<span class="ln"> 370</span>   };
+<span class="ln"> 371</span> }
+<span class="ln"> 372</span> /* End of my own code */</code></pre>
+
+</section>
+
+<section class="file-section">
+<h2>14. tests.js</h2>
+<p class="file-desc">Unit and integration tests (TestRunner, black-box testing)</p>
+
+<pre><code><span class="ln">   1</span> /* Start of my own code */
+<span class="ln">   2</span> // Unit and integration tests for the Running Data Visualisation App.
+<span class="ln">   3</span> // Implements concepts from Week 17: unit testing, black-box testing,
+<span class="ln">   4</span> // and test-driven validation of data processing functions.
+<span class="ln">   5</span> 
+<span class="ln">   6</span> function TestRunner() {
+<span class="ln">   7</span>   this.passed = 0;
+<span class="ln">   8</span>   this.failed = 0;
+<span class="ln">   9</span>   this.results = [];
+<span class="ln">  10</span> 
+<span class="ln">  11</span>   // Core assertion: compares actual vs expected values
+<span class="ln">  12</span>   this.assertEquals = function(testName, actual, expected) {
+<span class="ln">  13</span>     if (actual === expected) {
+<span class="ln">  14</span>       this.passed++;
+<span class="ln">  15</span>       this.results.push({ name: testName, status: &#x27;PASS&#x27;, detail: &#x27;&#x27; });
+<span class="ln">  16</span>     } else {
+<span class="ln">  17</span>       this.failed++;
+<span class="ln">  18</span>       this.results.push({
+<span class="ln">  19</span>         name: testName,
+<span class="ln">  20</span>         status: &#x27;FAIL&#x27;,
+<span class="ln">  21</span>         detail: &#x27;Expected &#x27; + expected + &#x27;, got &#x27; + actual
+<span class="ln">  22</span>       });
+<span class="ln">  23</span>     }
+<span class="ln">  24</span>   };
+<span class="ln">  25</span> 
+<span class="ln">  26</span>   // Assertion for floating point comparison with tolerance
+<span class="ln">  27</span>   this.assertAlmostEqual = function(testName, actual, expected, tolerance) {
+<span class="ln">  28</span>     if (Math.abs(actual - expected) &lt;= tolerance) {
+<span class="ln">  29</span>       this.passed++;
+<span class="ln">  30</span>       this.results.push({ name: testName, status: &#x27;PASS&#x27;, detail: &#x27;&#x27; });
+<span class="ln">  31</span>     } else {
+<span class="ln">  32</span>       this.failed++;
+<span class="ln">  33</span>       this.results.push({
+<span class="ln">  34</span>         name: testName,
+<span class="ln">  35</span>         status: &#x27;FAIL&#x27;,
+<span class="ln">  36</span>         detail: &#x27;Expected ~&#x27; + expected + &#x27;, got &#x27; + actual
+<span class="ln">  37</span>       });
+<span class="ln">  38</span>     }
+<span class="ln">  39</span>   };
+<span class="ln">  40</span> 
+<span class="ln">  41</span>   // Assertion for boolean true
+<span class="ln">  42</span>   this.assertTrue = function(testName, actual) {
+<span class="ln">  43</span>     this.assertEquals(testName, actual, true);
+<span class="ln">  44</span>   };
+<span class="ln">  45</span> 
+<span class="ln">  46</span>   // Display results on the p5.js canvas
+<span class="ln">  47</span>   this.displayResults = function() {
+<span class="ln">  48</span>     background(255);
+<span class="ln">  49</span>     var y = 30;
+<span class="ln">  50</span> 
+<span class="ln">  51</span>     fill(0);
+<span class="ln">  52</span>     noStroke();
+<span class="ln">  53</span>     textSize(18);
+<span class="ln">  54</span>     textStyle(BOLD);
+<span class="ln">  55</span>     textAlign(&#x27;left&#x27;, &#x27;top&#x27;);
+<span class="ln">  56</span>     text(&#x27;Test Results&#x27;, 20, y);
+<span class="ln">  57</span>     y += 30;
+<span class="ln">  58</span> 
+<span class="ln">  59</span>     // Summary
+<span class="ln">  60</span>     textSize(14);
+<span class="ln">  61</span>     textStyle(NORMAL);
+<span class="ln">  62</span>     var total = this.passed + this.failed;
+<span class="ln">  63</span>     if (this.failed === 0) {
+<span class="ln">  64</span>       fill(46, 204, 113);
+<span class="ln">  65</span>       text(&#x27;All &#x27; + total + &#x27; tests passed&#x27;, 20, y);
+<span class="ln">  66</span>     } else {
+<span class="ln">  67</span>       fill(231, 76, 60);
+<span class="ln">  68</span>       text(this.failed + &#x27; of &#x27; + total + &#x27; tests failed&#x27;, 20, y);
+<span class="ln">  69</span>     }
+<span class="ln">  70</span>     y += 30;
+<span class="ln">  71</span> 
+<span class="ln">  72</span>     // Individual results
+<span class="ln">  73</span>     textSize(11);
+<span class="ln">  74</span>     for (var i = 0; i &lt; this.results.length; i++) {
+<span class="ln">  75</span>       var r = this.results[i];
+<span class="ln">  76</span>       if (r.status === &#x27;PASS&#x27;) {
+<span class="ln">  77</span>         fill(46, 204, 113);
+<span class="ln">  78</span>         text(&#x27;[PASS] &#x27; + r.name, 20, y);
+<span class="ln">  79</span>       } else {
+<span class="ln">  80</span>         fill(231, 76, 60);
+<span class="ln">  81</span>         text(&#x27;[FAIL] &#x27; + r.name + &#x27; — &#x27; + r.detail, 20, y);
+<span class="ln">  82</span>       }
+<span class="ln">  83</span>       y += 16;
+<span class="ln">  84</span>     }
+<span class="ln">  85</span>   };
+<span class="ln">  86</span> }
+<span class="ln">  87</span> 
+<span class="ln">  88</span> // ============================================================
+<span class="ln">  89</span> // Unit Tests: helper-functions.js
+<span class="ln">  90</span> // ============================================================
+<span class="ln">  91</span> 
+<span class="ln">  92</span> function testPaceToMinutes(runner) {
+<span class="ln">  93</span>   // Black-box tests: valid inputs
+<span class="ln">  94</span>   runner.assertAlmostEqual(
+<span class="ln">  95</span>     &#x27;paceToMinutes(&quot;6:30&quot;) should return 6.5&#x27;,
+<span class="ln">  96</span>     paceToMinutes(&#x27;6:30&#x27;), 6.5, 0.01
+<span class="ln">  97</span>   );
+<span class="ln">  98</span>   runner.assertAlmostEqual(
+<span class="ln">  99</span>     &#x27;paceToMinutes(&quot;5:00&quot;) should return 5.0&#x27;,
+<span class="ln"> 100</span>     paceToMinutes(&#x27;5:00&#x27;), 5.0, 0.01
+<span class="ln"> 101</span>   );
+<span class="ln"> 102</span>   runner.assertAlmostEqual(
+<span class="ln"> 103</span>     &#x27;paceToMinutes(&quot;7:15&quot;) should return 7.25&#x27;,
+<span class="ln"> 104</span>     paceToMinutes(&#x27;7:15&#x27;), 7.25, 0.01
+<span class="ln"> 105</span>   );
+<span class="ln"> 106</span>   runner.assertAlmostEqual(
+<span class="ln"> 107</span>     &#x27;paceToMinutes(&quot;6:00&quot;) should return 6.0&#x27;,
+<span class="ln"> 108</span>     paceToMinutes(&#x27;6:00&#x27;), 6.0, 0.01
+<span class="ln"> 109</span>   );
+<span class="ln"> 110</span> 
+<span class="ln"> 111</span>   // Edge case: zero seconds
+<span class="ln"> 112</span>   runner.assertAlmostEqual(
+<span class="ln"> 113</span>     &#x27;paceToMinutes(&quot;8:00&quot;) should return 8.0&#x27;,
+<span class="ln"> 114</span>     paceToMinutes(&#x27;8:00&#x27;), 8.0, 0.01
+<span class="ln"> 115</span>   );
+<span class="ln"> 116</span> 
+<span class="ln"> 117</span>   // Edge case: invalid input
+<span class="ln"> 118</span>   runner.assertEquals(
+<span class="ln"> 119</span>     &#x27;paceToMinutes(&quot;invalid&quot;) should return 0&#x27;,
+<span class="ln"> 120</span>     paceToMinutes(&#x27;invalid&#x27;), 0
+<span class="ln"> 121</span>   );
+<span class="ln"> 122</span> }
+<span class="ln"> 123</span> 
+<span class="ln"> 124</span> function testFormatPace(runner) {
+<span class="ln"> 125</span>   runner.assertEquals(
+<span class="ln"> 126</span>     &#x27;formatPace(6.5) should return &quot;6:30&quot;&#x27;,
+<span class="ln"> 127</span>     formatPace(6.5), &#x27;6:30&#x27;
+<span class="ln"> 128</span>   );
+<span class="ln"> 129</span>   runner.assertEquals(
+<span class="ln"> 130</span>     &#x27;formatPace(5.0) should return &quot;5:00&quot;&#x27;,
+<span class="ln"> 131</span>     formatPace(5.0), &#x27;5:00&#x27;
+<span class="ln"> 132</span>   );
+<span class="ln"> 133</span>   runner.assertEquals(
+<span class="ln"> 134</span>     &#x27;formatPace(7.25) should return &quot;7:15&quot;&#x27;,
+<span class="ln"> 135</span>     formatPace(7.25), &#x27;7:15&#x27;
+<span class="ln"> 136</span>   );
+<span class="ln"> 137</span> }
+<span class="ln"> 138</span> 
+<span class="ln"> 139</span> function testPaceRoundTrip(runner) {
+<span class="ln"> 140</span>   // Integration test: paceToMinutes and formatPace are inverse operations
+<span class="ln"> 141</span>   var original = &#x27;6:30&#x27;;
+<span class="ln"> 142</span>   var result = formatPace(paceToMinutes(original));
+<span class="ln"> 143</span>   runner.assertEquals(
+<span class="ln"> 144</span>     &#x27;Round-trip: formatPace(paceToMinutes(&quot;6:30&quot;)) should return &quot;6:30&quot;&#x27;,
+<span class="ln"> 145</span>     result, original
+<span class="ln"> 146</span>   );
+<span class="ln"> 147</span> 
+<span class="ln"> 148</span>   original = &#x27;5:00&#x27;;
+<span class="ln"> 149</span>   result = formatPace(paceToMinutes(original));
+<span class="ln"> 150</span>   runner.assertEquals(
+<span class="ln"> 151</span>     &#x27;Round-trip: formatPace(paceToMinutes(&quot;5:00&quot;)) should return &quot;5:00&quot;&#x27;,
+<span class="ln"> 152</span>     result, original
+<span class="ln"> 153</span>   );
+<span class="ln"> 154</span> }
+<span class="ln"> 155</span> 
+<span class="ln"> 156</span> // ============================================================
+<span class="ln"> 157</span> // Unit Tests: statistical functions (HeartRateVsPace)
+<span class="ln"> 158</span> // ============================================================
+<span class="ln"> 159</span> 
+<span class="ln"> 160</span> function testCorrelation(runner) {
+<span class="ln"> 161</span>   // Create a temporary HeartRateVsPace instance to access its methods
+<span class="ln"> 162</span>   var vis = new HeartRateVsPace();
+<span class="ln"> 163</span> 
+<span class="ln"> 164</span>   // Perfect positive correlation
+<span class="ln"> 165</span>   var x1 = [1, 2, 3, 4, 5];
+<span class="ln"> 166</span>   var y1 = [2, 4, 6, 8, 10];
+<span class="ln"> 167</span>   runner.assertAlmostEqual(
+<span class="ln"> 168</span>     &#x27;Correlation of perfectly linear positive data should be 1.0&#x27;,
+<span class="ln"> 169</span>     vis.calculateCorrelation(x1, y1), 1.0, 0.001
+<span class="ln"> 170</span>   );
+<span class="ln"> 171</span> 
+<span class="ln"> 172</span>   // Perfect negative correlation
+<span class="ln"> 173</span>   var y2 = [10, 8, 6, 4, 2];
+<span class="ln"> 174</span>   runner.assertAlmostEqual(
+<span class="ln"> 175</span>     &#x27;Correlation of perfectly linear negative data should be -1.0&#x27;,
+<span class="ln"> 176</span>     vis.calculateCorrelation(x1, y2), -1.0, 0.001
+<span class="ln"> 177</span>   );
+<span class="ln"> 178</span> 
+<span class="ln"> 179</span>   // No correlation (orthogonal data)
+<span class="ln"> 180</span>   var x3 = [1, 2, 3, 4, 5];
+<span class="ln"> 181</span>   var y3 = [3, 3, 3, 3, 3];
+<span class="ln"> 182</span>   runner.assertAlmostEqual(
+<span class="ln"> 183</span>     &#x27;Correlation of constant Y data should be 0.0&#x27;,
+<span class="ln"> 184</span>     vis.calculateCorrelation(x3, y3), 0.0, 0.001
+<span class="ln"> 185</span>   );
+<span class="ln"> 186</span> }
+<span class="ln"> 187</span> 
+<span class="ln"> 188</span> function testRegression(runner) {
+<span class="ln"> 189</span>   var vis = new HeartRateVsPace();
+<span class="ln"> 190</span> 
+<span class="ln"> 191</span>   // y = 2x + 1 → slope=2, intercept=1
+<span class="ln"> 192</span>   var x = [1, 2, 3, 4, 5];
+<span class="ln"> 193</span>   var y = [3, 5, 7, 9, 11];
+<span class="ln"> 194</span>   var result = vis.calculateRegression(x, y);
+<span class="ln"> 195</span> 
+<span class="ln"> 196</span>   runner.assertAlmostEqual(
+<span class="ln"> 197</span>     &#x27;Regression slope for y=2x+1 should be 2.0&#x27;,
+<span class="ln"> 198</span>     result.slope, 2.0, 0.001
+<span class="ln"> 199</span>   );
+<span class="ln"> 200</span>   runner.assertAlmostEqual(
+<span class="ln"> 201</span>     &#x27;Regression intercept for y=2x+1 should be 1.0&#x27;,
+<span class="ln"> 202</span>     result.intercept, 1.0, 0.001
+<span class="ln"> 203</span>   );
+<span class="ln"> 204</span> 
+<span class="ln"> 205</span>   // y = -0.5x + 10 → slope=-0.5, intercept=10
+<span class="ln"> 206</span>   var y2 = [9.5, 9, 8.5, 8, 7.5];
+<span class="ln"> 207</span>   var result2 = vis.calculateRegression(x, y2);
+<span class="ln"> 208</span> 
+<span class="ln"> 209</span>   runner.assertAlmostEqual(
+<span class="ln"> 210</span>     &#x27;Regression slope for y=-0.5x+10 should be -0.5&#x27;,
+<span class="ln"> 211</span>     result2.slope, -0.5, 0.001
+<span class="ln"> 212</span>   );
+<span class="ln"> 213</span>   runner.assertAlmostEqual(
+<span class="ln"> 214</span>     &#x27;Regression intercept for y=-0.5x+10 should be 10.0&#x27;,
+<span class="ln"> 215</span>     result2.intercept, 10.0, 0.001
+<span class="ln"> 216</span>   );
+<span class="ln"> 217</span> }
+<span class="ln"> 218</span> 
+<span class="ln"> 219</span> // ============================================================
+<span class="ln"> 220</span> // Unit Tests: moving average (PaceProgress)
+<span class="ln"> 221</span> // ============================================================
+<span class="ln"> 222</span> 
+<span class="ln"> 223</span> function testMovingAverage(runner) {
+<span class="ln"> 224</span>   var vis = new PaceProgress();
+<span class="ln"> 225</span> 
+<span class="ln"> 226</span>   var data = [10, 20, 30, 40, 50];
+<span class="ln"> 227</span> 
+<span class="ln"> 228</span>   // Window size 1: result should equal input
+<span class="ln"> 229</span>   var result1 = vis.calculateMovingAverage(data, 1);
+<span class="ln"> 230</span>   runner.assertAlmostEqual(
+<span class="ln"> 231</span>     &#x27;Moving average window=1: first element should be 10&#x27;,
+<span class="ln"> 232</span>     result1[0], 10, 0.01
+<span class="ln"> 233</span>   );
+<span class="ln"> 234</span>   runner.assertAlmostEqual(
+<span class="ln"> 235</span>     &#x27;Moving average window=1: last element should be 50&#x27;,
+<span class="ln"> 236</span>     result1[4], 50, 0.01
+<span class="ln"> 237</span>   );
+<span class="ln"> 238</span> 
+<span class="ln"> 239</span>   // Window size 3: trailing average
+<span class="ln"> 240</span>   var result3 = vis.calculateMovingAverage(data, 3);
+<span class="ln"> 241</span>   runner.assertAlmostEqual(
+<span class="ln"> 242</span>     &#x27;Moving average window=3: element[0] should be 10 (only 1 value)&#x27;,
+<span class="ln"> 243</span>     result3[0], 10, 0.01
+<span class="ln"> 244</span>   );
+<span class="ln"> 245</span>   runner.assertAlmostEqual(
+<span class="ln"> 246</span>     &#x27;Moving average window=3: element[1] should be 15 (avg of 10,20)&#x27;,
+<span class="ln"> 247</span>     result3[1], 15, 0.01
+<span class="ln"> 248</span>   );
+<span class="ln"> 249</span>   runner.assertAlmostEqual(
+<span class="ln"> 250</span>     &#x27;Moving average window=3: element[2] should be 20 (avg of 10,20,30)&#x27;,
+<span class="ln"> 251</span>     result3[2], 20, 0.01
+<span class="ln"> 252</span>   );
+<span class="ln"> 253</span>   runner.assertAlmostEqual(
+<span class="ln"> 254</span>     &#x27;Moving average window=3: element[4] should be 40 (avg of 30,40,50)&#x27;,
+<span class="ln"> 255</span>     result3[4], 40, 0.01
+<span class="ln"> 256</span>   );
+<span class="ln"> 257</span> }
+<span class="ln"> 258</span> 
+<span class="ln"> 259</span> // ============================================================
+<span class="ln"> 260</span> // Unit Tests: colour mapping (TrainingHeatmap)
+<span class="ln"> 261</span> // ============================================================
+<span class="ln"> 262</span> 
+<span class="ln"> 263</span> function testHeatmapColours(runner) {
+<span class="ln"> 264</span>   var vis = new TrainingHeatmap();
+<span class="ln"> 265</span>   var maxDist = 20;
+<span class="ln"> 266</span> 
+<span class="ln"> 267</span>   // No activity should return gray
+<span class="ln"> 268</span>   var c0 = vis.getDistanceColor(0, maxDist);
+<span class="ln"> 269</span>   runner.assertEquals(
+<span class="ln"> 270</span>     &#x27;Heatmap colour: 0km should be gray (235)&#x27;,
+<span class="ln"> 271</span>     c0[0], 235
+<span class="ln"> 272</span>   );
+<span class="ln"> 273</span> 
+<span class="ln"> 274</span>   // Low distance (25% of max = 5km)
+<span class="ln"> 275</span>   var c1 = vis.getDistanceColor(4, maxDist);
+<span class="ln"> 276</span>   runner.assertEquals(
+<span class="ln"> 277</span>     &#x27;Heatmap colour: 4km/20km should be level 1 green (155)&#x27;,
+<span class="ln"> 278</span>     c1[0], 155
+<span class="ln"> 279</span>   );
+<span class="ln"> 280</span> 
+<span class="ln"> 281</span>   // High distance (&gt;75% of max)
+<span class="ln"> 282</span>   var c4 = vis.getDistanceColor(18, maxDist);
+<span class="ln"> 283</span>   runner.assertEquals(
+<span class="ln"> 284</span>     &#x27;Heatmap colour: 18km/20km should be level 4 dark green (33)&#x27;,
+<span class="ln"> 285</span>     c4[0], 33
+<span class="ln"> 286</span>   );
+<span class="ln"> 287</span> }
+<span class="ln"> 288</span> 
+<span class="ln"> 289</span> // ============================================================
+<span class="ln"> 290</span> // Unit Tests: normalisation (MarathonRadar)
+<span class="ln"> 291</span> // ============================================================
+<span class="ln"> 292</span> 
+<span class="ln"> 293</span> function testRadarNormalisation(runner) {
+<span class="ln"> 294</span>   // Pace normalisation: 6:00 = 1.0, 9:00 = 0.0
+<span class="ln"> 295</span>   // Formula: max(0, min(1, 1 - (pace - 6.0) / 3.0))
+<span class="ln"> 296</span>   var score6 = Math.max(0, Math.min(1, 1 - (6.0 - 6.0) / 3.0));
+<span class="ln"> 297</span>   runner.assertAlmostEqual(
+<span class="ln"> 298</span>     &#x27;Radar: pace 6:00/km should normalise to 1.0&#x27;,
+<span class="ln"> 299</span>     score6, 1.0, 0.01
+<span class="ln"> 300</span>   );
+<span class="ln"> 301</span> 
+<span class="ln"> 302</span>   var score75 = Math.max(0, Math.min(1, 1 - (7.5 - 6.0) / 3.0));
+<span class="ln"> 303</span>   runner.assertAlmostEqual(
+<span class="ln"> 304</span>     &#x27;Radar: pace 7:30/km should normalise to 0.5&#x27;,
+<span class="ln"> 305</span>     score75, 0.5, 0.01
+<span class="ln"> 306</span>   );
+<span class="ln"> 307</span> 
+<span class="ln"> 308</span>   var score9 = Math.max(0, Math.min(1, 1 - (9.0 - 6.0) / 3.0));
+<span class="ln"> 309</span>   runner.assertAlmostEqual(
+<span class="ln"> 310</span>     &#x27;Radar: pace 9:00/km should normalise to 0.0&#x27;,
+<span class="ln"> 311</span>     score9, 0.0, 0.01
+<span class="ln"> 312</span>   );
+<span class="ln"> 313</span> 
+<span class="ln"> 314</span>   // Distance normalisation: capped at 1.0
+<span class="ln"> 315</span>   var dist120 = Math.min(120 / 100, 1);
+<span class="ln"> 316</span>   runner.assertAlmostEqual(
+<span class="ln"> 317</span>     &#x27;Radar: 120km should cap at 1.0&#x27;,
+<span class="ln"> 318</span>     dist120, 1.0, 0.01
+<span class="ln"> 319</span>   );
+<span class="ln"> 320</span> }
+<span class="ln"> 321</span> 
+<span class="ln"> 322</span> // ============================================================
+<span class="ln"> 323</span> // Run all tests
+<span class="ln"> 324</span> // ============================================================
+<span class="ln"> 325</span> 
+<span class="ln"> 326</span> function runAllTests() {
+<span class="ln"> 327</span>   var runner = new TestRunner();
+<span class="ln"> 328</span> 
+<span class="ln"> 329</span>   testPaceToMinutes(runner);
+<span class="ln"> 330</span>   testFormatPace(runner);
+<span class="ln"> 331</span>   testPaceRoundTrip(runner);
+<span class="ln"> 332</span>   testCorrelation(runner);
+<span class="ln"> 333</span>   testRegression(runner);
+<span class="ln"> 334</span>   testMovingAverage(runner);
+<span class="ln"> 335</span>   testHeatmapColours(runner);
+<span class="ln"> 336</span>   testRadarNormalisation(runner);
+<span class="ln"> 337</span> 
+<span class="ln"> 338</span>   return runner;
+<span class="ln"> 339</span> }
+<span class="ln"> 340</span> /* End of my own code */</code></pre>
+
+</section>
+
+</body>
+</html>

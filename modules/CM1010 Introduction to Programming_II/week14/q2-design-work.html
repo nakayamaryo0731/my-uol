@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q2 — Design Work</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 12pt;
+    }
+
+    body {
+      font-family: "Georgia", "Times New Roman", serif;
+      color: #1a1a1a;
+      line-height: 1.65;
+      background: #fff;
+      padding: 20mm;
+    }
+
+    /* ===== Page‑level print settings ===== */
+    @page {
+      size: A4 portrait;
+      margin: 18mm 20mm 20mm 20mm;
+    }
+
+    /* ===== Typography ===== */
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-bottom: 0.6em;
+      color: #111;
+      border-bottom: 2px solid #333;
+      padding-bottom: 0.25em;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-top: 1.1em;
+      margin-bottom: 0.45em;
+      color: #222;
+    }
+
+    h3 {
+      font-size: 1.0rem;
+      font-weight: 600;
+      margin-top: 0.9em;
+      margin-bottom: 0.35em;
+      color: #333;
+    }
+
+    p {
+      margin-bottom: 0.7em;
+      text-align: justify;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+    }
+
+    /* ===== Page sections ===== */
+    .page {
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    /* ===== Figure pages ===== */
+    .figure-page-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.8em;
+      color: #111;
+      border-bottom: 1.5px solid #555;
+      padding-bottom: 0.25em;
+    }
+
+    .screenshot-pair {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      align-items: flex-start;
+      margin-top: 0.5em;
+    }
+
+    .screenshot-item {
+      flex: 1;
+      max-width: 48%;
+      text-align: center;
+    }
+
+    .screenshot-item img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+    }
+
+    .screenshot-caption {
+      font-size: 0.82rem;
+      color: #444;
+      margin-top: 0.4em;
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    .annotation {
+      margin-top: 1em;
+      padding: 0.65em 0.85em;
+      background: #f5f5f5;
+      border-left: 3.5px solid #555;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #222;
+    }
+
+    /* ===== Print‑specific overrides ===== */
+    @media print {
+      body {
+        padding: 0;
+        background: none;
+        font-size: 11pt;
+        line-height: 1.5;
+      }
+
+      h1 { font-size: 1.3rem; margin-bottom: 0.4em; }
+      h2 { font-size: 1.05rem; margin-top: 0.7em; margin-bottom: 0.3em; }
+      p  { margin-bottom: 0.5em; }
+
+      .page {
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      .screenshot-pair {
+        page-break-inside: avoid;
+      }
+
+      .annotation {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+      }
+    }
+
+    /* ===== Screen‑only max‑width for readability ===== */
+    @media screen {
+      body {
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 20mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       PAGE 1 — Text (344 words)
+       ============================================================ -->
+  <section class="page">
+    <h1>Q2 — Design Work</h1>
+
+    <p>Since the midterm, I have completed three additional visualisations and refined the existing code through iterative design, testing, and debugging.</p>
+
+    <h2>Design Iterations and Technical Challenges</h2>
+
+    <p>The Heart Rate vs Pace scatter plot required implementing Pearson's correlation coefficient and least-squares linear regression from mathematical formulae. The initial version displayed only data points, making trends invisible. I added a regression line and correlation value (<i>r</i>&nbsp;=&nbsp;&minus;0.67), revealing that lower heart rates correlate with faster paces. A key challenge was parsing pace data from "6:30" string format into decimal minutes (6.5), which I debugged using Chrome DevTools breakpoints to trace the data flow through <code>paceToMinutes()</code>. After the midterm, I further refined the scatter plot by mapping point size to running distance, creating a bubble chart that communicates three data dimensions simultaneously.</p>
+
+    <p>For Pace Progress, raw pace values produced a noisy graph. I implemented a trailing moving average (window&nbsp;=&nbsp;10 runs) to smooth fluctuations while preserving the downward trend. I also added colour-coded pace zone backgrounds (Fast, Moderate, Easy) to provide immediate visual context for each data point.</p>
+
+    <p>The Goal Tracker uses a semicircular gauge rather than a bar chart, because a gauge better communicates percentage progress toward a target. The implementation required trigonometric calculations (cos/sin) for polar coordinate positioning along a 270-degree arc.</p>
+
+    <h2>Code Quality and Testing</h2>
+
+    <p>Reviewer feedback identified three issues I addressed: I extracted tooltip rendering into a reusable <code>Tooltip</code> class (separation of concerns), fixed implicit global variables from missing <code>let</code> declarations, and consolidated duplicate <code>paceToMinutes()</code> into <code>helper-functions.js</code> (DRY principle). All visualisations use asynchronous callbacks in <code>loadTable()</code> with a loaded flag, ensuring the UI remains responsive during CSV loading.</p>
+
+    <p>I wrote unit tests (<code>tests.js</code>) for key functions&nbsp;&mdash; validating <code>paceToMinutes()</code>, <code>formatPace()</code>, Pearson's correlation, linear regression, moving average, and colour mapping&nbsp;&mdash; using black-box testing with known inputs and expected outputs. I also created system test cases to verify each visualisation's rendering, interaction, and data integrity across all seven extensions.</p>
+
+    <h2>New Visualisations</h2>
+
+    <p>I developed two novel chart types: a Training Heatmap adapting GitHub's contribution graph to display daily distances on a calendar grid (nested loops, colour mapping), and a Marathon Readiness Radar plotting five normalised metrics on a spider chart (trigonometry at 72-degree intervals). Both were built from scratch without external libraries.</p>
+
+    <p>These additions transform the project from individual metric displays into an integrated analytical dashboard for marathon preparation.</p>
+  </section>
+
+  <!-- ============================================================
+       PAGE 2 — Design Iteration Screenshots (both figures)
+       ============================================================ -->
+  <section class="page">
+    <div class="figure-page-title">Figure 1: Heart Rate vs Pace &mdash; Design Iteration</div>
+
+    <div class="screenshot-pair">
+      <div class="screenshot-item">
+        <img src="screenshots/before-scatter.png" alt="Midterm version of Heart Rate vs Pace scatter plot with uniform point sizes">
+        <div class="screenshot-caption">Midterm: uniform point sizes</div>
+      </div>
+      <div class="screenshot-item">
+        <img src="screenshots/after-scatter.png" alt="Final version of Heart Rate vs Pace bubble chart with distance-proportional sizing">
+        <div class="screenshot-caption">Final: bubble chart with distance-proportional sizing</div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      Point size now encodes running distance, adding a third data dimension. Longer runs appear as larger bubbles.
+    </div>
+
+    <div class="figure-page-title" style="margin-top: 1.2em;">Figure 2: Pace Progress &mdash; Design Iteration</div>
+
+    <div class="screenshot-pair">
+      <div class="screenshot-item">
+        <img src="screenshots/before-pace.png" alt="Midterm version of Pace Progress with plain background">
+        <div class="screenshot-caption">Midterm: plain background</div>
+      </div>
+      <div class="screenshot-item">
+        <img src="screenshots/after-pace.png" alt="Final version of Pace Progress with colour-coded pace zone backgrounds">
+        <div class="screenshot-caption">Final: colour-coded pace zone backgrounds</div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      Pace zone backgrounds provide immediate visual context, helping identify which training zone each run falls within.
+    </div>
+  </section>
+
+</body>
+</html>

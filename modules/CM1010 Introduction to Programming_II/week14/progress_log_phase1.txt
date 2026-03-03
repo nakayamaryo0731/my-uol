@@ -1,0 +1,51 @@
+Introduction to Programming II - Progress Log
+
+Project title: Running Data Visualisation App
+
+Phase: 1 (Post-Midterm + Goal Tracker Implementation)
+
+---
+
+What progress have you made on this topic?
+
+Following the midterm submission, I have begun extending the project toward the final submission. The midterm established a solid foundation with four visualisations:
+
+1. Monthly Distance (bar chart with custom BarChart constructor)
+2. Pace Progress (line chart with moving average)
+3. Activity Types (pie chart with dropdown toggle)
+4. Heart Rate vs Pace (scatter plot with correlation analysis)
+
+In this phase, I implemented the fifth visualisation: Goal Tracker. This feature displays a circular progress gauge showing monthly distance toward my 100km goal. Key features include:
+
+- Circular arc gauge using p5.js arc() function
+- Dynamic colour coding based on progress (red to green gradient)
+- Month selector dropdown to view historical data
+- Statistics panel showing total runs, average distance, and remaining distance
+- Recent runs list sorted by date
+
+Technical skills applied: arc drawing with strokeCap, angle calculations, conditional colour logic, date-based data aggregation, and UI element integration with createSelect().
+
+---
+
+What problems have you faced and were you able to solve them?
+
+The main challenge was calculating the correct arc angles for the circular gauge. The gauge needed to span from 135 degrees to 405 degrees (270 degree arc), and mapping the progress percentage to this range required careful angle mathematics. I solved this by defining startAngle and endAngle constants and using linear interpolation.
+
+Another issue was positioning the goal markers (0km, 25km, 50km, 75km, 100km) around the gauge arc. Using trigonometric functions (cos and sin) with the calculated angles resolved this.
+
+---
+
+What are you planning to do over the next few weeks?
+
+According to my Gantt chart, the next phase will focus on:
+
+1. Pace Zones Distribution - A histogram showing what percentage of runs meet the 6:00/km target pace
+2. Cumulative Distance - An area chart showing total distance growth over time with animation
+
+These visualisations will require implementing data binning for the histogram and cumulative sum calculations for the area chart.
+
+---
+
+Are you on target to successfully complete your project?
+
+Yes, I am on target. The Goal Tracker was completed as planned, bringing the total to 5 visualisations. The project structure remains clean with proper code organisation and comments marking my own code sections. The remaining features (Pace Zones, Cumulative Distance, Marathon Dashboard) are well-defined and follow similar patterns to what has already been implemented.
